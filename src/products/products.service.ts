@@ -102,14 +102,11 @@ export class ProductsService {
    */
   async insert(product): Promise<Product> {
     // Attach category to product
-    let c = await this.categoriesRepository.findOne({ where: { name: product.category } });
-    if (!c) {
-      const cat = new Category();
-      cat.name = product.category;
-      const cId = await (await this.categoriesRepository.insert(cat)).generatedMaps["id"];
-      product.category = await this.categoriesRepository.findOne(cId);
-    } else {
+    const c = await this.categoriesRepository.findOne({ where: { name: product.category } });
+    if (c) {
       product.category = c;
+    } else {
+      throw new HttpException("Invalid category provided", HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
     // Insert product
@@ -130,8 +127,14 @@ export class ProductsService {
    * @param product Object containing the properties of product to update
    * @returns A promise that resolves to the `Product` updated
    */
-  async update(id, product: Product): Promise<Product> {
-    await this.productsRepository.update(id, product);
-    return await this.findOne(id);
+  async update(id: string, product: Product): Promise<Product> {
+    const c = await this.categoriesRepository.findOne({where: {name: product.category}});
+    if (c) {
+      product.category = c;
+      await this.productsRepository.update(id, product);
+      return await this.findOne(id);
+    } else {
+      throw new HttpException("Invalid category provided", HttpStatus.UNPROCESSABLE_ENTITY);
+    }
   }
 }

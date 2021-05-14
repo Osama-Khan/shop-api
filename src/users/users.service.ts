@@ -31,7 +31,9 @@ export class UsersService {
     orderDir: 'ASC' | 'DESC' = 'DESC',
     filters: string,
   ): Promise<User[]> {
-    const returnProducts = includes.includes('products');
+    const includesArray = includes ? includes.split(';') : [];
+    const returnProducts =
+      includesArray.findIndex((i) => i == 'products') != -1;
     const options: FindManyOptions = {};
     options.take = take;
     options.where = QueryHelper.filterObjectFrom(filters, User.prototype);

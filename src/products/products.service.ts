@@ -19,33 +19,43 @@ export class ProductsService {
     private categoriesRepository: Repository<Category>,
   ) { }
 
+  /**
+   * Finds products that match the given criteria
+   * @param take The maximum number of records to return
+   * @param include A comma separated list of related properties to include
+   * @param orderBy A string representing a column of `Product` to order by
+   * @param orderDir Direction to order the Product by
+   * @param filterCol Column to use for filtering the product
+   * @param filterVal Value to use for filtering the product
+   * @returns A promise that resolves to an array of products
+   */
   async findAll(
-    take: number = 10, 
-    include: string = "", 
-    orderBy: string = "created_at", 
-    orderDir: "ASC" | "DESC" = "DESC", 
-    filterCol: keyof(Product), 
+    take: number = 10,
+    include: string = "",
+    orderBy: string = "created_at",
+    orderDir: "ASC" | "DESC" = "DESC",
+    filterCol: keyof (Product),
     filterVal = undefined
-    ): Promise<Product[]> {
+  ): Promise<Product[]> {
     const returnHighlights = include.includes("highlights"),
-          returnCategory = include.includes("category");
+      returnCategory = include.includes("category");
 
     let options: FindManyOptions = {};
     options.take = take;
-    options.where = filterCol? {filterCol: filterVal}: {};
+    options.where = filterCol ? { filterCol: filterVal } : {};
     options.order = {};
     options.order[orderBy] = orderDir;
     return await this.productsRepository.find(options).then(async p => {
       let pr = p.map(async p => {
         if (returnHighlights) {
-          p.highlights = 
-            await this.highlightsRepository.find({ where: { product: p } }).then(h => 
+          p.highlights =
+            await this.highlightsRepository.find({ where: { product: p } }).then(h =>
               HighlightRO.generate(h)
             );
         }
         if (returnCategory) {
-          p.category = 
-            await this.categoriesRepository.find(p.category).then(c => 
+          p.category =
+            await this.categoriesRepository.find(p.category).then(c =>
               CategoryRO.generate(c)
             );
         }
@@ -55,19 +65,29 @@ export class ProductsService {
     });
   }
 
+  /**
+   * Gets a product with given id
+   * @param id The id of product to find
+   * @returns A promise that resolves to the `Product` with given id
+   */
   async findOne(id: string): Promise<Product> {
     return await this.productsRepository.findOne(id).then(async p => {
       if (!p) throw new HttpException("Product not found!", HttpStatus.NOT_FOUND);
-      p.highlights = await this.highlightsRepository.find({ where: { product: p } }).then(h => 
+      p.highlights = await this.highlightsRepository.find({ where: { product: p } }).then(h =>
         HighlightRO.generate(h)
       );
       p.category = await this.categoriesRepository.findOne(p.category).then(c =>
-        CategoryRO.generate(c)  
+        CategoryRO.generate(c)
       );
       return p;
     });
   }
 
+  /**
+   * Removes a product from the database
+   * @param id The id of product to delete
+   * @returns A promise that resolves to the `Product` removed
+   */
   async remove(id: string): Promise<number> {
     let p = await this.findOne(id);
     let h = await this.highlightsRepository.find({ where: { product: p } });
@@ -75,9 +95,14 @@ export class ProductsService {
     return (await this.productsRepository.delete(id)).affected;
   }
 
+  /**
+   * Inserts a product into the database
+   * @param product The product object to insert
+   * @returns A promise that resolves to the `Product` inserted
+   */
   async insert(product): Promise<Product> {
     // Attach category to product
-    let c = await this.categoriesRepository.findOne({where: {name: product.category}});
+    let c = await this.categoriesRepository.findOne({ where: { name: product.category } });
     if (!c) {
       const cat = new Category();
       cat.name = product.category;
@@ -91,7 +116,7 @@ export class ProductsService {
     let out = await this.productsRepository.insert(product);
 
     // Add Highlights
-    await Promise.all(product.highlights.map(async (highlight) => 
+    await Promise.all(product.highlights.map(async (highlight) =>
       await this.highlightsRepository.insert({ product, highlight: highlight })
     ));
 
@@ -99,6 +124,12 @@ export class ProductsService {
     return await this.findOne(out.generatedMaps["id"]);
   }
 
+  /**
+   * Updates a product in the database
+   * @param id The id of product to update
+   * @param product Object containing the properties of product to update
+   * @returns A promise that resolves to the `Product` updated
+   */
   async update(id, product: Product): Promise<Product> {
     await this.productsRepository.update(id, product);
     return await this.findOne(id);

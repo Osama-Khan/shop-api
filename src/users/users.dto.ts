@@ -6,7 +6,7 @@ import { User } from './users.entity';
 export class UserRO {
   /**
    * Generates a response object from a `User`
-   * @param user User to generate response from
+   * @param input User to generate response from
    */
   static generate(input: User | User[]): any {
     const users: User[] = [].concat(input);

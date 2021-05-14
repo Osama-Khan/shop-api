@@ -6,7 +6,7 @@ import { Highlight } from './highlights.entity';
 export class HighlightRO {
   /**
    * Generates a response object from a `Highlight`
-   * @param highlight Highlight to generate response from
+   * @param input Highlight to generate response from
    */
   static generate(input: Highlight | Highlight[]): any {
     const highlights = [].concat(input);

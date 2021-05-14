@@ -13,8 +13,8 @@ export class ProductsController {
     @Query('limit') limit: string,
     @Query('include') include: string,
     @Query('orderBy') orderBy: string,
-    @Query('orderDirection') orderDir: "ASC" | "DESC" | "asc" | "desc",
-    @Query('filters') filters
+    @Query('orderDirection') orderDir: string,
+    @Query('filters') filters: string
   ): Promise<Product[]> {
     if (limit && parseInt(limit).toString() !== limit) {
       Log.warn("Provided Limit isn't valid.");
@@ -23,8 +23,8 @@ export class ProductsController {
 
     if (orderDir && orderDir.toUpperCase() !== "ASC" && orderDir.toUpperCase() !== "DESC") {
       Log.warn("Provided Order Direction isn't valid.");
-      orderDir = "ASC";
     }
+    orderDir = orderDir && orderDir.toUpperCase();
 
     return this.productsService.findAll(parseInt(limit), include, orderBy, orderDir as "ASC" | "DESC", filters);
   }

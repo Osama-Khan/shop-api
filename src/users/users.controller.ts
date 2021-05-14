@@ -13,7 +13,7 @@ export class UsersController {
     @Query('limit') limit: string,
     @Query('include') include: string,
     @Query('orderBy') orderBy: string,
-    @Query('orderDirection') orderDir: "ASC" | "DESC" | "asc" | "desc",
+    @Query('orderDirection') orderDir: string,
     @Query('filters') filters: string
   ): Promise<User[]> {
     if (limit && parseInt(limit).toString() !== limit) {
@@ -23,8 +23,8 @@ export class UsersController {
 
     if (orderDir && orderDir.toUpperCase() !== "ASC" && orderDir.toUpperCase() !== "DESC") {
       Log.warn("Provided Order Direction isn't valid.");
-      orderDir = "ASC";
     }
+    orderDir = orderDir.toUpperCase();
 
     return this.usersService.findAll(parseInt(limit), include, orderBy, orderDir as "ASC" | "DESC", filters);
   }

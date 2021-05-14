@@ -3,8 +3,8 @@ import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 
 @Entity()
 export class Highlight {
-  @PrimaryGeneratedColumn()
-  h_id: number;
+  @PrimaryGeneratedColumn({name: 'h_id'})
+  hId: number;
 
   @ManyToOne(type => Product, product => product.highlights)
   product: Product;

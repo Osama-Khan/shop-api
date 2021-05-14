@@ -10,11 +10,11 @@ export class Category {
   name: string;
 
   @ManyToOne(type => Category)
-  child_categories: Category[];
+  childCategories: Category[];
 
-  @CreateDateColumn()
-  created_at: string;
+  @CreateDateColumn({name: "created_at"})
+  createdAt: string;
 
-  @UpdateDateColumn()
-  updated_at: string;
+  @UpdateDateColumn({name: "updated_at"})
+  updatedAt: string;
 }

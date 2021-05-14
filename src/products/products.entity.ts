@@ -35,8 +35,8 @@ export class Product {
   img: string;
   
   @CreateDateColumn({name: "created_at"})
-  created_at: string;
+  createdAt: string;
 
   @UpdateDateColumn({name: "updated_at"})
-  updated_at: string;
+  updatedAt: string;
 }

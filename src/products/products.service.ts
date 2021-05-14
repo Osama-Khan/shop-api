@@ -128,13 +128,15 @@ export class ProductsService {
    * @returns A promise that resolves to the `Product` updated
    */
   async update(id: string, product: Product): Promise<Product> {
-    const c = await this.categoriesRepository.findOne({where: {name: product.category}});
-    if (c) {
-      product.category = c;
-      await this.productsRepository.update(id, product);
-      return await this.findOne(id);
-    } else {
-      throw new HttpException("Invalid category provided", HttpStatus.UNPROCESSABLE_ENTITY);
+    if (product.category) {
+      const c = await this.categoriesRepository.findOne({where: {name: product.category}});
+      if (c) {
+        product.category = c;
+      } else {
+        throw new HttpException("Invalid category provided", HttpStatus.UNPROCESSABLE_ENTITY);
+      }
     }
+    await this.productsRepository.update(id, product);
+    return await this.findOne(id);
   }
 }

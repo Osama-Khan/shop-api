@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Category } from './categories.entity';
@@ -24,7 +24,10 @@ export class CategoriesService {
    * @returns A promise that resolves to the `Category` with given id
    */
   findOne(id: string): Promise<Category> {
-    return this.categoriesRepository.findOne(id);
+    return this.categoriesRepository.findOne(id).then(c => {
+      if (!c) throw new HttpException("Category not found!", HttpStatus.NOT_FOUND);
+      return c;
+    });
   }
 
   /**

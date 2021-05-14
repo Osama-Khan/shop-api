@@ -1,4 +1,4 @@
-import { User } from "./users.entity";
+import { User } from './users.entity';
 
 /**
  * User Response Object class
@@ -10,13 +10,13 @@ export class UserRO {
    */
   static generate(input: User | User[]): any {
     const users: User[] = [].concat(input);
-    const u = users.map(u => ({
-      username: u.username, 
-      firstName: u.firstName, 
-      lastName: u.lastName, 
-      updatedAt: u.updatedAt, 
-      createdAt: u.createdAt
+    const u = users.map((u) => ({
+      username: u.username,
+      firstName: u.firstName,
+      lastName: u.lastName,
+      updatedAt: u.updatedAt,
+      createdAt: u.createdAt,
     }));
-    return u.length === 1? u[0]: u;
+    return u.length === 1 ? u[0] : u;
   }
 }

@@ -1,4 +1,4 @@
-import { Highlight } from "./highlights.entity";
+import { Highlight } from './highlights.entity';
 
 /**
  * Highlight Response Object class
@@ -10,7 +10,7 @@ export class HighlightRO {
    */
   static generate(input: Highlight | Highlight[]): any {
     const highlights = [].concat(input);
-    const h = highlights.map(h => h.highlight);
-    return h.length === 1? h[0]: h;
+    const h = highlights.map((h) => h.highlight);
+    return h.length === 1 ? h[0] : h;
   }
 }

@@ -24,8 +24,9 @@ export class CategoriesService {
    * @returns A promise that resolves to the `Category` with given id
    */
   findOne(id: string): Promise<Category> {
-    return this.categoriesRepository.findOne(id).then(c => {
-      if (!c) throw new HttpException("Category not found!", HttpStatus.NOT_FOUND);
+    return this.categoriesRepository.findOne(id).then((c) => {
+      if (!c)
+        throw new HttpException('Category not found!', HttpStatus.NOT_FOUND);
       return c;
     });
   }
@@ -37,7 +38,7 @@ export class CategoriesService {
    */
   async insert(category: Category): Promise<Category> {
     const c = await this.categoriesRepository.insert(category);
-    return this.findOne(c.generatedMaps["id"]);
+    return this.findOne(c.generatedMaps['id']);
   }
 
   /**

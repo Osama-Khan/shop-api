@@ -1,4 +1,4 @@
-import { Category } from "./categories.entity";
+import { Category } from './categories.entity';
 
 /**
  * Category Response Object class
@@ -10,7 +10,7 @@ export class CategoryRO {
    */
   static generate(input: Category | Category[]) {
     const categories = [].concat(input);
-    const c = categories.map(c => c.name);
-    return c.length === 1? c[0]: c;
+    const c = categories.map((c) => c.name);
+    return c.length === 1 ? c[0] : c;
   }
 }

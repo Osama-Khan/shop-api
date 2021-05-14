@@ -1,12 +1,19 @@
 import { Product } from 'src/products/products.entity';
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  OneToMany,
+} from 'typeorm';
 
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({unique: true})
+  @Column({ unique: true })
   username: string;
 
   @Column()
@@ -14,8 +21,8 @@ export class User {
 
   @Column()
   lastName: string;
-  
-  @Column({unique: true})
+
+  @Column({ unique: true })
   email: string;
 
   @Column()
@@ -24,12 +31,12 @@ export class User {
   @Column()
   dateOfBirth: Date;
 
-  @OneToMany(type => Product, product => product.user)
+  @OneToMany((type) => Product, (product) => product.user)
   products: Product[];
 
-  @CreateDateColumn({name: "created_at"})
+  @CreateDateColumn({ name: 'created_at' })
   createdAt: string;
 
-  @UpdateDateColumn({name: "updated_at"})
+  @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: string;
 }

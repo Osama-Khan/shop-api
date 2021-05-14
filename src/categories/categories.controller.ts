@@ -1,7 +1,15 @@
-import { Body, Controller, Delete, Get, Param, Patch, Put } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Put,
+} from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 
-@Controller({path: '/categories'})
+@Controller({ path: '/categories' })
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 

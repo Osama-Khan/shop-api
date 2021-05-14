@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable, Param } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProductRO } from 'src/products/products.dto';
 import { Product } from 'src/products/products.entity';
@@ -13,7 +13,7 @@ export class UsersService {
     private usersRepository: Repository<User>,
     @InjectRepository(Product)
     private productsRepository: Repository<Product>,
-  ) { }
+  ) {}
 
   /**
    * Finds users that match the given criteria
@@ -25,25 +25,24 @@ export class UsersService {
    * @returns A promise that resolves to an array of users
    */
   async findAll(
-    take: number = 10,
-    includes: string = "",
-    orderBy: string = "createdAt",
-    orderDir: "ASC" | "DESC" = "DESC",
-    filters: string
+    take = 10,
+    includes = '',
+    orderBy = 'createdAt',
+    orderDir: 'ASC' | 'DESC' = 'DESC',
+    filters: string,
   ): Promise<User[]> {
-    const returnProducts = includes.includes("products");
-    let options: FindManyOptions = {};
+    const returnProducts = includes.includes('products');
+    const options: FindManyOptions = {};
     options.take = take;
     options.where = QueryHelper.filterObjectFrom(filters, User.prototype);
     options.order = {};
     options.order[orderBy] = orderDir;
-    return await this.usersRepository.find(options).then(async u => {
-      let pr = u.map(async u => {
+    return await this.usersRepository.find(options).then(async (u) => {
+      const pr = u.map(async (u) => {
         if (returnProducts) {
-          u.products =
-            await this.productsRepository.find({ where: { user: u } }).then(p =>
-              ProductRO.generate(p)
-            );
+          u.products = await this.productsRepository
+            .find({ where: { user: u } })
+            .then((p) => ProductRO.generate(p));
         }
         return u;
       });
@@ -57,11 +56,11 @@ export class UsersService {
    * @returns A promise that resolves to the `User` with given id
    */
   async findOne(id: string): Promise<User> {
-    return await this.usersRepository.findOne(id).then(async u => {
-      if (!u) throw new HttpException("User not found!", HttpStatus.NOT_FOUND);
-      u.products = await this.productsRepository.find({ where: { user: u } }).then(p => 
-        ProductRO.generate(p)
-      );
+    return await this.usersRepository.findOne(id).then(async (u) => {
+      if (!u) throw new HttpException('User not found!', HttpStatus.NOT_FOUND);
+      u.products = await this.productsRepository
+        .find({ where: { user: u } })
+        .then((p) => ProductRO.generate(p));
       return u;
     });
   }
@@ -72,9 +71,9 @@ export class UsersService {
    * @returns A promise that resolves to the `User` removed
    */
   async remove(id: string): Promise<number> {
-    let u = await this.findOne(id);
-    let p = await this.productsRepository.find({ where: { user: u } });
-    await p.forEach(h => this.productsRepository.delete(h));
+    const u = await this.findOne(id);
+    const p = await this.productsRepository.find({ where: { user: u } });
+    await p.forEach((h) => this.productsRepository.delete(h));
     return (await this.usersRepository.delete(id)).affected;
   }
 
@@ -84,8 +83,8 @@ export class UsersService {
    * @returns A promise that resolves to the `User` inserted
    */
   async insert(user): Promise<User> {
-    let out = await this.usersRepository.insert(user);
-    return await this.findOne(out.generatedMaps["id"]);
+    const out = await this.usersRepository.insert(user);
+    return await this.findOne(out.generatedMaps['id']);
   }
 
   /**

@@ -1,12 +1,20 @@
-import { Body, Controller, Delete, Get, Param, Patch, Put, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Put,
+  Query,
+} from '@nestjs/common';
 import Log from 'src/shared/log';
 import { User } from './users.entity';
 import { UsersService } from './users.service';
 
-@Controller({path: '/users'})
+@Controller({ path: '/users' })
 export class UsersController {
-  constructor(private readonly usersService: UsersService) { }
-
+  constructor(private readonly usersService: UsersService) {}
 
   @Get()
   getUsers(
@@ -14,19 +22,29 @@ export class UsersController {
     @Query('include') include: string,
     @Query('orderBy') orderBy: string,
     @Query('orderDirection') orderDir: string,
-    @Query('filters') filters: string
+    @Query('filters') filters: string,
   ): Promise<User[]> {
     if (limit && parseInt(limit).toString() !== limit) {
       Log.warn("Provided Limit isn't valid.");
-      limit = "10";
+      limit = '10';
     }
 
-    if (orderDir && orderDir.toUpperCase() !== "ASC" && orderDir.toUpperCase() !== "DESC") {
+    if (
+      orderDir &&
+      orderDir.toUpperCase() !== 'ASC' &&
+      orderDir.toUpperCase() !== 'DESC'
+    ) {
       Log.warn("Provided Order Direction isn't valid.");
     }
     orderDir = orderDir.toUpperCase();
 
-    return this.usersService.findAll(parseInt(limit), include, orderBy, orderDir as "ASC" | "DESC", filters);
+    return this.usersService.findAll(
+      parseInt(limit),
+      include,
+      orderBy,
+      orderDir as 'ASC' | 'DESC',
+      filters,
+    );
   }
 
   @Get(':id')

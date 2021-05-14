@@ -21,8 +21,7 @@ export class ProductsService {
     private categoriesRepository: Repository<Category>,
     @InjectRepository(User)
     private usersRepository: Repository<User>,
-    
-  ) { }
+  ) {}
 
   /**
    * Finds products that match the given criteria
@@ -34,43 +33,41 @@ export class ProductsService {
    * @returns A promise that resolves to an array of products
    */
   async findAll(
-    take: number = 10,
-    includes: string = "",
-    orderBy: string = "createdAt",
-    orderDir: "ASC" | "DESC" = "DESC",
-    filters: string
+    take = 10,
+    includes = '',
+    orderBy = 'createdAt',
+    orderDir: 'ASC' | 'DESC' = 'DESC',
+    filters: string,
   ): Promise<Product[]> {
-    const includesArray = includes? includes.split(';'): [];
-    const returnHighlights = includesArray.findIndex(i => i == 'highlights') != -1,
-      returnCategory = includesArray.findIndex(i => i == 'category') != -1,
-      returnUser = includesArray.findIndex(i => i == 'user') != -1;
+    const includesArray = includes ? includes.split(';') : [];
+    const returnHighlights =
+        includesArray.findIndex((i) => i == 'highlights') != -1,
+      returnCategory = includesArray.findIndex((i) => i == 'category') != -1,
+      returnUser = includesArray.findIndex((i) => i == 'user') != -1;
 
-    let options: FindManyOptions = {};
+    const options: FindManyOptions = {};
     options.take = take;
     options.where = QueryHelper.filterObjectFrom(filters, Product.prototype);
     options.order = {};
     options.order[orderBy] = orderDir;
-    return await this.productsRepository.find(options).then(async p => {
-      let pr = p.map(async p => {
+    return await this.productsRepository.find(options).then(async (p) => {
+      const pr = p.map(async (p) => {
         if (returnHighlights) {
-          p.highlights =
-            await this.highlightsRepository.find({ where: { product: p } }).then(h =>
-              HighlightRO.generate(h)
-            );
+          p.highlights = await this.highlightsRepository
+            .find({ where: { product: p } })
+            .then((h) => HighlightRO.generate(h));
         }
         if (returnCategory) {
-          p.category =
-            await this.categoriesRepository.findOne(p.category).then(c =>
-              CategoryRO.generate(c)
-            );
+          p.category = await this.categoriesRepository
+            .findOne(p.category)
+            .then((c) => CategoryRO.generate(c));
         }
         if (returnUser) {
-          p.user = 
-            await this.usersRepository.findOne(p.user).then(u => 
-              UserRO.generate(u)
-            );
+          p.user = await this.usersRepository
+            .findOne(p.user)
+            .then((u) => UserRO.generate(u));
         }
-        
+
         return p;
       });
       return await Promise.all(pr);
@@ -83,17 +80,18 @@ export class ProductsService {
    * @returns A promise that resolves to the `Product` with given id
    */
   async findOne(id: string): Promise<Product> {
-    return await this.productsRepository.findOne(id).then(async p => {
-      if (!p) throw new HttpException("Product not found!", HttpStatus.NOT_FOUND);
-      p.highlights = await this.highlightsRepository.find({ where: { product: p } }).then(h =>
-        HighlightRO.generate(h)
-      );
-      p.category = await this.categoriesRepository.findOne(p.category).then(c =>
-        CategoryRO.generate(c)
-      );
-      p.user = await this.usersRepository.findOne(p.user).then(u =>
-        UserRO.generate(u)
-      );
+    return await this.productsRepository.findOne(id).then(async (p) => {
+      if (!p)
+        throw new HttpException('Product not found!', HttpStatus.NOT_FOUND);
+      p.highlights = await this.highlightsRepository
+        .find({ where: { product: p } })
+        .then((h) => HighlightRO.generate(h));
+      p.category = await this.categoriesRepository
+        .findOne(p.category)
+        .then((c) => CategoryRO.generate(c));
+      p.user = await this.usersRepository
+        .findOne(p.user)
+        .then((u) => UserRO.generate(u));
       return p;
     });
   }
@@ -104,9 +102,9 @@ export class ProductsService {
    * @returns A promise that resolves to the `Product` removed
    */
   async remove(id: string): Promise<Product> {
-    let p = await this.findOne(id);
-    let h = await this.highlightsRepository.find({ where: { product: p } });
-    h.forEach(async h => await this.highlightsRepository.delete(h));
+    const p = await this.findOne(id);
+    const h = await this.highlightsRepository.find({ where: { product: p } });
+    h.forEach(async (h) => await this.highlightsRepository.delete(h));
     return p;
   }
 
@@ -117,11 +115,16 @@ export class ProductsService {
    */
   async insert(product): Promise<Product> {
     // Attach category to product
-    const c = await this.categoriesRepository.findOne({ where: { name: product.category } });
+    const c = await this.categoriesRepository.findOne({
+      where: { name: product.category },
+    });
     if (c) {
       product.category = c;
     } else {
-      throw new HttpException("Invalid category provided", HttpStatus.UNPROCESSABLE_ENTITY);
+      throw new HttpException(
+        'Invalid category provided',
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
     }
 
     // Attach user to product
@@ -129,19 +132,28 @@ export class ProductsService {
     if (u) {
       product.user = u;
     } else {
-      throw new HttpException("Invalid user provided", HttpStatus.UNPROCESSABLE_ENTITY);
+      throw new HttpException(
+        'Invalid user provided',
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
     }
 
     // Insert product
-    let out = await this.productsRepository.insert(product);
+    const out = await this.productsRepository.insert(product);
 
     // Add Highlights
-    await Promise.all(product.highlights.map(async (highlight) =>
-      await this.highlightsRepository.insert({ product, highlight: highlight })
-    ));
+    await Promise.all(
+      product.highlights.map(
+        async (highlight) =>
+          await this.highlightsRepository.insert({
+            product,
+            highlight: highlight,
+          }),
+      ),
+    );
 
     // Return created product
-    return await this.findOne(out.generatedMaps["id"]);
+    return await this.findOne(out.generatedMaps['id']);
   }
 
   /**
@@ -152,11 +164,16 @@ export class ProductsService {
    */
   async update(id: string, product: Product): Promise<Product> {
     if (product.category) {
-      const c = await this.categoriesRepository.findOne({where: {name: product.category}});
+      const c = await this.categoriesRepository.findOne({
+        where: { name: product.category },
+      });
       if (c) {
         product.category = c;
       } else {
-        throw new HttpException("Invalid category provided", HttpStatus.UNPROCESSABLE_ENTITY);
+        throw new HttpException(
+          'Invalid category provided',
+          HttpStatus.UNPROCESSABLE_ENTITY,
+        );
       }
     }
     await this.productsRepository.update(id, product);

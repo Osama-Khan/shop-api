@@ -1,12 +1,20 @@
-import { Body, Controller, Delete, Get, Param, Patch, Put, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Put,
+  Query,
+} from '@nestjs/common';
 import Log from 'src/shared/log';
 import { Product } from './products.entity';
 import { ProductsService } from './products.service';
 
-@Controller({path: '/products'})
+@Controller({ path: '/products' })
 export class ProductsController {
-  constructor(private readonly productsService: ProductsService) { }
-
+  constructor(private readonly productsService: ProductsService) {}
 
   @Get()
   getProducts(
@@ -14,19 +22,29 @@ export class ProductsController {
     @Query('include') include: string,
     @Query('orderBy') orderBy: string,
     @Query('orderDirection') orderDir: string,
-    @Query('filters') filters: string
+    @Query('filters') filters: string,
   ): Promise<Product[]> {
     if (limit && parseInt(limit).toString() !== limit) {
       Log.warn("Provided Limit isn't valid.");
-      limit = "10";
+      limit = '10';
     }
 
-    if (orderDir && orderDir.toUpperCase() !== "ASC" && orderDir.toUpperCase() !== "DESC") {
+    if (
+      orderDir &&
+      orderDir.toUpperCase() !== 'ASC' &&
+      orderDir.toUpperCase() !== 'DESC'
+    ) {
       Log.warn("Provided Order Direction isn't valid.");
     }
     orderDir = orderDir && orderDir.toUpperCase();
 
-    return this.productsService.findAll(parseInt(limit), include, orderBy, orderDir as "ASC" | "DESC", filters);
+    return this.productsService.findAll(
+      parseInt(limit),
+      include,
+      orderBy,
+      orderDir as 'ASC' | 'DESC',
+      filters,
+    );
   }
 
   @Get(':id')
@@ -45,7 +63,10 @@ export class ProductsController {
   }
 
   @Patch(':id')
-  updateProduct(@Param('id') id: string, @Body() product: Product): Promise<Product> {
+  updateProduct(
+    @Param('id') id: string,
+    @Body() product: Product,
+  ): Promise<Product> {
     return this.productsService.update(id, product);
   }
 }

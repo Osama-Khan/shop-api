@@ -3,12 +3,12 @@ import Log from 'src/shared/log';
 import { Product } from './products.entity';
 import { ProductsService } from './products.service';
 
-@Controller()
+@Controller({path: '/products'})
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) { }
 
 
-  @Get('/products')
+  @Get()
   getProducts(
     @Query('limit') limit: string,
     @Query('include') include: string,
@@ -40,22 +40,22 @@ export class ProductsController {
     return this.productsService.findAll(parseInt(limit), include, orderBy, orderDir as "ASC" | "DESC", filterCol, filterVal);
   }
 
-  @Get('/products/:id')
+  @Get(':id')
   getProduct(@Param('id') id: string): Promise<Product> {
     return this.productsService.findOne(id);
   }
 
-  @Put('/products')
+  @Put()
   setProduct(@Body() product: Product): Promise<Product> {
     return this.productsService.insert(product);
   }
 
-  @Delete('/products/:id')
+  @Delete(':id')
   removeProduct(@Param('id') id: string): Promise<number> {
     return this.productsService.remove(id);
   }
 
-  @Patch('/products/:id')
+  @Patch(':id')
   updateProduct(@Param('id') id: string, @Body() product: Product): Promise<Product> {
     return this.productsService.update(id, product);
   }

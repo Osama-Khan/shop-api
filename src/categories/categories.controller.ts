@@ -1,31 +1,31 @@
 import { Body, Controller, Delete, Get, Param, Patch, Put } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 
-@Controller()
+@Controller({path: '/categories'})
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
-  @Get('/categories')
+  @Get()
   getCategories() {
     return this.categoriesService.findAll();
   }
 
-  @Get('/categories/:id')
+  @Get(':id')
   getCategory(@Param('id') id) {
     return this.categoriesService.findOne(id);
   }
 
-  @Put('/categories')
+  @Put()
   setCategory(@Body() category) {
     return this.categoriesService.insert(category);
   }
 
-  @Delete('/categories/:id')
+  @Delete(':id')
   removeCategory(@Param('id') id) {
     return this.categoriesService.remove(id);
   }
 
-  @Patch('/categories/:id')
+  @Patch(':id')
   updateCategory(@Param('id') id, @Body() category) {
     return this.categoriesService.update(id, category);
   }

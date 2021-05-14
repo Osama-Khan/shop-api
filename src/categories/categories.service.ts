@@ -37,7 +37,7 @@ export class CategoriesService {
    */
   async insert(category: Category): Promise<Category> {
     const c = await this.categoriesRepository.insert(category);
-    return this.categoriesRepository.findOne(c.generatedMaps["id"]);
+    return this.findOne(c.generatedMaps["id"]);
   }
 
   /**
@@ -46,7 +46,7 @@ export class CategoriesService {
    * @returns A promise that resolves to the `Category` removed
    */
   async remove(id: string): Promise<Category> {
-    const c = this.categoriesRepository.findOne(id);
+    const c = await this.findOne(id);
     await this.categoriesRepository.delete(id);
     return c;
   }
@@ -59,6 +59,6 @@ export class CategoriesService {
    */
   async update(id: string, category: Category): Promise<Category> {
     await this.categoriesRepository.update(id, category);
-    return this.categoriesRepository.findOne(id);
+    return this.findOne(id);
   }
 }

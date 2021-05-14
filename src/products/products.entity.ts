@@ -1,7 +1,7 @@
 import { Category } from 'src/categories/categories.entity';
 import { Highlight } from 'src/highlights/highlights.entity';
 import { User } from 'src/users/users.entity';
-import { Entity, Column, PrimaryGeneratedColumn, OneToOne, PrimaryColumn, OneToMany, CreateDateColumn, UpdateDateColumn, JoinColumn, ManyToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany, CreateDateColumn, UpdateDateColumn, ManyToOne } from 'typeorm';
 
 @Entity()
 export class Product {

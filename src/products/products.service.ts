@@ -32,7 +32,7 @@ export class ProductsService {
   async findAll(
     take: number = 10,
     include: string = "",
-    orderBy: string = "created_at",
+    orderBy: string = "createdAt",
     orderDir: "ASC" | "DESC" = "DESC",
     filterCol: keyof (Product),
     filterVal = undefined

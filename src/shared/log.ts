@@ -12,18 +12,18 @@ const bgCyan = "\x1b[46m";
 export default class Log {
 
   static success(msg: string) {
-    console.log(`✔️ ${bgGreen}${fgBlack}[SUCCESS]${reset}${fgGreen} ${msg}${reset}`, );
+    console.log(`${bgGreen}${fgBlack}[SUCCESS]${reset}${fgGreen} ${msg}${reset}`, );
   }
 
   static info(msg: string) {
-    console.log(`ℹ️ ${bgCyan}${fgBlack}[INFO]${reset}${fgCyan} ${msg}${reset}`, );
+    console.log(`${bgCyan}${fgBlack}[INFO]${reset}${fgCyan} ${msg}${reset}`, );
   }
 
   static warn(msg: string) {
-    console.log(`⚠️ ${bgYellow}${fgBlack}[WARN]${reset}${fgYellow} ${msg}${reset}`, );
+    console.log(`${bgYellow}${fgBlack}[WARN]${reset}${fgYellow} ${msg}${reset}`, );
   }
 
   static error(msg: string) {
-    console.log(`⛔ ${bgRed}${fgBlack}[ERROR]${reset}${fgRed} ${msg}${reset}`, );
+    console.log(`${bgRed}${fgBlack}[ERROR]${reset}${fgRed} ${msg}${reset}`, );
   }
 }

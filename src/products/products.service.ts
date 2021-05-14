@@ -8,6 +8,7 @@ import { User } from 'src/users/users.entity';
 import { UserRO } from 'src/users/users.dto';
 import { FindManyOptions, Repository } from 'typeorm';
 import { Product } from './products.entity';
+import QueryHelper from 'src/shared/query.helper';
 
 @Injectable()
 export class ProductsService {
@@ -26,27 +27,27 @@ export class ProductsService {
   /**
    * Finds products that match the given criteria
    * @param take The maximum number of records to return
-   * @param include A comma separated list of related properties to include
+   * @param include A semicolon separated list of related properties to include
    * @param orderBy A string representing a column of `Product` to order by
    * @param orderDir Direction to order the Product by
-   * @param filterCol Column to use for filtering the product
-   * @param filterVal Value to use for filtering the product
+   * @param filters A semicolon separated list of column=value formatted filters
    * @returns A promise that resolves to an array of products
    */
   async findAll(
     take: number = 10,
-    include: string = "",
+    includes: string = "",
     orderBy: string = "createdAt",
     orderDir: "ASC" | "DESC" = "DESC",
-    filterCol: keyof (Product),
-    filterVal = undefined
+    filters: string
   ): Promise<Product[]> {
-    const returnHighlights = include.includes("highlights"),
-      returnCategory = include.includes("category");
+    const includesArray = includes? includes.split(';'): [];
+    const returnHighlights = includesArray.findIndex(i => i == 'highlights') != -1,
+      returnCategory = includesArray.findIndex(i => i == 'category') != -1,
+      returnUser = includesArray.findIndex(i => i == 'user') != -1;
 
     let options: FindManyOptions = {};
     options.take = take;
-    options.where = filterCol ? { filterCol: filterVal } : {};
+    options.where = QueryHelper.filterObjectFrom(filters, Product.prototype);
     options.order = {};
     options.order[orderBy] = orderDir;
     return await this.productsRepository.find(options).then(async p => {
@@ -59,10 +60,17 @@ export class ProductsService {
         }
         if (returnCategory) {
           p.category =
-            await this.categoriesRepository.find(p.category).then(c =>
+            await this.categoriesRepository.findOne(p.category).then(c =>
               CategoryRO.generate(c)
             );
         }
+        if (returnUser) {
+          p.user = 
+            await this.usersRepository.findOne(p.user).then(u => 
+              UserRO.generate(u)
+            );
+        }
+        
         return p;
       });
       return await Promise.all(pr);

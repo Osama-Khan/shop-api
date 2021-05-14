@@ -14,10 +14,8 @@ export class UsersController {
     @Query('include') include: string,
     @Query('orderBy') orderBy: string,
     @Query('orderDirection') orderDir: "ASC" | "DESC" | "asc" | "desc",
-    @Query('filterColumn') filterCol,
-    @Query('filterValue') filterVal: string
+    @Query('filters') filters: string
   ): Promise<User[]> {
-
     if (limit && parseInt(limit).toString() !== limit) {
       Log.warn("Provided Limit isn't valid.");
       limit = "10";
@@ -28,16 +26,7 @@ export class UsersController {
       orderDir = "ASC";
     }
 
-    if (filterCol) {
-      try {
-        let key: keyof (User) = filterCol;
-      } catch (e) {
-        Log.warn("Provided Filter Column isn't a key of user.");
-        filterCol = "";
-      }
-    }
-
-    return this.usersService.findAll(parseInt(limit), include, orderBy, orderDir as "ASC" | "DESC", filterCol, filterVal);
+    return this.usersService.findAll(parseInt(limit), include, orderBy, orderDir as "ASC" | "DESC", filters);
   }
 
   @Get(':id')

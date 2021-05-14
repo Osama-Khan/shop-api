@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable, Param } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProductRO } from 'src/products/products.dto';
 import { Product } from 'src/products/products.entity';
+import QueryHelper from 'src/shared/query.helper';
 import { FindManyOptions, Repository } from 'typeorm';
 import { User } from './users.entity';
 
@@ -17,25 +18,23 @@ export class UsersService {
   /**
    * Finds users that match the given criteria
    * @param take The maximum number of records to return
-   * @param include A comma separated list of related properties to include
+   * @param include A semicolon separated list of related properties to include
    * @param orderBy A string representing a column of `User` to order by
    * @param orderDir Direction to order the User by
-   * @param filterCol Column to use for filtering the user
-   * @param filterVal Value to use for filtering the user
+   * @param filters A semicolon separated list of column=value formatted filters
    * @returns A promise that resolves to an array of users
    */
   async findAll(
     take: number = 10,
-    include: string = "",
+    includes: string = "",
     orderBy: string = "createdAt",
     orderDir: "ASC" | "DESC" = "DESC",
-    filterCol: keyof (User),
-    filterVal = undefined
+    filters: string
   ): Promise<User[]> {
-    const returnProducts = include.includes("products");
+    const returnProducts = includes.includes("products");
     let options: FindManyOptions = {};
     options.take = take;
-    options.where = filterCol ? { filterCol: filterVal } : {};
+    options.where = QueryHelper.filterObjectFrom(filters, User.prototype);
     options.order = {};
     options.order[orderBy] = orderDir;
     return await this.usersRepository.find(options).then(async u => {

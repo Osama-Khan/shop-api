@@ -14,10 +14,8 @@ export class ProductsController {
     @Query('include') include: string,
     @Query('orderBy') orderBy: string,
     @Query('orderDirection') orderDir: "ASC" | "DESC" | "asc" | "desc",
-    @Query('filterColumn') filterCol,
-    @Query('filterValue') filterVal: string
+    @Query('filters') filters
   ): Promise<Product[]> {
-
     if (limit && parseInt(limit).toString() !== limit) {
       Log.warn("Provided Limit isn't valid.");
       limit = "10";
@@ -28,16 +26,7 @@ export class ProductsController {
       orderDir = "ASC";
     }
 
-    if (filterCol) {
-      try {
-        let key: keyof (Product) = filterCol;
-      } catch (e) {
-        Log.warn("Provided Filter Column isn't a key of product.");
-        filterCol = "";
-      }
-    }
-
-    return this.productsService.findAll(parseInt(limit), include, orderBy, orderDir as "ASC" | "DESC", filterCol, filterVal);
+    return this.productsService.findAll(parseInt(limit), include, orderBy, orderDir as "ASC" | "DESC", filters);
   }
 
   @Get(':id')

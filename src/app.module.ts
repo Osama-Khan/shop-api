@@ -8,6 +8,8 @@ import { db } from './dbconfig';
 import { Highlight } from './highlights/highlights.entity';
 import { Product } from './products/products.entity';
 import { ProductsModule } from './products/products.module';
+import { User } from './users/users.entity';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -18,11 +20,12 @@ import { ProductsModule } from './products/products.module';
       username: db.username,
       password: db.password,
       database: db.dbname,
-      entities: [Product, Category, Highlight],
+      entities: [Product, Category, Highlight, User],
       synchronize: true,
     }),
     ProductsModule,
     CategoriesModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,5 +1,6 @@
 import { Category } from 'src/categories/categories.entity';
 import { Highlight } from 'src/highlights/highlights.entity';
+import { User } from 'src/users/users.entity';
 import { Entity, Column, PrimaryGeneratedColumn, OneToOne, PrimaryColumn, OneToMany, CreateDateColumn, UpdateDateColumn, JoinColumn, ManyToOne } from 'typeorm';
 
 @Entity()
@@ -27,6 +28,9 @@ export class Product {
   
   @ManyToOne(type => Category)
   category: Category;
+
+  @ManyToOne(type => User, user => user.products)
+  user: User;
 
   @Column({default: 1})
   stock: number;

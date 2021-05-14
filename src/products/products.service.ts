@@ -1,10 +1,11 @@
-import { HttpException, HttpStatus, Injectable, Param } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CategoryRO } from 'src/categories/categories.dto';
 import { Category } from 'src/categories/categories.entity';
-import { CategoriesService } from 'src/categories/categories.service';
 import { HighlightRO } from 'src/highlights/highlights.dto';
 import { Highlight } from 'src/highlights/highlights.entity';
+import { User } from 'src/users/users.entity';
+import { UserRO } from 'src/users/users.dto';
 import { FindManyOptions, Repository } from 'typeorm';
 import { Product } from './products.entity';
 
@@ -17,6 +18,9 @@ export class ProductsService {
     private highlightsRepository: Repository<Highlight>,
     @InjectRepository(Category)
     private categoriesRepository: Repository<Category>,
+    @InjectRepository(User)
+    private usersRepository: Repository<User>,
+    
   ) { }
 
   /**
@@ -79,6 +83,9 @@ export class ProductsService {
       p.category = await this.categoriesRepository.findOne(p.category).then(c =>
         CategoryRO.generate(c)
       );
+      p.user = await this.usersRepository.findOne(p.user).then(u =>
+        UserRO.generate(u)
+      );
       return p;
     });
   }
@@ -107,6 +114,14 @@ export class ProductsService {
       product.category = c;
     } else {
       throw new HttpException("Invalid category provided", HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+
+    // Attach user to product
+    const u = await this.usersRepository.findOne(product.user);
+    if (u) {
+      product.user = u;
+    } else {
+      throw new HttpException("Invalid user provided", HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
     // Insert product

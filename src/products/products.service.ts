@@ -88,11 +88,11 @@ export class ProductsService {
    * @param id The id of product to delete
    * @returns A promise that resolves to the `Product` removed
    */
-  async remove(id: string): Promise<number> {
+  async remove(id: string): Promise<Product> {
     let p = await this.findOne(id);
     let h = await this.highlightsRepository.find({ where: { product: p } });
-    await h.forEach(h => this.highlightsRepository.delete(h));
-    return (await this.productsRepository.delete(id)).affected;
+    h.forEach(async h => await this.highlightsRepository.delete(h));
+    return p;
   }
 
   /**

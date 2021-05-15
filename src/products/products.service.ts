@@ -8,7 +8,6 @@ import { User } from 'src/users/users.entity';
 import { UserDTO } from 'src/users/users.dto';
 import { FindManyOptions, Repository } from 'typeorm';
 import { Product } from './products.entity';
-import QueryHelper from 'src/shared/query.helper';
 
 @Injectable()
 export class ProductsService {
@@ -26,7 +25,7 @@ export class ProductsService {
   /**
    * Finds products that match the given criteria
    * @param take The maximum number of records to return
-   * @param include A semicolon separated list of related properties to include
+   * @param includes A semicolon separated list of related properties to include
    * @param orderBy A string representing a column of `Product` to order by
    * @param orderDir Direction to order the Product by
    * @param filters A semicolon separated list of column=value formatted filters
@@ -34,20 +33,20 @@ export class ProductsService {
    */
   async findAll(
     take = 10,
-    includes = '',
+    includes = [],
     orderBy = 'createdAt',
     orderDir: 'ASC' | 'DESC' = 'DESC',
-    filters: string,
+    filters: any,
   ): Promise<Product[]> {
-    const includesArray = includes ? includes.split(';') : [];
     const returnHighlights =
-        includesArray.findIndex((i) => i == 'highlights') != -1,
-      returnCategory = includesArray.findIndex((i) => i == 'category') != -1,
-      returnUser = includesArray.findIndex((i) => i == 'user') != -1;
+        includes && includes.findIndex((i) => i == 'highlights') != -1,
+      returnCategory =
+        includes && includes.findIndex((i) => i == 'category') != -1,
+      returnUser = includes && includes.findIndex((i) => i == 'user') != -1;
 
     const options: FindManyOptions = {};
     options.take = take;
-    options.where = QueryHelper.filterObjectFrom(filters, Product.prototype);
+    options.where = filters;
     options.order = {};
     options.order[orderBy] = orderDir;
     return await this.productsRepository.find(options).then(async (p) => {

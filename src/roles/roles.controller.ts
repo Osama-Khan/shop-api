@@ -9,6 +9,11 @@ import {
   Query,
 } from '@nestjs/common';
 import LogHelper from 'src/shared/helpers/log.helper';
+import { FiltersValidationPipe } from 'src/shared/pipes/filters/filters-validation.pipe';
+import { IncludesValidationPipe } from 'src/shared/pipes/filters/includes-validation.pipe';
+import { LimitValidationPipe } from 'src/shared/pipes/filters/limit-validation.pipe';
+import { OrderByValidationPipe } from 'src/shared/pipes/filters/orderby-validation.pipe';
+import { OrderDirValidationPipe } from 'src/shared/pipes/filters/orderdir-validation.pipe';
 import { Role } from './roles.entity';
 import { RolesService } from './roles.service';
 
@@ -16,30 +21,29 @@ import { RolesService } from './roles.service';
 export class RolesController {
   constructor(private readonly rolesService: RolesService) {}
 
+  static validProperties = ['id', 'name'];
+  static validIncludes = ['permissions'];
+
   @Get()
   getRoles(
-    @Query('limit') limit: string,
-    @Query('include') include: string,
-    @Query('orderBy') orderBy: string,
-    @Query('orderDirection') orderDir: string,
-    @Query('filters') filters: string,
+    @Query('limit', new LimitValidationPipe())
+    limit: number,
+    @Query('include', new IncludesValidationPipe(RolesController.validIncludes))
+    include: string[],
+    @Query(
+      'orderBy',
+      new OrderByValidationPipe(RolesController.validProperties),
+    )
+    orderBy: string,
+    @Query('orderDirection', new OrderDirValidationPipe()) orderDir: string,
+    @Query(
+      'filters',
+      new FiltersValidationPipe(RolesController.validProperties),
+    )
+    filters: string,
   ): Promise<Role[]> {
-    if (limit && parseInt(limit).toString() !== limit) {
-      LogHelper.warn("Provided Limit isn't valid.");
-      limit = '10';
-    }
-
-    if (
-      orderDir &&
-      orderDir.toUpperCase() !== 'ASC' &&
-      orderDir.toUpperCase() !== 'DESC'
-    ) {
-      LogHelper.warn("Provided Order Direction isn't valid.");
-    }
-    orderDir = orderDir && orderDir.toUpperCase();
-
     return this.rolesService.findAll(
-      parseInt(limit),
+      limit,
       include,
       orderBy,
       orderDir as 'ASC' | 'DESC',

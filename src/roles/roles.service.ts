@@ -18,7 +18,7 @@ export class RolesService {
   /**
    * Finds roles that match the given criteria
    * @param take The maximum number of records to return
-   * @param include A semicolon separated list of related properties to include
+   * @param includes A semicolon separated list of related properties to include
    * @param orderBy A string representing a column of `Role` to order by
    * @param orderDir Direction to order the Role by
    * @param filters A semicolon separated list of column=value formatted filters
@@ -26,18 +26,16 @@ export class RolesService {
    */
   async findAll(
     take = 10,
-    includes = '',
+    includes = [],
     orderBy = 'createdAt',
     orderDir: 'ASC' | 'DESC' = 'DESC',
-    filters: string,
+    filters,
   ): Promise<Role[]> {
-    const includesArray = includes ? includes.split(';') : [];
     const returnPermissions =
-        includesArray.findIndex((i) => i == 'permissions') != -1,
-      returnRoles = includesArray.findIndex((i) => i == 'roles') != -1;
+      includes.findIndex((i) => i == 'permissions') != -1;
     const options: FindManyOptions = {};
     options.take = take;
-    options.where = QueryHelper.filterObjectFrom(filters, Role.prototype);
+    options.where = filters;
     options.order = {};
     options.order[orderBy] = orderDir;
     return await this.rolesRepository.find(options).then(async (r) => {

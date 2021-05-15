@@ -26,17 +26,17 @@ export class UsersService {
    */
   async findAll(
     take = 10,
-    includes = '',
+    includes = [],
     orderBy = 'createdAt',
     orderDir: 'ASC' | 'DESC' = 'DESC',
-    filters: string,
+    filters,
   ): Promise<User[]> {
-    const includesArray = includes ? includes.split(';') : [];
     const returnProducts =
-      includesArray.findIndex((i) => i == 'products') != -1;
+        includes && includes.findIndex((i) => i == 'products') != -1,
+      returnRoles = includes && includes.findIndex((i) => i == 'roles') != -1;
     const options: FindManyOptions = {};
     options.take = take;
-    options.where = QueryHelper.filterObjectFrom(filters, User.prototype);
+    options.where = filters;
     options.order = {};
     options.order[orderBy] = orderDir;
     return await this.usersRepository.find(options).then(async (u) => {
@@ -45,6 +45,9 @@ export class UsersService {
           u.products = await this.productsRepository
             .find({ where: { user: u } })
             .then((p) => ProductDTO.generateRO(p));
+        }
+        if (returnRoles) {
+          // attach roles
         }
         return u;
       });

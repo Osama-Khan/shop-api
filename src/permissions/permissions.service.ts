@@ -1,6 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import QueryHelper from 'src/shared/helpers/query.helper';
 import { FindManyOptions, Repository } from 'typeorm';
 import { Permission } from './permissions.entity';
 
@@ -24,11 +23,11 @@ export class PermissionsService {
     take = 10,
     orderBy = 'createdAt',
     orderDir: 'ASC' | 'DESC' = 'DESC',
-    filters: string,
+    filters,
   ): Promise<Permission[]> {
     const options: FindManyOptions = {};
     options.take = take;
-    options.where = QueryHelper.filterObjectFrom(filters, Permission.prototype);
+    options.where = filters;
     options.order = {};
     options.order[orderBy] = orderDir;
     return await this.permissionsRepository.find(options).then(async (p) => {

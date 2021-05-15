@@ -8,7 +8,11 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import LogHelper from 'src/shared/helpers/log.helper';
+import { FiltersValidationPipe } from 'src/shared/pipes/filters/filters-validation.pipe';
+import { IncludesValidationPipe } from 'src/shared/pipes/filters/includes-validation.pipe';
+import { LimitValidationPipe } from 'src/shared/pipes/filters/limit-validation.pipe';
+import { OrderByValidationPipe } from 'src/shared/pipes/filters/orderby-validation.pipe';
+import { OrderDirValidationPipe } from 'src/shared/pipes/filters/orderdir-validation.pipe';
 import { User } from './users.entity';
 import { UsersService } from './users.service';
 
@@ -16,32 +20,33 @@ import { UsersService } from './users.service';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  static validIncludes = ['roles', 'products'];
+  static validProperties = ['id', 'firstName', 'lastName', 'username'];
+
   @Get()
   getUsers(
-    @Query('limit') limit: string,
-    @Query('include') include: string,
-    @Query('orderBy') orderBy: string,
-    @Query('orderDirection') orderDir: string,
-    @Query('filters') filters: string,
+    @Query('limit', new LimitValidationPipe())
+    limit: number,
+    @Query('include', new IncludesValidationPipe(UsersController.validIncludes))
+    include: string[],
+    @Query(
+      'orderBy',
+      new OrderByValidationPipe(UsersController.validProperties),
+    )
+    orderBy: string,
+    @Query('orderDirection', new OrderDirValidationPipe())
+    orderDir: 'ASC' | 'DESC',
+    @Query(
+      'filters',
+      new FiltersValidationPipe(UsersController.validProperties),
+    )
+    filters,
   ) {
-    if (limit && parseInt(limit).toString() !== limit) {
-      LogHelper.warn("Provided Limit isn't valid.");
-      limit = '10';
-    }
-
-    if (
-      orderDir &&
-      orderDir.toUpperCase() !== 'ASC' &&
-      orderDir.toUpperCase() !== 'DESC'
-    ) {
-      LogHelper.warn("Provided Order Direction isn't valid.");
-    }
-    orderDir = orderDir ? orderDir.toUpperCase() : 'ASC';
     return this.usersService.findAll(
-      parseInt(limit),
+      limit,
       include,
       orderBy,
-      orderDir as 'ASC' | 'DESC',
+      orderDir,
       filters,
     );
   }

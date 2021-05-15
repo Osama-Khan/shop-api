@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindManyOptions, Repository } from 'typeorm';
 import { Category } from './categories.entity';
 
 @Injectable()
@@ -14,8 +14,30 @@ export class CategoriesService {
    * Gets all categories
    * @returns A promise that resolves to an array of `Category`
    */
-  findAll(): Promise<Category[]> {
-    return this.categoriesRepository.find();
+  findAll(
+    take = 10,
+    includes = [],
+    orderBy = 'createdAt',
+    orderDir: 'ASC' | 'DESC' = 'DESC',
+    filters: any,
+  ): Promise<Category[]> {
+    const returnChild =
+      includes && includes.findIndex((i) => i == 'parentCategory') != -1;
+
+    const options: FindManyOptions = {};
+    options.take = take;
+    options.where = filters;
+    options.order = {};
+    options.order[orderBy] = orderDir;
+    return this.categoriesRepository.find(options).then(async (c) => {
+      const cat = c.map(async (c) => {
+        if (returnChild) {
+          // Handle returning child category
+        }
+        return c;
+      });
+      return await Promise.all(cat);
+    });
   }
 
   /**

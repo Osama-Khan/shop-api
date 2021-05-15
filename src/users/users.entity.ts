@@ -1,4 +1,5 @@
 import { Product } from 'src/products/products.entity';
+import { Role } from 'src/roles/roles.entity';
 import {
   Entity,
   Column,
@@ -6,6 +7,8 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToMany,
+  ManyToMany,
+  JoinTable,
 } from 'typeorm';
 
 @Entity()
@@ -33,6 +36,10 @@ export class User {
 
   @OneToMany((type) => Product, (product) => product.user)
   products: Product[];
+
+  @ManyToMany((type) => Role, (role) => role.users)
+  @JoinTable({ name: 'user_role' })
+  roles: Role[];
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: string;

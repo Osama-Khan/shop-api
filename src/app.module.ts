@@ -6,8 +6,12 @@ import { Category } from './categories/categories.entity';
 import { CategoriesModule } from './categories/categories.module';
 import { db } from './dbconfig';
 import { Highlight } from './highlights/highlights.entity';
+import { Permission } from './permissions/permissions.entity';
+import { PermissionsModule } from './permissions/permissions.module';
 import { Product } from './products/products.entity';
 import { ProductsModule } from './products/products.module';
+import { Role } from './roles/roles.entity';
+import { RolesModule } from './roles/roles.module';
 import { User } from './users/users.entity';
 import { UsersModule } from './users/users.module';
 
@@ -20,12 +24,14 @@ import { UsersModule } from './users/users.module';
       username: db.username,
       password: db.password,
       database: db.dbname,
-      entities: [Product, Category, Highlight, User],
+      entities: [Product, Category, Highlight, User, Permission, Role],
       synchronize: true,
     }),
     ProductsModule,
     CategoriesModule,
     UsersModule,
+    RolesModule,
+    PermissionsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

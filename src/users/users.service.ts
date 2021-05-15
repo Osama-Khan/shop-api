@@ -5,6 +5,7 @@ import { Product } from 'src/products/products.entity';
 import QueryHelper from 'src/shared/helpers/query.helper';
 import { FindManyOptions, Repository } from 'typeorm';
 import { User } from './users.entity';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -90,7 +91,20 @@ export class UsersService {
    * @param user The user object to insert
    * @returns A promise that resolves to the `User` inserted
    */
-  async insert(user): Promise<User> {
+  async insert(user: User): Promise<User> {
+    const salt = 8;
+    await new Promise((res, rej) => {
+      bcrypt.hash(user.password, salt, async (err, hash) => {
+        if (err) {
+          throw new HttpException(
+            'Hash operation failed',
+            HttpStatus.INTERNAL_SERVER_ERROR,
+          );
+        }
+        user.password = hash;
+        res('');
+      });
+    });
     const out = await this.usersRepository.insert(user);
     return await this.findOne(out.generatedMaps['id']);
   }

@@ -72,11 +72,11 @@ export class UsersService {
    * @param id The id of user to delete
    * @returns A promise that resolves to the `User` removed
    */
-  async remove(id: string): Promise<number> {
+  async remove(id: string): Promise<User> {
     const u = await this.findOne(id);
     const p = await this.productsRepository.find({ where: { user: u } });
     await p.forEach((h) => this.productsRepository.delete(h));
-    return (await this.usersRepository.delete(id)).affected;
+    return u;
   }
 
   /**

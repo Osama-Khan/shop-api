@@ -11,6 +11,7 @@ export class ProductDTO {
       title: p.title,
       description: p.description,
       rating: p.rating,
+      price: p.price,
       stock: p.stock,
       category: p.category,
       img: p.img,

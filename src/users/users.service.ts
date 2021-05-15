@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProductDTO } from 'src/products/products.dto';
 import { Product } from 'src/products/products.entity';
-import QueryHelper from 'src/shared/query.helper';
+import QueryHelper from 'src/shared/helpers/query.helper';
 import { FindManyOptions, Repository } from 'typeorm';
 import { User } from './users.entity';
 

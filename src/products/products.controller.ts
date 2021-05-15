@@ -8,7 +8,6 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import Log from 'src/shared/log';
 import { Product } from './products.entity';
 import { ProductsService } from './products.service';
 

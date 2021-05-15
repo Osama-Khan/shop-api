@@ -8,7 +8,7 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import Log from 'src/shared/log';
+import LogHelper from 'src/shared/helpers/log.helper';
 import { User } from './users.entity';
 import { UsersService } from './users.service';
 
@@ -25,7 +25,7 @@ export class UsersController {
     @Query('filters') filters: string,
   ) {
     if (limit && parseInt(limit).toString() !== limit) {
-      Log.warn("Provided Limit isn't valid.");
+      LogHelper.warn("Provided Limit isn't valid.");
       limit = '10';
     }
 
@@ -34,7 +34,7 @@ export class UsersController {
       orderDir.toUpperCase() !== 'ASC' &&
       orderDir.toUpperCase() !== 'DESC'
     ) {
-      Log.warn("Provided Order Direction isn't valid.");
+      LogHelper.warn("Provided Order Direction isn't valid.");
     }
     orderDir = orderDir ? orderDir.toUpperCase() : 'ASC';
     return this.usersService.findAll(

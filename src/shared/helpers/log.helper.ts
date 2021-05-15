@@ -9,7 +9,7 @@ const bgGreen = '\x1b[42m';
 const bgYellow = '\x1b[43m';
 const bgCyan = '\x1b[46m';
 
-export default class Log {
+export default class LogHelper {
   static success(msg: string) {
     console.log(
       `${bgGreen}${fgBlack}[SUCCESS]${reset}${fgGreen} ${msg}${reset}`,

@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PermissionDTO } from 'src/permissions/permissions.dto';
 import { Permission } from 'src/permissions/permissions.entity';
-import QueryHelper from 'src/shared/query.helper';
+import QueryHelper from 'src/shared/helpers/query.helper';
 import { FindManyOptions, Repository } from 'typeorm';
 import { Role } from './roles.entity';
 

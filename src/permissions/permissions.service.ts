@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import QueryHelper from 'src/shared/query.helper';
+import QueryHelper from 'src/shared/helpers/query.helper';
 import { FindManyOptions, Repository } from 'typeorm';
 import { Permission } from './permissions.entity';
 

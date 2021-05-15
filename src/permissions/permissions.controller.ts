@@ -1,5 +1,5 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
-import Log from 'src/shared/log';
+import LogHelper from 'src/shared/helpers/log.helper';
 import { Permission } from './permissions.entity';
 import { PermissionsService } from './permissions.service';
 
@@ -15,7 +15,7 @@ export class PermissionsController {
     @Query('filters') filters: string,
   ): Promise<Permission[]> {
     if (limit && parseInt(limit).toString() !== limit) {
-      Log.warn("Provided Limit isn't valid.");
+      LogHelper.warn("Provided Limit isn't valid.");
       limit = '10';
     }
 
@@ -24,7 +24,7 @@ export class PermissionsController {
       orderDir.toUpperCase() !== 'ASC' &&
       orderDir.toUpperCase() !== 'DESC'
     ) {
-      Log.warn("Provided Order Direction isn't valid.");
+      LogHelper.warn("Provided Order Direction isn't valid.");
     }
     orderDir = orderDir && orderDir.toUpperCase();
 

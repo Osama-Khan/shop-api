@@ -4,7 +4,8 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
-  ManyToOne,
+  OneToOne,
+  JoinColumn,
 } from 'typeorm';
 
 @Entity()
@@ -15,8 +16,9 @@ export class Category {
   @Column()
   name: string;
 
-  @ManyToOne((type) => Category)
-  childCategories: Category[];
+  @OneToOne((type) => Category)
+  @JoinColumn()
+  parentCategory: Category;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: string;

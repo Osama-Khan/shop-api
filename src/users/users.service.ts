@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ProductRO } from 'src/products/products.dto';
+import { ProductDTO } from 'src/products/products.dto';
 import { Product } from 'src/products/products.entity';
 import QueryHelper from 'src/shared/query.helper';
 import { FindManyOptions, Repository } from 'typeorm';
@@ -44,7 +44,7 @@ export class UsersService {
         if (returnProducts) {
           u.products = await this.productsRepository
             .find({ where: { user: u } })
-            .then((p) => ProductRO.generate(p));
+            .then((p) => ProductDTO.generateRO(p));
         }
         return u;
       });
@@ -62,7 +62,7 @@ export class UsersService {
       if (!u) throw new HttpException('User not found!', HttpStatus.NOT_FOUND);
       u.products = await this.productsRepository
         .find({ where: { user: u } })
-        .then((p) => ProductRO.generate(p));
+        .then((p) => ProductDTO.generateRO(p));
       return u;
     });
   }

@@ -1,14 +1,11 @@
 import { User } from './users.entity';
 
-/**
- * User Response Object class
- */
-export class UserRO {
+export class UserDTO {
   /**
    * Generates a response object from a `User`
    * @param input User to generate response from
    */
-  static generate(input: User | User[]): any {
+  static generateRO(input: User | User[]): any {
     const users: User[] = [].concat(input);
     const u = users.map((u) => ({
       username: u.username,

@@ -1,11 +1,11 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CategoryRO } from 'src/categories/categories.dto';
+import { CategoryDTO } from 'src/categories/categories.dto';
 import { Category } from 'src/categories/categories.entity';
-import { HighlightRO } from 'src/highlights/highlights.dto';
+import { HighlightDTO } from 'src/highlights/highlights.dto';
 import { Highlight } from 'src/highlights/highlights.entity';
 import { User } from 'src/users/users.entity';
-import { UserRO } from 'src/users/users.dto';
+import { UserDTO } from 'src/users/users.dto';
 import { FindManyOptions, Repository } from 'typeorm';
 import { Product } from './products.entity';
 import QueryHelper from 'src/shared/query.helper';
@@ -55,17 +55,17 @@ export class ProductsService {
         if (returnHighlights) {
           p.highlights = await this.highlightsRepository
             .find({ where: { product: p } })
-            .then((h) => HighlightRO.generate(h));
+            .then((h) => HighlightDTO.generateRO(h));
         }
         if (returnCategory) {
           p.category = await this.categoriesRepository
             .findOne(p.category)
-            .then((c) => CategoryRO.generate(c));
+            .then((c) => CategoryDTO.generateRO(c));
         }
         if (returnUser) {
           p.user = await this.usersRepository
             .findOne(p.user)
-            .then((u) => UserRO.generate(u));
+            .then((u) => UserDTO.generateRO(u));
         }
 
         return p;
@@ -85,13 +85,13 @@ export class ProductsService {
         throw new HttpException('Product not found!', HttpStatus.NOT_FOUND);
       p.highlights = await this.highlightsRepository
         .find({ where: { product: p } })
-        .then((h) => HighlightRO.generate(h));
+        .then((h) => HighlightDTO.generateRO(h));
       p.category = await this.categoriesRepository
         .findOne(p.category)
-        .then((c) => CategoryRO.generate(c));
+        .then((c) => CategoryDTO.generateRO(c));
       p.user = await this.usersRepository
         .findOne(p.user)
-        .then((u) => UserRO.generate(u));
+        .then((u) => UserDTO.generateRO(u));
       return p;
     });
   }

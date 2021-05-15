@@ -23,7 +23,7 @@ export class UsersController {
     @Query('orderBy') orderBy: string,
     @Query('orderDirection') orderDir: string,
     @Query('filters') filters: string,
-  ): Promise<User[]> {
+  ) {
     if (limit && parseInt(limit).toString() !== limit) {
       Log.warn("Provided Limit isn't valid.");
       limit = '10';
@@ -36,8 +36,7 @@ export class UsersController {
     ) {
       Log.warn("Provided Order Direction isn't valid.");
     }
-    orderDir = orderDir.toUpperCase();
-
+    orderDir = orderDir ? orderDir.toUpperCase() : 'ASC';
     return this.usersService.findAll(
       parseInt(limit),
       include,
@@ -48,22 +47,22 @@ export class UsersController {
   }
 
   @Get(':id')
-  getUser(@Param('id') id: string): Promise<User> {
+  getUser(@Param('id') id: string) {
     return this.usersService.findOne(id);
   }
 
   @Put()
-  setUser(@Body() user: User): Promise<User> {
+  setUser(@Body() user: User) {
     return this.usersService.insert(user);
   }
 
   @Delete(':id')
-  removeUser(@Param('id') id: string): Promise<User> {
+  removeUser(@Param('id') id: string) {
     return this.usersService.remove(id);
   }
 
   @Patch(':id')
-  updateUser(@Param('id') id: string, @Body() user: User): Promise<User> {
+  updateUser(@Param('id') id: string, @Body() user: User) {
     return this.usersService.update(id, user);
   }
 }

@@ -74,8 +74,11 @@ export class UsersService {
    */
   async remove(id: string): Promise<User> {
     const u = await this.findOne(id);
-    const p = await this.productsRepository.find({ where: { user: u } });
-    await p.forEach((h) => this.productsRepository.delete(h));
+    const p = await this.productsRepository
+      .find({ where: { user: u } })
+      .then((p) => p.map((h) => this.productsRepository.delete(h)));
+    await Promise.all(p);
+    await this.usersRepository.delete(u.id);
     return u;
   }
 

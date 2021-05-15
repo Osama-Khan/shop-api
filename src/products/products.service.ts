@@ -103,8 +103,11 @@ export class ProductsService {
    */
   async remove(id: string): Promise<Product> {
     const p = await this.findOne(id);
-    const h = await this.highlightsRepository.find({ where: { product: p } });
-    h.forEach(async (h) => await this.highlightsRepository.delete(h));
+    const h = await this.highlightsRepository
+      .find({ where: { product: p } })
+      .then((h) => h.map((h) => this.highlightsRepository.delete(h)));
+    await Promise.all(h);
+    await this.productsRepository.delete(p.id);
     return p;
   }
 

@@ -46,9 +46,16 @@ export class CategoriesService {
    * @param id The id of category to delete
    * @returns A promise that resolves to the `Category` removed
    */
-  async remove(id: string): Promise<Category> {
+  async remove(id: string): Promise<Category | HttpException> {
     const c = await this.findOne(id);
-    await this.categoriesRepository.delete(id);
+    try {
+      await this.categoriesRepository.delete(id);
+    } catch (e) {
+      return new HttpException(
+        `Category has products that depend on it, please delete the products with category '${c.name}' before proceeding.`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
     return c;
   }
 

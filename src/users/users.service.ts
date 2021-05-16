@@ -2,8 +2,8 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProductDTO } from 'src/products/products.dto';
 import { Product } from 'src/products/products.entity';
-import QueryHelper from 'src/shared/helpers/query.helper';
 import { FindManyOptions, Repository } from 'typeorm';
+import { UserDTO } from './users.dto';
 import { User } from './users.entity';
 import * as bcrypt from 'bcrypt';
 
@@ -42,15 +42,16 @@ export class UsersService {
     options.order[orderBy] = orderDir;
     return await this.usersRepository.find(options).then(async (u) => {
       const pr = u.map(async (u) => {
+        const userRO = UserDTO.generateRO(u);
         if (returnProducts) {
-          u.products = await this.productsRepository
+          userRO.products = await this.productsRepository
             .find({ where: { user: u } })
             .then((p) => ProductDTO.generateRO(p));
         }
         if (returnRoles) {
           // attach roles
         }
-        return u;
+        return userRO;
       });
       return await Promise.all(pr);
     });
@@ -64,10 +65,11 @@ export class UsersService {
   async findOne(id: string): Promise<User> {
     return await this.usersRepository.findOne(id).then(async (u) => {
       if (!u) throw new HttpException('User not found!', HttpStatus.NOT_FOUND);
-      u.products = await this.productsRepository
+      const userRO = UserDTO.generateRO(u);
+      userRO.products = await this.productsRepository
         .find({ where: { user: u } })
         .then((p) => ProductDTO.generateRO(p));
-      return u;
+      return userRO;
     });
   }
 
@@ -93,18 +95,7 @@ export class UsersService {
    */
   async insert(user: User): Promise<User> {
     const salt = 8;
-    await new Promise((res, rej) => {
-      bcrypt.hash(user.password, salt, async (err, hash) => {
-        if (err) {
-          throw new HttpException(
-            'Hash operation failed',
-            HttpStatus.INTERNAL_SERVER_ERROR,
-          );
-        }
-        user.password = hash;
-        res('');
-      });
-    });
+    user.password = bcrypt.hashSync(user.password, bcrypt.genSaltSync(salt));
     const out = await this.usersRepository.insert(user);
     return await this.findOne(out.generatedMaps['id']);
   }

@@ -94,9 +94,8 @@ export class UsersService {
    * @returns A promise that resolves to the `User` inserted
    */
   async insert(user: User): Promise<User> {
-    const salt = 8;
-    user.password = bcrypt.hashSync(user.password, bcrypt.genSaltSync(salt));
-    const out = await this.usersRepository.insert(user);
+    const u = await this.usersRepository.create(user);
+    const out = await this.usersRepository.insert(u);
     return await this.findOne(out.generatedMaps['id']);
   }
 
@@ -106,8 +105,10 @@ export class UsersService {
    * @param user Object containing the properties of user to update
    * @returns A promise that resolves to the `User` updated
    */
-  async update(id: string, user: User): Promise<User> {
-    await this.usersRepository.update(id, user);
-    return await this.findOne(id);
+   async update(id: number, user: User): Promise<User> {
+     const u = this.usersRepository.create(user);
+     await this.usersRepository.update(id, u);
+     return await this.findOne(id);
+  }
   }
 }

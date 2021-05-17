@@ -9,7 +9,10 @@ import {
   OneToMany,
   ManyToMany,
   JoinTable,
+  BeforeInsert,
+  BeforeUpdate,
 } from 'typeorm';
+import * as bcrypt from 'bcrypt';
 
 @Entity()
 export class User {
@@ -46,4 +49,11 @@ export class User {
 
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: string;
+
+  @BeforeInsert()
+  @BeforeUpdate()
+  async hashPassword() {
+    const salt = 8;
+    this.password = await bcrypt.hash(this.password, salt);
+  }
 }

@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Patch,
   Put,
   Query,
@@ -52,7 +53,7 @@ export class RolesController {
   }
 
   @Get(':id')
-  getRole(@Param('id') id: string): Promise<Role> {
+  getRole(@Param('id', ParseIntPipe) id: number): Promise<Role> {
     return this.rolesService.findOne(id);
   }
 
@@ -62,12 +63,12 @@ export class RolesController {
   }
 
   @Delete(':id')
-  removeRole(@Param('id') id: string): Promise<Role> {
+  removeRole(@Param('id', ParseIntPipe) id: number): Promise<Role> {
     return this.rolesService.remove(id);
   }
 
   @Patch(':id')
-  updateRole(@Param('id') id: string, @Body() role: Role): Promise<Role> {
+  updateRole(@Param('id', ParseIntPipe) id: number, @Body() role: Role): Promise<Role> {
     return this.rolesService.update(id, role);
   }
 }

@@ -43,7 +43,7 @@ export class PermissionsService {
    * @param id The id of permission to find
    * @returns A promise that resolves to the `Permission` with given id
    */
-  async findOne(id: string): Promise<Permission> {
+  async findOne(id: number): Promise<Permission> {
     return await this.permissionsRepository.findOne(id).then(async (p) => {
       if (!p)
         throw new HttpException('Permission not found!', HttpStatus.NOT_FOUND);

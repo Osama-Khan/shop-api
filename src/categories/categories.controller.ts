@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Patch,
   Put,
   Query,
@@ -13,6 +14,7 @@ import { IncludesValidationPipe } from 'src/shared/pipes/filters/includes-valida
 import { LimitValidationPipe } from 'src/shared/pipes/filters/limit-validation.pipe';
 import { OrderByValidationPipe } from 'src/shared/pipes/filters/orderby-validation.pipe';
 import { OrderDirValidationPipe } from 'src/shared/pipes/filters/orderdir-validation.pipe';
+import { Category } from './categories.entity';
 import { CategoriesService } from './categories.service';
 
 @Controller({ path: '/categories' })
@@ -53,22 +55,22 @@ export class CategoriesController {
   }
 
   @Get(':id')
-  getCategory(@Param('id') id) {
+  getCategory(@Param('id', ParseIntPipe) id: number) {
     return this.categoriesService.findOne(id);
   }
 
   @Put()
-  setCategory(@Body() category) {
+  setCategory(@Body() category: Category) {
     return this.categoriesService.insert(category);
   }
 
   @Delete(':id')
-  removeCategory(@Param('id') id) {
+  removeCategory(@Param('id', ParseIntPipe) id: number) {
     return this.categoriesService.remove(id);
   }
 
   @Patch(':id')
-  updateCategory(@Param('id') id, @Body() category) {
+  updateCategory(@Param('id', ParseIntPipe) id: number, @Body() category: Category) {
     return this.categoriesService.update(id, category);
   }
 }

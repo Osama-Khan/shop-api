@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Controller, Get, Param, ParseIntPipe, Query } from '@nestjs/common';
 import { FiltersValidationPipe } from 'src/shared/pipes/filters/filters-validation.pipe';
 import { LimitValidationPipe } from 'src/shared/pipes/filters/limit-validation.pipe';
 import { OrderByValidationPipe } from 'src/shared/pipes/filters/orderby-validation.pipe';
@@ -32,7 +32,7 @@ export class PermissionsController {
   }
 
   @Get(':id')
-  getPermission(@Param('id') id: string): Promise<Permission> {
+  getPermission(@Param('id', ParseIntPipe) id: number): Promise<Permission> {
     return this.permissionsService.findOne(id);
   }
 }

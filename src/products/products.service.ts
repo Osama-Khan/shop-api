@@ -78,7 +78,7 @@ export class ProductsService {
    * @param id The id of product to find
    * @returns A promise that resolves to the `Product` with given id
    */
-  async findOne(id: string): Promise<Product> {
+  async findOne(id: number): Promise<Product> {
     return await this.productsRepository.findOne(id).then(async (p) => {
       if (!p)
         throw new HttpException('Product not found!', HttpStatus.NOT_FOUND);
@@ -100,7 +100,7 @@ export class ProductsService {
    * @param id The id of product to delete
    * @returns A promise that resolves to the `Product` removed
    */
-  async remove(id: string): Promise<Product> {
+  async remove(id: number): Promise<Product> {
     const p = await this.findOne(id);
     const h = await this.highlightsRepository
       .find({ where: { product: p } })
@@ -164,7 +164,7 @@ export class ProductsService {
    * @param product Object containing the properties of product to update
    * @returns A promise that resolves to the `Product` updated
    */
-  async update(id: string, product: Product): Promise<Product> {
+  async update(id: number, product: Product): Promise<Product> {
     if (product.category) {
       const c = await this.categoriesRepository.findOne({
         where: { name: product.category },

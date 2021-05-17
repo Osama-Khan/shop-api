@@ -56,7 +56,7 @@ export class RolesService {
    * @param id The id of role to find
    * @returns A promise that resolves to the `Role` with given id
    */
-  async findOne(id: string): Promise<Role> {
+  async findOne(id: number): Promise<Role> {
     return await this.rolesRepository.findOne(id).then(async (r) => {
       if (!r) throw new HttpException('Role not found!', HttpStatus.NOT_FOUND);
       if (r.permissions) {
@@ -75,7 +75,7 @@ export class RolesService {
    * @param id The id of role to delete
    * @returns A promise that resolves to the `Role` removed
    */
-  async remove(id: string): Promise<Role> {
+  async remove(id: number): Promise<Role> {
     const r = await this.findOne(id);
     this.rolesRepository.delete(r.id);
     return r;
@@ -97,7 +97,7 @@ export class RolesService {
    * @param role Object containing the properties of role to update
    * @returns A promise that resolves to the `Role` updated
    */
-  async update(id: string, role: Role): Promise<Role> {
+  async update(id: number, role: Role): Promise<Role> {
     await this.rolesRepository.update(id, role);
     return await this.findOne(id);
   }

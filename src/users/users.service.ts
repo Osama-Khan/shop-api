@@ -62,7 +62,7 @@ export class UsersService {
    * @param id The id of user to find
    * @returns A promise that resolves to the `User` with given id
    */
-  async findOne(id: string): Promise<User> {
+  async findOne(id: number): Promise<User> {
     return await this.usersRepository.findOne(id).then(async (u) => {
       if (!u) throw new HttpException('User not found!', HttpStatus.NOT_FOUND);
       const userRO = UserDTO.generateRO(u);
@@ -78,7 +78,7 @@ export class UsersService {
    * @param id The id of user to delete
    * @returns A promise that resolves to the `User` removed
    */
-  async remove(id: string): Promise<User> {
+  async remove(id: number): Promise<User> {
     const u = await this.findOne(id);
     const p = await this.productsRepository
       .find({ where: { user: u } })

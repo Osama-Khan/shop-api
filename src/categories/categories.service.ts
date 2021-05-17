@@ -45,7 +45,7 @@ export class CategoriesService {
    * @param id The id of category to find
    * @returns A promise that resolves to the `Category` with given id
    */
-  findOne(id: string): Promise<Category> {
+  findOne(id: number): Promise<Category> {
     return this.categoriesRepository.findOne(id).then((c) => {
       if (!c)
         throw new HttpException('Category not found!', HttpStatus.NOT_FOUND);
@@ -68,7 +68,7 @@ export class CategoriesService {
    * @param id The id of category to delete
    * @returns A promise that resolves to the `Category` removed
    */
-  async remove(id: string): Promise<Category | HttpException> {
+  async remove(id: number): Promise<Category | HttpException> {
     const c = await this.findOne(id);
     try {
       await this.categoriesRepository.delete(id);
@@ -87,7 +87,7 @@ export class CategoriesService {
    * @param category Object containing the properties of category to update
    * @returns A promise that resolves to the `Category` updated
    */
-  async update(id: string, category: Category): Promise<Category> {
+  async update(id: number, category: Category): Promise<Category> {
     await this.categoriesRepository.update(id, category);
     return this.findOne(id);
   }

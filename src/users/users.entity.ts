@@ -11,6 +11,7 @@ import {
   JoinTable,
   BeforeInsert,
   BeforeUpdate,
+  DeleteDateColumn,
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 
@@ -37,10 +38,18 @@ export class User {
   @Column({ name: 'date_of_birth' })
   dateOfBirth: Date;
 
-  @OneToMany((type) => Product, (product) => product.user)
+  @OneToMany((type) => Product, (product) => product.user, {
+    cascade: true,
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   products: Product[];
 
-  @ManyToMany((type) => Role, (role) => role.users)
+  @ManyToMany((type) => Role, (role) => role.users, {
+    cascade: true,
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   @JoinTable({
     name: 'user_role',
     joinColumn: { name: 'user_id', referencedColumnName: 'id' },
@@ -53,6 +62,9 @@ export class User {
 
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: string;
+
+  @DeleteDateColumn({ name: 'deleted_at' })
+  deletedAt: string;
 
   @BeforeInsert()
   @BeforeUpdate()

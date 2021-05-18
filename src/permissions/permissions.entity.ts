@@ -6,6 +6,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToMany,
+  DeleteDateColumn,
 } from 'typeorm';
 
 @Entity()
@@ -24,4 +25,7 @@ export class Permission {
 
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: string;
+
+  @DeleteDateColumn({ name: 'deleted_at' })
+  deletedAt: string;
 }

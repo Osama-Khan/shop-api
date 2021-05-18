@@ -8,6 +8,7 @@ import {
   UpdateDateColumn,
   ManyToMany,
   JoinTable,
+  DeleteDateColumn,
 } from 'typeorm';
 
 @Entity()
@@ -34,4 +35,7 @@ export class Role {
 
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: string;
+
+  @DeleteDateColumn({ name: 'deleted_at' })
+  deletedAt: string;
 }

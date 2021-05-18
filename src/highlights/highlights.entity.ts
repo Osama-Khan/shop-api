@@ -5,17 +5,33 @@ import {
   PrimaryGeneratedColumn,
   ManyToOne,
   JoinColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  DeleteDateColumn,
 } from 'typeorm';
 
 @Entity()
 export class Highlight {
-  @PrimaryGeneratedColumn({ name: 'highlight_id' })
-  hId: number;
+  @PrimaryGeneratedColumn()
+  id: number;
 
-  @ManyToOne((type) => Product, (product) => product.highlights)
+  @ManyToOne((type) => Product, (product) => product.highlights, {
+    cascade: true,
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   @JoinColumn({ name: 'product_id' })
   product: Product;
 
   @Column()
   highlight: string;
+
+  @CreateDateColumn({ name: 'created_at' })
+  createdAt: string;
+
+  @UpdateDateColumn({ name: 'updated_at' })
+  updatedAt: string;
+
+  @DeleteDateColumn({ name: 'deleted_at' })
+  deletedAt: string;
 }

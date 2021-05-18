@@ -58,6 +58,6 @@ export class User {
   @BeforeUpdate()
   async hashPassword() {
     const salt = 8;
-    this.password = await bcrypt.hash(this.password, salt);
+    if (this.password) this.password = await bcrypt.hash(this.password, salt);
   }
 }

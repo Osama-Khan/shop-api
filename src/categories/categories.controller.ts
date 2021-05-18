@@ -70,7 +70,10 @@ export class CategoriesController {
   }
 
   @Patch(':id')
-  updateCategory(@Param('id', ParseIntPipe) id: number, @Body() category: Category) {
+  updateCategory(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() category: Category,
+  ) {
     return this.categoriesService.update(id, category);
   }
 }

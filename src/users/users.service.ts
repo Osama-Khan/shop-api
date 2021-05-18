@@ -10,7 +10,6 @@ import { Product } from 'src/products/products.entity';
 import { FindManyOptions, Repository } from 'typeorm';
 import { UserDTO } from './users.dto';
 import { User } from './users.entity';
-import * as bcrypt from 'bcrypt';
 import { Role } from 'src/roles/roles.entity';
 
 @Injectable()
@@ -102,7 +101,7 @@ export class UsersService {
    * @returns A promise that resolves to the `User` inserted
    */
   async insert(user: User): Promise<User> {
-    const u = await this.usersRepository.create(user);
+    const u = this.usersRepository.create(user);
     const out = await this.usersRepository.insert(u);
     return await this.findOne(out.generatedMaps['id']);
   }
@@ -113,10 +112,10 @@ export class UsersService {
    * @param user Object containing the properties of user to update
    * @returns A promise that resolves to the `User` updated
    */
-   async update(id: number, user: User): Promise<User> {
-     const u = this.usersRepository.create(user);
-     await this.usersRepository.update(id, u);
-     return await this.findOne(id);
+  async update(id: number, user: User): Promise<User> {
+    const u = this.usersRepository.create(user);
+    await this.usersRepository.update(id, u);
+    return await this.findOne(id);
   }
 
   /**

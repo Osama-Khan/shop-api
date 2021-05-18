@@ -22,10 +22,10 @@ export class User {
   @Column({ unique: true })
   username: string;
 
-  @Column()
+  @Column({ name: 'first_name' })
   firstName: string;
 
-  @Column()
+  @Column({ name: 'last_name' })
   lastName: string;
 
   @Column({ unique: true })
@@ -34,14 +34,18 @@ export class User {
   @Column()
   password: string;
 
-  @Column()
+  @Column({ name: 'date_of_birth' })
   dateOfBirth: Date;
 
   @OneToMany((type) => Product, (product) => product.user)
   products: Product[];
 
   @ManyToMany((type) => Role, (role) => role.users)
-  @JoinTable({ name: 'user_role' })
+  @JoinTable({
+    name: 'user_role',
+    joinColumn: { name: 'user_id', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'role_id', referencedColumnName: 'id' },
+  })
   roles: Role[];
 
   @CreateDateColumn({ name: 'created_at' })

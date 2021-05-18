@@ -9,6 +9,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
+  JoinColumn,
 } from 'typeorm';
 
 @Entity()
@@ -35,9 +36,11 @@ export class Product {
   highlights: Highlight[];
 
   @ManyToOne((type) => Category)
+  @JoinColumn({ name: 'category_id' })
   category: Category;
 
   @ManyToOne((type) => User, (user) => user.products)
+  @JoinColumn({ name: 'user_id' })
   user: User;
 
   @Column({ default: 1 })

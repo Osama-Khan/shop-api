@@ -17,7 +17,7 @@ export class Category {
   name: string;
 
   @OneToOne((type) => Category)
-  @JoinColumn()
+  @JoinColumn({ name: 'parent_category_id' })
   parentCategory: Category;
 
   @CreateDateColumn({ name: 'created_at' })

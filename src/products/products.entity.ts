@@ -26,10 +26,10 @@ export class Product {
   @Column()
   description: string;
 
-  @Column()
+  @Column({ type: 'float' })
   price: number;
 
-  @Column({ default: null })
+  @Column({ default: null, type: 'float' })
   rating: number;
 
   @OneToMany((type) => Highlight, (highlight) => highlight.product)

@@ -1,4 +1,9 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProductDTO } from 'src/products/products.dto';
 import { Product } from 'src/products/products.entity';
@@ -6,6 +11,7 @@ import { FindManyOptions, Repository } from 'typeorm';
 import { UserDTO } from './users.dto';
 import { User } from './users.entity';
 import * as bcrypt from 'bcrypt';
+import { Role } from 'src/roles/roles.entity';
 
 @Injectable()
 export class UsersService {
@@ -14,6 +20,8 @@ export class UsersService {
     private usersRepository: Repository<User>,
     @InjectRepository(Product)
     private productsRepository: Repository<Product>,
+    @InjectRepository(Role)
+    private rolesRepository: Repository<Role>,
   ) {}
 
   /**
@@ -110,5 +118,28 @@ export class UsersService {
      await this.usersRepository.update(id, u);
      return await this.findOne(id);
   }
+
+  /**
+   * Assigns role to a user
+   * @param id The id of user to assign role to
+   * @param roleName name of the role to assign
+   * @returns A promise that resolves to `User`
+   */
+  async addRole(id: number, roleName: string): Promise<User> {
+    const role = await this.rolesRepository.findOne({
+      where: { name: roleName },
+    });
+    const user = await this.usersRepository.findOne(id, {
+      relations: ['roles'],
+    });
+    if (user.roles && user.roles.includes(role)) {
+      throw new BadRequestException(
+        'Given role is already assigned to the given user',
+      );
+    }
+    user.roles = user.roles ? [...user.roles, role] : [role];
+    const u = this.usersRepository.create(user);
+    await this.usersRepository.save(user);
+    return UserDTO.generateRO(u);
   }
 }

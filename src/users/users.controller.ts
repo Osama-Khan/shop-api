@@ -71,4 +71,9 @@ export class UsersController {
   updateUser(@Param('id', ParseIntPipe) id: number, @Body() user: User) {
     return this.usersService.update(id, user);
   }
+
+  @Patch('role/:id')
+  assignRole(@Param('id', ParseIntPipe) id: number, @Query('name') roleName) {
+    return this.usersService.addRole(id, roleName);
+  }
 }

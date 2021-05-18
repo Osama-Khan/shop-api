@@ -9,7 +9,6 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import LogHelper from 'src/shared/helpers/log.helper';
 import { FiltersValidationPipe } from 'src/shared/pipes/filters/filters-validation.pipe';
 import { IncludesValidationPipe } from 'src/shared/pipes/filters/includes-validation.pipe';
 import { LimitValidationPipe } from 'src/shared/pipes/filters/limit-validation.pipe';
@@ -68,7 +67,10 @@ export class RolesController {
   }
 
   @Patch(':id')
-  updateRole(@Param('id', ParseIntPipe) id: number, @Body() role: Role): Promise<Role> {
+  updateRole(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() role: Role,
+  ): Promise<Role> {
     return this.rolesService.update(id, role);
   }
 }

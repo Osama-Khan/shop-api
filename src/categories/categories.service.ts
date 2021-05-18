@@ -60,7 +60,7 @@ export class CategoriesService {
    */
   async insert(category: Category): Promise<Category> {
     const c = await this.categoriesRepository.insert(category);
-    return this.findOne(c.generatedMaps['id']);
+    return this.findOne(c.generatedMaps[0].id);
   }
 
   /**

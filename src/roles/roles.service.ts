@@ -88,7 +88,7 @@ export class RolesService {
    */
   async insert(role: Role): Promise<Role> {
     const out = await this.rolesRepository.insert(role);
-    return await this.findOne(out.generatedMaps['id']);
+    return await this.findOne(out.generatedMaps[0].id);
   }
 
   /**

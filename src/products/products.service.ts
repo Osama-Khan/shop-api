@@ -155,7 +155,7 @@ export class ProductsService {
     );
 
     // Return created product
-    return await this.findOne(out.generatedMaps['id']);
+    return await this.findOne(out.generatedMaps[0].id);
   }
 
   /**

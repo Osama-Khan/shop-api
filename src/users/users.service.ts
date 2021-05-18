@@ -103,7 +103,7 @@ export class UsersService {
   async insert(user: User): Promise<User> {
     const u = this.usersRepository.create(user);
     const out = await this.usersRepository.insert(u);
-    return await this.findOne(out.generatedMaps['id']);
+    return await this.findOne(out.generatedMaps[0].id);
   }
 
   /**

@@ -15,10 +15,12 @@ export class AuthenticationGuard implements CanActivate {
     const req = context.switchToHttp().getRequest();
     if (req.body && req.body.token) {
       const token = req.body.token;
-      const ver = jwt.verify(token, process.env.SECRET);
-      if (ver) {
-        return true;
-      } else {
+      try {
+        const ver = jwt.verify(token, process.env.SECRET);
+        if (ver) {
+          return true;
+        }
+      } catch (e) {
         throw new ForbiddenException(
           'Your session is either invalid or has expired',
         );

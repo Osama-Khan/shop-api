@@ -28,4 +28,15 @@ export class Permission {
 
   @DeleteDateColumn({ name: 'deleted_at' })
   deletedAt: string;
+
+  static relations = ['roles'];
+
+  toResponseObject(): any {
+    const { id, name, updatedAt, createdAt } = this;
+    const obj = { name, updatedAt, createdAt };
+    if (this.roles) {
+      obj['roles'] = this.roles.map((r) => r.toResponseObject());
+    }
+    return obj;
+  }
 }

@@ -72,4 +72,24 @@ export class User {
     const salt = 8;
     if (this.password) this.password = await bcrypt.hash(this.password, salt);
   }
+
+  static relations = ['roles', 'products'];
+
+  toResponseObject(): any {
+    const obj = {
+      id: this.id,
+      username: this.username,
+      firstName: this.firstName,
+      lastName: this.lastName,
+      updatedAt: this.updatedAt,
+      createdAt: this.createdAt,
+    };
+    if (this.products) {
+      obj['products'] = this.products.map((p) => p.toResponseObject());
+    }
+    if (this.roles) {
+      obj['roles'] = this.roles.map((r) => r.toResponseObject());
+    }
+    return obj;
+  }
 }

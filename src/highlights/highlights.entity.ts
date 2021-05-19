@@ -34,4 +34,14 @@ export class Highlight {
 
   @DeleteDateColumn({ name: 'deleted_at' })
   deletedAt: string;
+
+  static relations = ['product'];
+
+  toResponseObject(): any {
+    const { id, highlight } = this;
+    if (this.product) {
+      return { id, highlight, product: this.product.toResponseObject() };
+    }
+    return { id, highlight };
+  }
 }

@@ -58,4 +58,30 @@ export class Product {
 
   @DeleteDateColumn({ name: 'deleted_at' })
   deletedAt: string;
+
+  static relations = ['highlights', 'category', 'user'];
+
+  toResponseObject(): any {
+    const obj = {
+      id: this.id,
+      title: this.title,
+      description: this.description,
+      rating: this.rating,
+      price: this.price,
+      stock: this.stock,
+      img: this.img,
+      updatedAt: this.updatedAt,
+      createdAt: this.createdAt,
+    };
+    if (this.user) {
+      obj['user'] = this.user.toResponseObject();
+    }
+    if (this.highlights) {
+      obj['highlights'] = this.highlights.map((h) => h.toResponseObject());
+    }
+    if (this.category) {
+      obj['category'] = this.category.toResponseObject();
+    }
+    return obj;
+  }
 }

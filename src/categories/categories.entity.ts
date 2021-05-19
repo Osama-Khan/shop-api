@@ -29,4 +29,14 @@ export class Category {
 
   @DeleteDateColumn({ name: 'deleted_at' })
   deletedAt: string;
+
+  static relations = ['parentCategory'];
+
+  toResponseObject(): any {
+    const { id, name } = this;
+    if (this.parentCategory) {
+      return { id, name, parent: this.parentCategory.toResponseObject() };
+    }
+    return { id, name };
+  }
 }

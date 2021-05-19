@@ -22,13 +22,12 @@ export class RolesController {
   constructor(private readonly rolesService: RolesService) {}
 
   static validProperties = ['id', 'name'];
-  static validIncludes = ['permissions'];
 
   @Get()
   getRoles(
     @Query('limit', new LimitValidationPipe())
     limit: number,
-    @Query('include', new IncludesValidationPipe(RolesController.validIncludes))
+    @Query('include', new IncludesValidationPipe(Role.relations))
     include: string[],
     @Query(
       'orderBy',

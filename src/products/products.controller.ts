@@ -21,7 +21,6 @@ import { ProductsService } from './products.service';
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
-  static validIncludes = ['highlights', 'category', 'user'];
   static validProperties = [
     'id',
     'title',
@@ -36,10 +35,7 @@ export class ProductsController {
   getProducts(
     @Query('limit', new LimitValidationPipe())
     limit: number,
-    @Query(
-      'include',
-      new IncludesValidationPipe(ProductsController.validIncludes),
-    )
+    @Query('include', new IncludesValidationPipe(Product.relations))
     include: string[],
     @Query(
       'orderBy',

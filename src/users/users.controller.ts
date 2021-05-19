@@ -21,14 +21,13 @@ import { UsersService } from './users.service';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  static validIncludes = ['roles', 'products'];
   static validProperties = ['id', 'firstName', 'lastName', 'username'];
 
   @Get()
   getUsers(
     @Query('limit', new LimitValidationPipe())
     limit: number,
-    @Query('include', new IncludesValidationPipe(UsersController.validIncludes))
+    @Query('include', new IncludesValidationPipe(User.relations))
     include: string[],
     @Query(
       'orderBy',

@@ -22,15 +22,11 @@ export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
   static validProperties = ['id', 'name'];
-  static validIncludes = ['parentCategory'];
 
   @Get()
   getPermissions(
     @Query('limit', new LimitValidationPipe()) limit: number,
-    @Query(
-      'include',
-      new IncludesValidationPipe(CategoriesController.validIncludes),
-    )
+    @Query('include', new IncludesValidationPipe(Category.relations))
     include: string[],
     @Query(
       'orderBy',

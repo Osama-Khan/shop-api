@@ -33,7 +33,7 @@ export class Permission {
 
   toResponseObject(): any {
     const { id, name, updatedAt, createdAt } = this;
-    const obj = { name, updatedAt, createdAt };
+    const obj = { id, name, updatedAt, createdAt };
     if (this.roles) {
       obj['roles'] = this.roles.map((r) => r.toResponseObject());
     }

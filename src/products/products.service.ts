@@ -4,7 +4,6 @@ import { Repository } from 'typeorm';
 import { Product } from './products.entity';
 import { ApiService } from 'src/shared/services/api.service';
 import { ProductDTO } from './products.dto';
-import { Category } from 'src/categories/categories.entity';
 import { Highlight } from 'src/highlights/highlights.entity';
 
 @Injectable()

@@ -28,7 +28,13 @@ export class PermissionsController {
     )
     filters,
   ): Promise<Permission[]> {
-    return this.permissionsService.findAll(limit, orderBy, orderDir, filters);
+    return this.permissionsService.findAll(
+      limit,
+      [],
+      orderBy,
+      orderDir,
+      filters,
+    );
   }
 
   @Get(':id')

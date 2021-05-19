@@ -14,6 +14,7 @@ import { IncludesValidationPipe } from 'src/shared/pipes/filters/includes-valida
 import { LimitValidationPipe } from 'src/shared/pipes/filters/limit-validation.pipe';
 import { OrderByValidationPipe } from 'src/shared/pipes/filters/orderby-validation.pipe';
 import { OrderDirValidationPipe } from 'src/shared/pipes/filters/orderdir-validation.pipe';
+import { ObjectLiteral } from 'typeorm';
 import { Role } from './roles.entity';
 import { RolesService } from './roles.service';
 
@@ -39,7 +40,7 @@ export class RolesController {
       'filters',
       new FiltersValidationPipe(RolesController.validProperties),
     )
-    filters: string,
+    filters: ObjectLiteral | string,
   ): Promise<Role[]> {
     return this.rolesService.findAll(
       limit,

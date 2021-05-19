@@ -7,11 +7,7 @@ export class PermissionDTO {
    */
   static generateRO(input: Permission | Permission[]): any {
     const permissions: Permission[] = [].concat(input);
-    const p = permissions.map((p) => ({
-      name: p.name,
-      updatedAt: p.updatedAt,
-      createdAt: p.createdAt,
-    }));
+    const p = permissions.map((p) => p.toResponseObject());
     return p.length === 1 ? p[0] : p;
   }
 }

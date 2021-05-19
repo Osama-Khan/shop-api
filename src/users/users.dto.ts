@@ -7,14 +7,7 @@ export class UserDTO {
    */
   static generateRO(input: User | User[]): any {
     const users: User[] = [].concat(input);
-    const u = users.map((u) => ({
-      id: u.id,
-      username: u.username,
-      firstName: u.firstName,
-      lastName: u.lastName,
-      updatedAt: u.updatedAt,
-      createdAt: u.createdAt,
-    }));
+    const u = users.map((u) => u.toResponseObject());
     return u.length === 1 ? u[0] : u;
   }
 }

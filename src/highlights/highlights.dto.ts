@@ -7,7 +7,7 @@ export class HighlightDTO {
    */
   static generateRO(input: Highlight | Highlight[]): any {
     const highlights = [].concat(input);
-    const h = highlights.map((h) => h.highlight);
+    const h = highlights.map((h) => h.toResponseObject());
     return h.length === 1 ? h[0] : h;
   }
 }

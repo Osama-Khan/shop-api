@@ -7,17 +7,7 @@ export class ProductDTO {
    */
   static generateRO(input: Product | Product[]): any {
     const products: Product[] = [].concat(input);
-    const p = products.map((p) => ({
-      title: p.title,
-      description: p.description,
-      rating: p.rating,
-      price: p.price,
-      stock: p.stock,
-      category: p.category,
-      img: p.img,
-      updatedAt: p.updatedAt,
-      createdAt: p.createdAt,
-    }));
+    const p = products.map((p) => p.toResponseObject());
     return p.length === 1 ? p[0] : p;
   }
 }

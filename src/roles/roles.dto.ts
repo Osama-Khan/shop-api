@@ -7,11 +7,7 @@ export class RoleDTO {
    */
   static generateRO(input: Role | Role[]): any {
     const roles: Role[] = [].concat(input);
-    const u = roles.map((u) => ({
-      name: u.name,
-      createdAt: u.createdAt,
-      updatedAt: u.updatedAt,
-    }));
-    return u.length === 1 ? u[0] : u;
+    const r = roles.map((r) => r.toResponseObject());
+    return r.length === 1 ? r[0] : r;
   }
 }

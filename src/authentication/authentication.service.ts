@@ -1,37 +1,62 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/users/users.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { UserDTO } from 'src/users/users.dto';
 import * as jwt from 'jsonwebtoken';
+import IRegisterModel from './models/register.model';
+import ILoginModel from './models/login.model';
+import { ApiService } from 'src/shared/services/api.service';
 
 @Injectable()
-export class AuthenticationService {
+export class AuthenticationService extends ApiService<User> {
   constructor(
     @InjectRepository(User)
-    private readonly repository: Repository<User>,
-  ) {}
+    private readonly usersRepository: Repository<User>,
+  ) {
+    super(usersRepository, UserDTO.generateRO);
+  }
 
-  async login(username: string, password: string) {
-    const u = await this.repository.findOne({ where: { username } });
+  async login(loginModel: ILoginModel) {
+    const u = await this.usersRepository.findOne({
+      where: { username: loginModel.username },
+    });
+    if (!u) throw new UnauthorizedException('Invalid user');
     let response: any;
-    if (u) {
-      if (bcrypt.compareSync(password, u.password)) {
-        response = UserDTO.generateRO(u);
-      } else {
-        throw new UnauthorizedException('Invalid password');
-      }
+    if (bcrypt.compareSync(loginModel.password, u.password)) {
+      response = UserDTO.generateRO(u);
     } else {
-      throw new UnauthorizedException('Invalid user');
+      throw new UnauthorizedException('Invalid password');
     }
     response.token = jwt.sign(
-      { username, password: u.password },
+      { username: loginModel.username, password: u.password },
       process.env.SECRET,
       {
         expiresIn: '1d',
       },
     );
     return response;
+  }
+
+  async register(registerModel: IRegisterModel): Promise<User> {
+    let user = await this.usersRepository.findOne({
+      where: [
+        { username: registerModel.username },
+        { email: registerModel.email },
+      ],
+    });
+    if (user) {
+      throw new BadRequestException('User already exists');
+    }
+    user = this.usersRepository.create(registerModel);
+    const insertResult = await this.usersRepository.insert(user);
+    return (
+      await this.usersRepository.findOne(insertResult.generatedMaps['id'])
+    ).toResponseObject();
   }
 }

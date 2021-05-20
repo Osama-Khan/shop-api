@@ -33,6 +33,9 @@ export class UsersService extends ApiService<User> {
     if (!user) {
       throw new BadRequestException('No such user');
     }
+    if (!role) {
+      throw new BadRequestException('No such role');
+    }
     if (user.roles && user.roles.includes(role)) {
       throw new BadRequestException(
         'Given role is already assigned to the given user',

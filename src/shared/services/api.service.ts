@@ -1,4 +1,4 @@
-import { NotFoundException } from '@nestjs/common';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { ObjectLiteral, Repository } from 'typeorm';
 import { CriteriaHelper } from '../helpers/criteria.helper';
 
@@ -69,35 +69,46 @@ export abstract class ApiService<Entity> {
   }
 
   /**
-   * Removes a entity from the database
+   * Removes an entity from the database
    * @param id The id of entity to delete
    * @returns A promise that resolves to the `Entity` removed
    */
   async remove(id: number): Promise<Entity> {
     const e = await this.findOne(id);
+    if (!e) throw new NotFoundException('Entity not found!');
     await this.repository.softRemove(e);
     return e;
   }
 
   /**
-   * Inserts a entity into the database
+   * Inserts an entity into the database
    * @param entity The entity object to insert
    * @returns A promise that resolves to the `Entity` inserted
    */
   async insert(entity: Entity): Promise<Entity> {
     const e = this.repository.create(entity);
-    const out = await this.repository.insert(e);
-    return await this.findOne(out.generatedMaps[0].id);
+    try {
+      const out = await this.repository.insert(e);
+      return await this.findOne(out.generatedMaps[0].id);
+    } catch (e) {
+      if (e.message.startsWith('Duplicate entry')) {
+        throw new BadRequestException('A similar entity already exists');
+      } else {
+        throw e;
+      }
+    }
   }
 
   /**
-   * Updates a entity in the database
+   * Updates an entity in the database
    * @param id The id of entity to update
    * @param entity Object containing the properties of entity to update
    * @returns A promise that resolves to the `Entity` updated
    */
   async update(id: number, entity: Entity): Promise<Entity> {
     const e = this.repository.create(entity);
+    const exists = await this.repository.findOne(id);
+    if (!exists) throw new NotFoundException('Entity not found!');
     await this.repository.update(id, e);
     return await this.findOne(id);
   }

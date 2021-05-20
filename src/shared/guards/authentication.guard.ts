@@ -1,11 +1,6 @@
-import {
-  CanActivate,
-  ExecutionContext,
-  ForbiddenException,
-  Injectable,
-} from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Observable } from 'rxjs';
-import * as jwt from 'jsonwebtoken';
+import JwtHelper from '../helpers/jwt.helper';
 
 @Injectable()
 export class AuthenticationGuard implements CanActivate {
@@ -13,21 +8,6 @@ export class AuthenticationGuard implements CanActivate {
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
     const req = context.switchToHttp().getRequest();
-    if (req.body && req.body.token) {
-      const token = req.body.token;
-      try {
-        const ver = jwt.verify(token, process.env.SECRET);
-        if (ver) {
-          return true;
-        }
-      } catch (e) {
-        throw new ForbiddenException(
-          'Your session is either invalid or has expired',
-        );
-      }
-    }
-    throw new ForbiddenException(
-      'You need to be logged in to access this resource',
-    );
+    return JwtHelper.verifySession(req) ? true : false;
   }
 }

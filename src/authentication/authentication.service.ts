@@ -8,10 +8,10 @@ import { User } from 'src/users/users.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { UserDTO } from 'src/users/users.dto';
-import * as jwt from 'jsonwebtoken';
 import IRegisterModel from './models/register.model';
 import ILoginModel from './models/login.model';
 import { ApiService } from 'src/shared/services/api.service';
+import JwtHelper from 'src/shared/helpers/jwt.helper';
 
 @Injectable()
 export class AuthenticationService extends ApiService<User> {
@@ -25,6 +25,7 @@ export class AuthenticationService extends ApiService<User> {
   async login(loginModel: ILoginModel) {
     const u = await this.usersRepository.findOne({
       where: { username: loginModel.username },
+      relations: ['roles'],
     });
     if (!u) throw new UnauthorizedException('Invalid user');
     let response: any;
@@ -33,9 +34,12 @@ export class AuthenticationService extends ApiService<User> {
     } else {
       throw new UnauthorizedException('Invalid password');
     }
-    response.token = jwt.sign(
-      { username: loginModel.username, password: u.password },
-      process.env.SECRET,
+    response.token = JwtHelper.sign(
+      {
+        username: loginModel.username,
+        password: u.password,
+        roles: u.roles.map((r) => r.name),
+      },
       {
         expiresIn: '1d',
       },

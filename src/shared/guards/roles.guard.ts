@@ -8,17 +8,11 @@ import {
 import { Reflector } from '@nestjs/core';
 import { Observable } from 'rxjs';
 import { rolesKey } from '../decorators/roles.decorator';
-import * as jwt from 'jsonwebtoken';
-import { User } from 'src/users/users.entity';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import JwtHelper from '../helpers/jwt.helper';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
-  constructor(
-    private reflector: Reflector,
-    @InjectRepository(User) private usersRepo: Repository<User>,
-  ) {}
+  constructor(private reflector: Reflector) {}
   canActivate(
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
@@ -31,32 +25,22 @@ export class RolesGuard implements CanActivate {
     }
 
     const req = context.switchToHttp().getRequest();
-
-    if (!req.body || !req.body.token) {
-      throw new ForbiddenException(
-        'You need to be logged in to perform this action!',
-      );
-    }
-
-    const userData = jwt.verify(req.body.token, process.env.SECRET);
+    const userData: any = JwtHelper.verifySession(req);
     if (userData) {
-      return this.usersRepo
-        .findOne({
-          where: { username: userData['username'] },
-          relations: ['roles'],
-        })
-        .then((u) => {
-          if (
-            u.roles &&
-            roles.every((r) => u.roles.some((ur) => r === ur.name))
-          ) {
-            return true;
-          } else {
-            throw new UnauthorizedException(
-              'You are not authorized to perform this action',
-            );
-          }
-        });
+      if (
+        userData.roles &&
+        roles.every((r) =>
+          userData.roles.some((ur) => {
+            return r === ur;
+          }),
+        )
+      ) {
+        return true;
+      } else {
+        throw new UnauthorizedException(
+          'You are not authorized to perform this action',
+        );
+      }
     }
   }
 }

@@ -15,8 +15,9 @@ export default class JwtHelper {
   }
 
   static verifySession(req: any) {
-    if (req.body && req.body.token) {
-      const token = req.body.token;
+    if (req.headers && req.headers.authorization) {
+      const bearer: string = req.headers.authorization;
+      const token = bearer.split(' ')[1];
       try {
         const ver = JwtHelper.verify(token);
         if (ver) {

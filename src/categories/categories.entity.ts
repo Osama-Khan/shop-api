@@ -14,7 +14,7 @@ export class Category {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ unique: true })
   name: string;
 
   @OneToOne((type) => Category)
@@ -35,7 +35,11 @@ export class Category {
   toResponseObject(): any {
     const { id, name } = this;
     if (this.parentCategory) {
-      return { id, name, parent: this.parentCategory.toResponseObject() };
+      return {
+        id,
+        name,
+        parentCategory: this.parentCategory.toResponseObject(),
+      };
     }
     return { id, name };
   }

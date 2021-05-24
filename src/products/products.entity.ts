@@ -1,5 +1,6 @@
 import { Category } from 'src/categories/categories.entity';
 import { Highlight } from 'src/highlights/highlights.entity';
+import { OrderProduct } from 'src/order-product/order-product.entity';
 import { User } from 'src/users/users.entity';
 import {
   Entity,
@@ -44,6 +45,9 @@ export class Product {
   @JoinColumn({ name: 'user_id' })
   user: User;
 
+  @OneToMany((type) => OrderProduct, (op) => op.product)
+  orderProducts: OrderProduct[];
+
   @Column({ default: 1 })
   stock: number;
 
@@ -59,7 +63,7 @@ export class Product {
   @DeleteDateColumn({ name: 'deleted_at' })
   deletedAt: string;
 
-  static relations = ['highlights', 'category', 'user'];
+  static relations = ['highlights', 'category', 'user', 'orderProduct'];
 
   toResponseObject(): any {
     const obj = {

@@ -15,6 +15,9 @@ import { RolesModule } from './roles/roles.module';
 import { User } from './users/users.entity';
 import { UsersModule } from './users/users.module';
 import { AuthenticationModule } from './authentication/authentication.module';
+import { Order } from './order/order.entity';
+import { Address } from './address/address.entity';
+import { OrderProduct } from './order-product/order-product.entity';
 
 @Module({
   imports: [
@@ -25,7 +28,17 @@ import { AuthenticationModule } from './authentication/authentication.module';
       username: db.username,
       password: db.password,
       database: db.dbname,
-      entities: [Product, Category, Highlight, User, Permission, Role],
+      entities: [
+        Product,
+        Category,
+        Highlight,
+        User,
+        Permission,
+        Role,
+        Order,
+        Address,
+        OrderProduct,
+      ],
       synchronize: true,
     }),
     ProductsModule,

@@ -1,4 +1,5 @@
 import { Product } from 'src/products/products.entity';
+import { Address } from 'src/address/address.entity';
 import { Role } from 'src/roles/roles.entity';
 import {
   Entity,
@@ -14,6 +15,7 @@ import {
   DeleteDateColumn,
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import { Order } from 'src/order/order.entity';
 
 @Entity()
 export class User {
@@ -38,18 +40,16 @@ export class User {
   @Column({ name: 'date_of_birth' })
   dateOfBirth: Date;
 
-  @OneToMany((type) => Product, (product) => product.user, {
-    cascade: true,
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
-  })
+  @OneToMany((type) => Product, (product) => product.user)
   products: Product[];
 
-  @ManyToMany((type) => Role, (role) => role.users, {
-    cascade: true,
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
-  })
+  @OneToMany((type) => Order, (order) => order.user)
+  orders: Order[];
+
+  @OneToMany((type) => Address, (address) => address.user)
+  addresses: Address[];
+
+  @ManyToMany((type) => Role, (role) => role.users)
   @JoinTable({
     name: 'user_role',
     joinColumn: { name: 'user_id', referencedColumnName: 'id' },
@@ -73,7 +73,7 @@ export class User {
     if (this.password) this.password = await bcrypt.hash(this.password, salt);
   }
 
-  static relations = ['roles', 'products'];
+  static relations = ['roles', 'products', 'orders', 'addresses'];
 
   toResponseObject(): any {
     const obj = {
@@ -89,6 +89,12 @@ export class User {
     }
     if (this.roles) {
       obj['roles'] = this.roles.map((r) => r.toResponseObject());
+    }
+    if (this.orders) {
+      obj['orders'] = this.orders.map((o) => o.toResponseObject());
+    }
+    if (this.addresses) {
+      obj['addresses'] = this.addresses.map((a) => a.toResponseObject());
     }
     return obj;
   }

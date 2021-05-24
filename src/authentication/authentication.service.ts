@@ -30,7 +30,8 @@ export class AuthenticationService extends ApiService<User> {
     if (!u) throw new UnauthorizedException('Invalid user');
     let response: any;
     if (bcrypt.compareSync(loginModel.password, u.password)) {
-      response = UserDTO.generateRO(u);
+      const { firstName, lastName, username, email, dateOfBirth, roles } = u;
+      response = { firstName, lastName, username, email, dateOfBirth, roles };
     } else {
       throw new UnauthorizedException('Invalid password');
     }

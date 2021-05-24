@@ -50,9 +50,25 @@ export class CategoriesController {
     );
   }
 
+  @Get('root')
+  getRootCategories() {
+    return this.categoriesService.findAll(
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      { parentCategory: null },
+    );
+  }
+
   @Get(':id')
   getCategory(@Param('id', ParseIntPipe) id: number) {
     return this.categoriesService.findOne(id);
+  }
+
+  @Get('parents/:id')
+  getCategoryParents(@Param('id', ParseIntPipe) id: number) {
+    return this.categoriesService.getCategoryParents(id);
   }
 
   @Put()

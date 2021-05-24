@@ -24,7 +24,7 @@ export class CategoriesController {
   static validProperties = ['id', 'name'];
 
   @Get()
-  getPermissions(
+  getCategories(
     @Query('limit', new LimitValidationPipe()) limit: number,
     @Query('include', new IncludesValidationPipe(Category.relations))
     include: string[],

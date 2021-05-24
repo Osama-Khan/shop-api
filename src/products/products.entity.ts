@@ -65,6 +65,7 @@ export class Product {
     const obj = {
       id: this.id,
       title: this.title,
+      code: this.code,
       description: this.description,
       rating: this.rating,
       price: this.price,

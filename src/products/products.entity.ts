@@ -63,7 +63,7 @@ export class Product {
   @DeleteDateColumn({ name: 'deleted_at' })
   deletedAt: string;
 
-  static relations = ['highlights', 'category', 'user', 'orderProduct'];
+  static relations = ['highlights', 'category', 'user', 'orderProducts'];
 
   toResponseObject(): any {
     const obj = {
@@ -86,6 +86,11 @@ export class Product {
     }
     if (this.category) {
       obj['category'] = this.category.toResponseObject();
+    }
+    if (this.orderProducts) {
+      obj['orderProducts'] = this.orderProducts.map((op) =>
+        op.toResponseObject(),
+      );
     }
     return obj;
   }

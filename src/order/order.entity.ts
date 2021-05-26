@@ -47,7 +47,6 @@ export class Order {
   toResponseObject(): any {
     const obj = {
       id: this.id,
-      username: this.user.username,
       address: this.address,
     };
     if (this.user) {

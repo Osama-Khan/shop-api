@@ -94,7 +94,8 @@ export class User {
       obj['orders'] = this.orders.map((o) => o.toResponseObject());
     }
     if (this.addresses) {
-      obj['addresses'] = this.addresses.map((a) => a.toResponseObject());
+      // Does not work with map for some reason
+      obj['addresses'] = this.addresses; //.map((a) => a.toResponseObject());
     }
     return obj;
   }

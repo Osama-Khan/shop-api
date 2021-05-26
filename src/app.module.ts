@@ -18,6 +18,7 @@ import { AuthenticationModule } from './authentication/authentication.module';
 import { Order } from './order/order.entity';
 import { Address } from './address/address.entity';
 import { OrderProduct } from './order-product/order-product.entity';
+import { OrderState } from './order-state/order-state.entity';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { OrderProduct } from './order-product/order-product.entity';
         Order,
         Address,
         OrderProduct,
+        OrderState,
       ],
       synchronize: true,
     }),

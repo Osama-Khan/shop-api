@@ -16,6 +16,7 @@ import { User } from './users/users.entity';
 import { UsersModule } from './users/users.module';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { Order } from './order/order.entity';
+import { OrderModule } from './order/order.module';
 import { Address } from './address/address.entity';
 import { OrderProduct } from './order-product/order-product.entity';
 import { OrderState } from './order-state/order-state.entity';
@@ -49,6 +50,7 @@ import { OrderState } from './order-state/order-state.entity';
     RolesModule,
     PermissionsModule,
     AuthenticationModule,
+    OrderModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -5,6 +5,8 @@ import { UserDTO } from './users.dto';
 import { User } from './users.entity';
 import { Role } from 'src/roles/roles.entity';
 import { ApiService } from 'src/shared/services/api.service';
+import { Address } from 'src/address/address.entity';
+import { AddressDTO } from 'src/address/address.dto';
 
 @Injectable()
 export class UsersService extends ApiService<User> {
@@ -13,6 +15,8 @@ export class UsersService extends ApiService<User> {
     private usersRepository: Repository<User>,
     @InjectRepository(Role)
     private rolesRepository: Repository<Role>,
+    @InjectRepository(Address)
+    private addressRepository: Repository<Address>,
   ) {
     super(usersRepository, UserDTO.generateRO, User.relations);
   }
@@ -45,5 +49,26 @@ export class UsersService extends ApiService<User> {
     const u = this.usersRepository.create(user);
     await this.usersRepository.save(user);
     return UserDTO.generateRO(u);
+  }
+
+  /**
+   * Adds an address to user
+   * @param id The id of user to add address to
+   * @param address the address object
+   * @returns A promise that resolves to `Address`
+   */
+  async addAddress(id: number, address: Address): Promise<User> {
+    const user = await this.usersRepository.findOne(id, {
+      relations: ['addresses'],
+    });
+    if (!user) {
+      throw new BadRequestException('No such user');
+    }
+    const addrEnt = this.addressRepository.create(address);
+    addrEnt.user = user;
+    await this.addressRepository.insert(addrEnt);
+    return await this.usersRepository.findOne(id, {
+      relations: ['addresses'],
+    });
   }
 }

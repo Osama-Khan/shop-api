@@ -75,4 +75,9 @@ export class UsersController {
   assignRole(@Param('id', ParseIntPipe) id: number, @Query('name') roleName) {
     return this.usersService.addRole(id, roleName);
   }
+
+  @Patch('address/:id')
+  addAddress(@Param('id', ParseIntPipe) id: number, @Body() address) {
+    return this.usersService.addAddress(id, address);
+  }
 }

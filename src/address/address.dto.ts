@@ -2,8 +2,8 @@ import { Address } from './address.entity';
 
 export class AddressDTO {
   /**
-   * Generates a response object from a `Highlight`
-   * @param input Highlight to generate response from
+   * Generates a response object from an `Address`
+   * @param input Address to generate response from
    */
   static generateRO(input: Address | Address[]): any {
     const addresses = [].concat(input);

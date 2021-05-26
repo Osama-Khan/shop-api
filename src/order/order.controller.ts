@@ -63,8 +63,8 @@ export class OrderController {
   }
 
   @Put()
-  setOrder(@Body() order: Order) {
-    return this.orderService.insert(order);
+  placeOrder(@Body() orderDetail) {
+    return this.orderService.placeOrder(orderDetail);
   }
 
   @Delete(':id')

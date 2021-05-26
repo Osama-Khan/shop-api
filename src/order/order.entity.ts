@@ -8,9 +8,11 @@ import {
   ManyToOne,
   JoinColumn,
   OneToMany,
+  BeforeInsert,
 } from 'typeorm';
 import { User } from 'src/users/users.entity';
 import { OrderProduct } from 'src/order-product/order-product.entity';
+import { OrderState } from 'src/order-state/order-state.entity';
 
 @Entity()
 export class Order {
@@ -26,6 +28,10 @@ export class Order {
 
   @OneToMany((type) => OrderProduct, (op) => op.order)
   orderProducts: OrderProduct[];
+
+  @ManyToOne((type) => OrderState, (os) => os.orders)
+  @JoinColumn({ name: 'state_id' })
+  orderState: OrderState;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: string;

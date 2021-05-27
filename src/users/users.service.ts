@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserDTO } from './users.dto';
@@ -6,7 +10,6 @@ import { User } from './users.entity';
 import { Role } from 'src/roles/roles.entity';
 import { ApiService } from 'src/shared/services/api.service';
 import { Address } from 'src/address/address.entity';
-import { AddressDTO } from 'src/address/address.dto';
 
 @Injectable()
 export class UsersService extends ApiService<User> {
@@ -70,5 +73,24 @@ export class UsersService extends ApiService<User> {
     return await this.usersRepository.findOne(id, {
       relations: ['addresses'],
     });
+  }
+
+  /**
+   * Gets the most recent product of given user
+   */
+  async getRecentProduct(userId: number) {
+    const user = await this.usersRepository.findOne(userId, {
+      relations: ['products'],
+    });
+    if (!user) {
+      throw new BadRequestException('No such user');
+    }
+    if (!user.products || user.products.length <= 0) {
+      throw new NotFoundException('User has no products');
+    }
+    const product = user.products.sort(
+      (p1, p2) => p1.createdAt.getTime() - p2.createdAt.getTime(),
+    )[0];
+    return product;
   }
 }

@@ -56,6 +56,11 @@ export class UsersController {
     return this.usersService.findOne(id);
   }
 
+  @Get(':id/products/recent')
+  getMostRecentProduct(@Param('id', ParseIntPipe) userId: number) {
+    return this.usersService.getRecentProduct(userId);
+  }
+
   @Put()
   setUser(@Body() user: User) {
     return this.usersService.insert(user);

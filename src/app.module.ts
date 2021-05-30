@@ -20,6 +20,12 @@ import { OrderModule } from './order/order.module';
 import { Address } from './address/address.entity';
 import { OrderProduct } from './order-product/order-product.entity';
 import { OrderState } from './order-state/order-state.entity';
+import { City } from './location/city/city.entity';
+import { State } from './location/state/state.entity';
+import { Country } from './location/country/country.entity';
+import { CityModule } from './location/city/city.module';
+import { StateModule } from './location/state/state.module';
+import { CountryModule } from './location/country/country.module';
 
 @Module({
   imports: [
@@ -41,6 +47,9 @@ import { OrderState } from './order-state/order-state.entity';
         Address,
         OrderProduct,
         OrderState,
+        City,
+        State,
+        Country,
       ],
       synchronize: true,
     }),
@@ -51,6 +60,9 @@ import { OrderState } from './order-state/order-state.entity';
     PermissionsModule,
     AuthenticationModule,
     OrderModule,
+    CityModule,
+    StateModule,
+    CountryModule,
   ],
   controllers: [AppController],
   providers: [AppService],

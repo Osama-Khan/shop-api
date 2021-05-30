@@ -1,3 +1,4 @@
+import { City } from 'src/location/city/city.entity';
 import { User } from 'src/users/users.entity';
 import {
   Entity,
@@ -23,6 +24,10 @@ export class Address {
   @JoinColumn({ name: 'user_id' })
   user: User;
 
+  @ManyToOne((type) => City)
+  @JoinColumn({ name: 'city_id' })
+  city: City;
+
   @Column()
   tag: string;
 
@@ -38,7 +43,7 @@ export class Address {
   @DeleteDateColumn({ name: 'deleted_at' })
   deletedAt: Date;
 
-  static relations = ['user'];
+  static relations = ['user', 'city'];
 
   toResponseObject(): any {
     const { id, tag, address } = this;

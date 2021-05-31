@@ -8,7 +8,6 @@ import {
   ManyToOne,
   JoinColumn,
   OneToMany,
-  BeforeInsert,
 } from 'typeorm';
 import { User } from 'src/users/users.entity';
 import { OrderProduct } from 'src/order-product/order-product.entity';

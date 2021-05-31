@@ -53,12 +53,8 @@ async function seedCities(app: INestApplication) {
   }
 }
 
-async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+export default async function seedLocations(app: INestApplication) {
   await seedCountries(app);
   await seedStates(app);
   await seedCities(app);
-  app.close();
 }
-
-bootstrap();

@@ -10,23 +10,34 @@ const bgYellow = '\x1b[43m';
 const bgCyan = '\x1b[46m';
 
 export default class LogHelper {
+  private static time() {
+    const d = new Date();
+    const date = d.toLocaleDateString();
+    const time = d.toTimeString().substr(0, 8);
+    return `${date}, ${time}`;
+  }
+
   static success(msg: string) {
     console.log(
-      `${bgGreen}${fgBlack}[SUCCESS]${reset}${fgGreen} ${msg}${reset}`,
+      `${bgGreen}${fgBlack}[SUCCESS]${reset}   ${this.time()}   ${fgGreen}${msg}${reset}`,
     );
   }
 
   static info(msg: string) {
-    console.log(`${bgCyan}${fgBlack}[INFO]${reset}${fgCyan} ${msg}${reset}`);
+    console.log(
+      `${bgCyan}${fgBlack} [INFO]  ${reset}   ${this.time()}   ${fgCyan}${msg}${reset}`,
+    );
   }
 
   static warn(msg: string) {
     console.log(
-      `${bgYellow}${fgBlack}[WARN]${reset}${fgYellow} ${msg}${reset}`,
+      `${bgYellow}${fgBlack}[WARNING]${reset}   ${this.time()}   ${fgYellow}${msg}${reset}`,
     );
   }
 
   static error(msg: string) {
-    console.log(`${bgRed}${fgBlack}[ERROR]${reset}${fgRed} ${msg}${reset}`);
+    console.log(
+      `${bgRed}${fgBlack} [ERROR] ${reset}   ${this.time()}   ${fgRed}${msg}${reset}`,
+    );
   }
 }

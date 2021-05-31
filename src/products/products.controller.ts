@@ -23,6 +23,7 @@ export class ProductsController {
 
   static validProperties = [
     'id',
+    'code',
     'title',
     'description',
     'price',

@@ -1,7 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { UserDTO } from './order.dto';
 import { Order } from './order.entity';
 import { ApiService } from 'src/shared/services/api.service';
 import { Product } from 'src/products/products.entity';
@@ -20,7 +19,7 @@ export class OrderService extends ApiService<Order> {
     @InjectRepository(User)
     private userRepository: Repository<User>,
   ) {
-    super(orderRepository, UserDTO.generateRO, Order.relations);
+    super(orderRepository, Order.relations);
   }
 
   async placeOrder(orderDetail) {

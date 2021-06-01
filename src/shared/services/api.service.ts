@@ -1,6 +1,7 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { ObjectLiteral, Repository } from 'typeorm';
 import { CriteriaHelper } from '../helpers/criteria.helper';
+import generateRO from '../helpers/ro.helper';
 
 /**
  * Service containing the general operations of an API service
@@ -9,14 +10,12 @@ export abstract class ApiService<Entity> {
   /**
    *
    * @param repository Repository used for database operations.
-   * @param generateRO Function that generates the response object from entity.
    * @param possibleRelations String array of relations that can be selected and returned.
    * @param findOneRelations String array of relations that are returned from `findOne`
    * method. Default value is the value of possible relations.
    */
   constructor(
     private repository: Repository<Entity>,
-    private generateRO: (e) => Entity = (e) => e,
     private possibleRelations: string[] = [],
     private findOneRelations: string[] = possibleRelations,
   ) {}
@@ -46,7 +45,7 @@ export abstract class ApiService<Entity> {
     );
     return await this.repository.find(options).then(async (e) => {
       const entities = e.map(async (e) => {
-        const ro = this.generateRO(e);
+        const ro = generateRO(e);
         return ro;
       });
       return await Promise.all(entities);
@@ -63,7 +62,7 @@ export abstract class ApiService<Entity> {
       .findOne(id, { relations: this.findOneRelations })
       .then(async (e) => {
         if (!e) throw new NotFoundException('Entity not found!');
-        const entityRO = this.generateRO(this.repository.create(e));
+        const entityRO = generateRO(this.repository.create(e));
         return entityRO;
       });
   }

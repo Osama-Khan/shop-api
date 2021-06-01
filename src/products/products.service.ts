@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Product } from './products.entity';
 import { ApiService } from 'src/shared/services/api.service';
-import { ProductDTO } from './products.dto';
 import { Highlight } from 'src/highlights/highlights.entity';
 
 @Injectable()
@@ -14,7 +13,7 @@ export class ProductsService extends ApiService<Product> {
     @InjectRepository(Highlight)
     private highlightsRepository: Repository<Highlight>,
   ) {
-    super(productsRepository, ProductDTO.generateRO, Product.relations);
+    super(productsRepository, Product.relations);
   }
 
   // Inserts highlights into database before product insertion

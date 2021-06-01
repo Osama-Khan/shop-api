@@ -21,7 +21,7 @@ export class UsersService extends ApiService<User> {
     @InjectRepository(Address)
     private addressRepository: Repository<Address>,
   ) {
-    super(usersRepository, UserDTO.generateRO, User.relations);
+    super(usersRepository, User.relations);
   }
 
   /**

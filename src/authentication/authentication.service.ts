@@ -7,7 +7,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/users/users.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import { UserDTO } from 'src/users/users.dto';
 import IRegisterModel from './models/register.model';
 import ILoginModel from './models/login.model';
 import { ApiService } from 'src/shared/services/api.service';
@@ -19,7 +18,7 @@ export class AuthenticationService extends ApiService<User> {
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
   ) {
-    super(usersRepository, UserDTO.generateRO);
+    super(usersRepository);
   }
 
   async login(loginModel: ILoginModel) {

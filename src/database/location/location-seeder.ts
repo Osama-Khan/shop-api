@@ -1,5 +1,3 @@
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from 'src/app.module';
 import { CountryService } from 'src/location/country/country.service';
 import { INestApplication } from '@nestjs/common';
 import * as countries from './country/countries.json';

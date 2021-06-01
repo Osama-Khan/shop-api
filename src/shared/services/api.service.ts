@@ -34,7 +34,7 @@ export abstract class ApiService<Entity> {
     relations = [],
     orderBy = 'createdAt',
     orderDir: 'ASC' | 'DESC' = 'DESC',
-    where: ObjectLiteral | string,
+    where: ObjectLiteral | string = {},
   ): Promise<Entity[]> {
     const options = CriteriaHelper.generateOptionsObject(
       take,

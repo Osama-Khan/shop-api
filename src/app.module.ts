@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ServeStaticModule } from '@nestjs/serve-static';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { Category } from './categories/categories.entity';
@@ -26,6 +27,7 @@ import { Country } from './location/country/country.entity';
 import { CityModule } from './location/city/city.module';
 import { StateModule } from './location/state/state.module';
 import { CountryModule } from './location/country/country.module';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -52,6 +54,9 @@ import { CountryModule } from './location/country/country.module';
         Country,
       ],
       synchronize: true,
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'public'),
     }),
     ProductsModule,
     CategoriesModule,

@@ -34,7 +34,7 @@ export class CategoriesController {
     )
     orderBy: string,
     @Query('orderDirection', new OrderDirValidationPipe())
-    orderDir: 'ASC' | 'DESC',
+    orderDir: 'ASC' | 'DESC' = 'ASC',
     @Query(
       'filters',
       new FiltersValidationPipe(CategoriesController.validProperties),
@@ -69,6 +69,11 @@ export class CategoriesController {
   @Get('parents/:id')
   getCategoryParents(@Param('id', ParseIntPipe) id: number) {
     return this.categoriesService.getCategoryParents(id);
+  }
+
+  @Get('children/:id')
+  getCategoryChildren(@Param('id', ParseIntPipe) id: number) {
+    return this.categoriesService.getCategoryChildren(id);
   }
 
   @Put()

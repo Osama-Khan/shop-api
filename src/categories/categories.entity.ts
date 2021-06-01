@@ -17,9 +17,12 @@ export class Category {
   @Column({ unique: true })
   name: string;
 
-  @OneToOne((type) => Category)
+  @OneToOne((type) => Category, (category) => category.childCategory)
   @JoinColumn({ name: 'parent_category_id' })
   parentCategory: Category;
+
+  @OneToOne((type) => Category, (category) => category.parentCategory)
+  childCategory: Category;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
@@ -30,17 +33,16 @@ export class Category {
   @DeleteDateColumn({ name: 'deleted_at' })
   deletedAt: Date;
 
-  static relations = ['parentCategory'];
+  static relations = ['parentCategory', 'childCategory'];
 
   toResponseObject(): any {
-    const { id, name } = this;
+    const obj = { id: this.id, name: this.name };
     if (this.parentCategory) {
-      return {
-        id,
-        name,
-        parentCategory: this.parentCategory.toResponseObject(),
-      };
+      obj['parentCategory'] = this.parentCategory;
     }
-    return { id, name };
-  }
+    if (this.childCategory) {
+      obj['childCategory'] = this.childCategory;
+    }
+    return obj;
+  };
 }

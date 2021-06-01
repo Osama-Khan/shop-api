@@ -9,6 +9,7 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
+import { Product } from 'src/products/products.entity';
 import { FiltersValidationPipe } from 'src/shared/pipes/filters/filters-validation.pipe';
 import { IncludesValidationPipe } from 'src/shared/pipes/filters/includes-validation.pipe';
 import { LimitValidationPipe } from 'src/shared/pipes/filters/limit-validation.pipe';
@@ -92,5 +93,10 @@ export class CategoriesController {
     @Body() category: Category,
   ) {
     return this.categoriesService.update(id, category);
+  }
+
+  @Get('products/:name')
+  getProductsByCategory(@Param('name') category: string): Promise<Product[]> {
+    return this.categoriesService.findProducts(category);
   }
 }

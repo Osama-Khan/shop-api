@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Product } from 'src/products/products.entity';
 import { ApiService } from 'src/shared/services/api.service';
 import { Repository } from 'typeorm';
 import { Category } from './categories.entity';
@@ -8,7 +9,9 @@ import { Category } from './categories.entity';
 export class CategoriesService extends ApiService<Category> {
   constructor(
     @InjectRepository(Category)
-    categoriesRepository: Repository<Category>,
+    private categoriesRepository: Repository<Category>,
+    @InjectRepository(Product)
+    private productsRepository: Repository<Product>,
   ) {
     super(categoriesRepository, Category.relations);
   }
@@ -55,5 +58,33 @@ export class CategoriesService extends ApiService<Category> {
     } else {
       throw new NotFoundException('No category with given id!');
     }
+  }
+
+  /** Returns a list of products with the given category
+   * @param name The name of category
+   * @returns A list of products from the given category
+   */
+  async findProducts(name: string): Promise<Product[]> {
+    const category = await this.categoriesRepository.findOne({
+      where: { name },
+    });
+    if (!category) {
+      throw new NotFoundException('Category not found!');
+    }
+    const products = await this.productsRepository.find({
+      relations: ['category'],
+    });
+
+    const childIds = (await this.getCategoryChildren(category.id)).map(
+      (c) => c.id,
+    );
+
+    const p = products.filter((p) => {
+      return (
+        p.category?.id === category.id ||
+        childIds.some((id) => p.category?.id === id)
+      );
+    });
+    return p.map((p) => p.toResponseObject());
   }
 }

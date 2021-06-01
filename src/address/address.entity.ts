@@ -1,4 +1,5 @@
 import { City } from 'src/location/city/city.entity';
+import EntityParent from 'src/shared/models/entity-parent.model';
 import { User } from 'src/users/users.entity';
 import {
   Entity,
@@ -12,7 +13,7 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class Address {
+export class Address extends EntityParent {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -45,8 +46,8 @@ export class Address {
 
   static relations = ['user', 'city'];
 
-  toResponseObject(): any {
+  toResponseObject = (): any => {
     const { id, tag, address } = this;
     return { id, tag, address, user: this.user.toResponseObject() };
-  }
+  };
 }

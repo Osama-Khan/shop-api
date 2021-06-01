@@ -1,5 +1,6 @@
 import { Order } from 'src/order/order.entity';
 import { Product } from 'src/products/products.entity';
+import EntityParent from 'src/shared/models/entity-parent.model';
 import {
   Entity,
   Column,
@@ -9,7 +10,7 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class OrderProduct {
+export class OrderProduct extends EntityParent {
   @PrimaryGeneratedColumn()
   id: string;
 
@@ -29,13 +30,11 @@ export class OrderProduct {
 
   static relations = ['product'];
 
-  toResponseObject(): any {
-    return {
-      id: this.id,
-      product: this.product,
-      order: this.order,
-      quantity: this.quantity,
-      price: this.price,
-    };
-  }
+  toResponseObject = (): any => ({
+    id: this.id,
+    product: this.product,
+    order: this.order,
+    quantity: this.quantity,
+    price: this.price,
+  });
 }

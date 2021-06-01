@@ -1,4 +1,5 @@
 import { Role } from 'src/roles/roles.entity';
+import EntityParent from 'src/shared/models/entity-parent.model';
 import {
   Entity,
   Column,
@@ -10,7 +11,7 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class Permission {
+export class Permission extends EntityParent {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -31,12 +32,12 @@ export class Permission {
 
   static relations = ['roles'];
 
-  toResponseObject(): any {
+  toResponseObject = (): any => {
     const { id, name, updatedAt, createdAt } = this;
     const obj = { id, name, updatedAt, createdAt };
     if (this.roles) {
       obj['roles'] = this.roles.map((r) => r.toResponseObject());
     }
     return obj;
-  }
+  };
 }

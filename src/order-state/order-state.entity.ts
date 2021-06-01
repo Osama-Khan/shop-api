@@ -1,8 +1,9 @@
 import { Order } from 'src/order/order.entity';
+import EntityParent from 'src/shared/models/entity-parent.model';
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 
 @Entity()
-export class OrderState {
+export class OrderState extends EntityParent {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -13,8 +14,4 @@ export class OrderState {
   orders: Order[];
 
   static relations = ['orders'];
-
-  toResponseObject() {
-    return this;
-  }
 }

@@ -1,3 +1,4 @@
+import EntityParent from 'src/shared/models/entity-parent.model';
 import {
   Entity,
   Column,
@@ -10,7 +11,7 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class Category {
+export class Category extends EntityParent {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -35,7 +36,7 @@ export class Category {
 
   static relations = ['parentCategory', 'childCategory'];
 
-  toResponseObject(): any {
+  toResponseObject = (): any => {
     const obj = { id: this.id, name: this.name };
     if (this.parentCategory) {
       obj['parentCategory'] = this.parentCategory;

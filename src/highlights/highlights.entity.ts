@@ -1,4 +1,5 @@
 import { Product } from 'src/products/products.entity';
+import EntityParent from 'src/shared/models/entity-parent.model';
 import {
   Entity,
   Column,
@@ -11,7 +12,7 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class Highlight {
+export class Highlight extends EntityParent {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -37,11 +38,11 @@ export class Highlight {
 
   static relations = ['product'];
 
-  toResponseObject(): any {
+  toResponseObject = (): any => {
     const { id, highlight } = this;
     if (this.product) {
       return { id, highlight, product: this.product.toResponseObject() };
     }
     return { id, highlight };
-  }
+  };
 }

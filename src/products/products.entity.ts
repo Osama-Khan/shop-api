@@ -1,6 +1,7 @@
 import { Category } from 'src/categories/categories.entity';
 import { Highlight } from 'src/highlights/highlights.entity';
 import { OrderProduct } from 'src/order-product/order-product.entity';
+import EntityParent from 'src/shared/models/entity-parent.model';
 import { User } from 'src/users/users.entity';
 import {
   Entity,
@@ -15,7 +16,7 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class Product {
+export class Product extends EntityParent {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -65,7 +66,7 @@ export class Product {
 
   static relations = ['highlights', 'category', 'user', 'orderProducts'];
 
-  toResponseObject(): any {
+  toResponseObject = (): any => {
     const obj = {
       id: this.id,
       title: this.title,
@@ -93,5 +94,5 @@ export class Product {
       );
     }
     return obj;
-  }
+  };
 }

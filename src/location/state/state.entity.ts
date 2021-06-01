@@ -1,3 +1,4 @@
+import EntityParent from 'src/shared/models/entity-parent.model';
 import {
   Column,
   CreateDateColumn,
@@ -13,7 +14,7 @@ import { City } from '../city/city.entity';
 import { Country } from '../country/country.entity';
 
 @Entity()
-export class State {
+export class State extends EntityParent {
   @PrimaryColumn()
   id: number;
 
@@ -37,8 +38,4 @@ export class State {
   deletedAt: Date;
 
   static relations = ['country', 'cities'];
-
-  toResponseObject(): any {
-    return this;
-  }
 }

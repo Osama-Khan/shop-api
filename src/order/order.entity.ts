@@ -12,9 +12,10 @@ import {
 import { User } from 'src/users/users.entity';
 import { OrderProduct } from 'src/order-product/order-product.entity';
 import { OrderState } from 'src/order-state/order-state.entity';
+import EntityParent from 'src/shared/models/entity-parent.model';
 
 @Entity()
-export class Order {
+export class Order extends EntityParent {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -43,7 +44,7 @@ export class Order {
 
   static relations = ['user'];
 
-  toResponseObject(): any {
+  toResponseObject = (): any => {
     const obj = {
       id: this.id,
       address: this.address,
@@ -57,5 +58,5 @@ export class Order {
       );
     }
     return obj;
-  }
+  };
 }

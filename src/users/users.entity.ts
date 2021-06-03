@@ -88,6 +88,7 @@ export class User extends EntityParent {
       firstName: this.firstName,
       lastName: this.lastName,
       profileImage: this.profileImage,
+      dateOfBirth: this.dateOfBirth,
       updatedAt: this.updatedAt,
       createdAt: this.createdAt,
     };

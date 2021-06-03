@@ -58,5 +58,5 @@ export class Order extends EntityParent {
       );
     }
     return obj;
-  };
+  }
 }

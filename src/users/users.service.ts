@@ -5,7 +5,6 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { UserDTO } from './users.dto';
 import { User } from './users.entity';
 import { Role } from 'src/roles/roles.entity';
 import { ApiService } from 'src/shared/services/api.service';
@@ -28,9 +27,9 @@ export class UsersService extends ApiService<User> {
    * Assigns role to a user
    * @param id The id of user to assign role to
    * @param roleName name of the role to assign
-   * @returns A promise that resolves to `User`
+   * @returns A promise that resolves to a user object
    */
-  async addRole(id: number, roleName: string): Promise<User> {
+  async addRole(id: number, roleName: string): Promise<any> {
     const role = await this.rolesRepository.findOne({
       where: { name: roleName },
     });
@@ -51,7 +50,7 @@ export class UsersService extends ApiService<User> {
     user.roles = user.roles ? [...user.roles, role] : [role];
     const u = this.usersRepository.create(user);
     await this.usersRepository.save(user);
-    return UserDTO.generateRO(u);
+    return u.toResponseObject();
   }
 
   /**

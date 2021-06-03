@@ -94,5 +94,5 @@ export class Product extends EntityParent {
       );
     }
     return obj;
-  };
+  }
 }

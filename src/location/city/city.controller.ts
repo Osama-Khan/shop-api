@@ -35,14 +35,14 @@ export class CityController {
     limit: number,
     @Query('include', new IncludesValidationPipe(City.relations))
     include: string[],
-    @Query('cityBy', new OrderByValidationPipe(CityController.validProperties))
-    cityBy: string,
-    @Query('cityDirection', new OrderDirValidationPipe())
-    cityDir: 'ASC' | 'DESC',
+    @Query('orderBy', new OrderByValidationPipe(CityController.validProperties))
+    orderBy: string,
+    @Query('orderDirection', new OrderDirValidationPipe())
+    orderDir: 'ASC' | 'DESC',
     @Query('filters', new FiltersValidationPipe(CityController.validProperties))
     filters,
   ) {
-    return this.cityService.findAll(limit, include, cityBy, cityDir, filters);
+    return this.cityService.findAll(limit, include, orderBy, orderDir, filters);
   }
 
   @Get(':id')

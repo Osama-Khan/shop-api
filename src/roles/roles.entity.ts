@@ -56,5 +56,5 @@ export class Role extends EntityParent {
       obj['permissions'] = this.permissions.map((p) => p.toResponseObject());
     }
     return obj;
-  };
+  }
 }

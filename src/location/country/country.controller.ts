@@ -36,12 +36,12 @@ export class CountryController {
     @Query('include', new IncludesValidationPipe(Country.relations))
     include: string[],
     @Query(
-      'countryBy',
+      'orderBy',
       new OrderByValidationPipe(CountryController.validProperties),
     )
-    countryBy: string,
-    @Query('countryDirection', new OrderDirValidationPipe())
-    countryDir: 'ASC' | 'DESC',
+    orderBy: string,
+    @Query('orderDirection', new OrderDirValidationPipe())
+    orderDir: 'ASC' | 'DESC',
     @Query(
       'filters',
       new FiltersValidationPipe(CountryController.validProperties),
@@ -51,8 +51,8 @@ export class CountryController {
     return this.countryService.findAll(
       limit,
       include,
-      countryBy,
-      countryDir,
+      orderBy,
+      orderDir,
       filters,
     );
   }

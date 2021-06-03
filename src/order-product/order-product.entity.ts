@@ -29,12 +29,4 @@ export class OrderProduct extends EntityParent {
   price: number;
 
   static relations = ['product'];
-
-  toResponseObject = (): any => ({
-    id: this.id,
-    product: this.product,
-    order: this.order,
-    quantity: this.quantity,
-    price: this.price,
-  });
 }

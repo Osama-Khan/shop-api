@@ -45,5 +45,5 @@ export class Category extends EntityParent {
       obj['childCategory'] = this.childCategory;
     }
     return obj;
-  };
+  }
 }

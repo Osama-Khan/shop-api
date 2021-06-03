@@ -44,5 +44,5 @@ export class Highlight extends EntityParent {
       return { id, highlight, product: this.product.toResponseObject() };
     }
     return { id, highlight };
-  };
+  }
 }

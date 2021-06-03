@@ -36,12 +36,12 @@ export class StateController {
     @Query('include', new IncludesValidationPipe(State.relations))
     include: string[],
     @Query(
-      'stateBy',
+      'orderBy',
       new OrderByValidationPipe(StateController.validProperties),
     )
-    stateBy: string,
-    @Query('stateDirection', new OrderDirValidationPipe())
-    stateDir: 'ASC' | 'DESC',
+    orderBy: string,
+    @Query('orderDirection', new OrderDirValidationPipe())
+    orderDir: 'ASC' | 'DESC',
     @Query(
       'filters',
       new FiltersValidationPipe(StateController.validProperties),
@@ -51,8 +51,8 @@ export class StateController {
     return this.stateService.findAll(
       limit,
       include,
-      stateBy,
-      stateDir,
+      orderBy,
+      orderDir,
       filters,
     );
   }

@@ -76,12 +76,12 @@ export class UsersController {
     return this.usersService.update(id, user);
   }
 
-  @Patch('role/:id')
+  @Patch(':id/role')
   assignRole(@Param('id', ParseIntPipe) id: number, @Query('name') roleName) {
     return this.usersService.addRole(id, roleName);
   }
 
-  @Patch('address/:id')
+  @Patch(':id/address')
   addAddress(@Param('id', ParseIntPipe) id: number, @Body() address) {
     return this.usersService.addAddress(id, address);
   }

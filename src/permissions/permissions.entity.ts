@@ -32,7 +32,7 @@ export class Permission extends EntityParent {
 
   static relations = ['roles'];
 
-  toResponseObject = (): any => {
+  toResponseObject() {
     const { id, name, updatedAt, createdAt } = this;
     const obj = { id, name, updatedAt, createdAt };
     if (this.roles) {

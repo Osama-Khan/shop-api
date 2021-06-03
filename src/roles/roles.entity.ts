@@ -42,7 +42,7 @@ export class Role extends EntityParent {
 
   static relations = ['users', 'permissions'];
 
-  toResponseObject = (): any => {
+  toResponseObject() {
     const obj = {
       id: this.id,
       name: this.name,

@@ -81,7 +81,7 @@ export class User extends EntityParent {
 
   static relations = ['roles', 'products', 'orders', 'addresses'];
 
-  toResponseObject = (): any => {
+  toResponseObject() {
     const obj = {
       id: this.id,
       username: this.username,
@@ -105,5 +105,5 @@ export class User extends EntityParent {
       obj['addresses'] = this.addresses; //.map((a) => a.toResponseObject());
     }
     return obj;
-  };
+  }
 }

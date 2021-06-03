@@ -1,4 +1,6 @@
 export default abstract class EntityParent {
-  toResponseObject: () => Partial<this> = () => this;
+  toResponseObject(): any {
+    return this;
+  }
   static relations: string[] = [];
 }

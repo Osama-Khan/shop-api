@@ -46,7 +46,7 @@ export class Address extends EntityParent {
 
   static relations = ['user', 'city'];
 
-  toResponseObject = (): any => {
+  toResponseObject() {
     const { id, tag, address } = this;
     return { id, tag, address, user: this.user.toResponseObject() };
   };

@@ -38,7 +38,7 @@ export class Highlight extends EntityParent {
 
   static relations = ['product'];
 
-  toResponseObject = (): any => {
+  toResponseObject() {
     const { id, highlight } = this;
     if (this.product) {
       return { id, highlight, product: this.product.toResponseObject() };

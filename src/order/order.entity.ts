@@ -44,7 +44,7 @@ export class Order extends EntityParent {
 
   static relations = ['user'];
 
-  toResponseObject = (): any => {
+  toResponseObject() {
     const obj = {
       id: this.id,
       address: this.address,

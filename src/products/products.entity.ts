@@ -66,7 +66,7 @@ export class Product extends EntityParent {
 
   static relations = ['highlights', 'category', 'user', 'orderProducts'];
 
-  toResponseObject = (): any => {
+  toResponseObject() {
     const obj = {
       id: this.id,
       title: this.title,

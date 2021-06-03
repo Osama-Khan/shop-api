@@ -47,7 +47,7 @@ export class AuthenticationService extends ApiService<User> {
     return response;
   }
 
-  async register(registerModel: IRegisterModel): Promise<User> {
+  async register(registerModel: IRegisterModel): Promise<any> {
     let user = await this.usersRepository.findOne({
       where: [
         { username: registerModel.username },

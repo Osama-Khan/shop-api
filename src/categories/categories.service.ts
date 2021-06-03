@@ -64,7 +64,7 @@ export class CategoriesService extends ApiService<Category> {
    * @param name The name of category
    * @returns A list of products from the given category
    */
-  async findProducts(name: string): Promise<Product[]> {
+  async findProducts(name: string): Promise<any[]> {
     const category = await this.categoriesRepository.findOne({
       where: { name },
     });

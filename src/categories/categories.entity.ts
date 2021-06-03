@@ -36,7 +36,7 @@ export class Category extends EntityParent {
 
   static relations = ['parentCategory', 'childCategory'];
 
-  toResponseObject = (): any => {
+  toResponseObject() {
     const obj = { id: this.id, name: this.name };
     if (this.parentCategory) {
       obj['parentCategory'] = this.parentCategory;

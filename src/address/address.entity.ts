@@ -45,9 +45,4 @@ export class Address extends EntityParent {
   deletedAt: Date;
 
   static relations = ['user', 'city'];
-
-  toResponseObject() {
-    const { id, tag, address } = this;
-    return { id, tag, address, user: this.user.toResponseObject() };
-  };
 }

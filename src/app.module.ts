@@ -28,6 +28,7 @@ import { CityModule } from './location/city/city.module';
 import { StateModule } from './location/state/state.module';
 import { CountryModule } from './location/country/country.module';
 import { join } from 'path';
+import { AddressModule } from './address/address.module';
 
 @Module({
   imports: [
@@ -68,6 +69,7 @@ import { join } from 'path';
     CityModule,
     StateModule,
     CountryModule,
+    AddressModule,
   ],
   controllers: [AppController],
   providers: [AppService],

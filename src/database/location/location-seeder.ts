@@ -25,7 +25,7 @@ async function seedCountries(app: INestApplication) {
 async function seedStates(app: INestApplication) {
   const svc = app.get(StateService);
   for (const d of states) {
-    const s: any = { ...d, stateCode: d.state_code };
+    const s: any = { ...d, stateCode: d.state_code, country: d.country_id };
     LogHelper.info('[State Seeder] - Inserting State: ' + s.name);
     try {
       await svc.insert(s);
@@ -39,7 +39,8 @@ async function seedStates(app: INestApplication) {
 
 async function seedCities(app: INestApplication) {
   const svc = app.get(CityService);
-  for (const c of cities as any) {
+  for (const d of cities as any) {
+    const c: any = { ...d, state: d.state_id };
     LogHelper.info('[City Seeder] - Inserting City: ' + c.name);
     try {
       await svc.insert(c as any);

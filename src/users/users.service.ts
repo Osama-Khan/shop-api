@@ -76,7 +76,27 @@ export class UsersService extends ApiService<User> {
   }
 
   /**
+   * Gets Addresses of user
+   * @param userId ID of the user to fetch addresses of
+   * @returns A list of address objects
+   */
+  async getAddresses(userId: number) {
+    const user = await this.usersRepository.findOne(userId, {
+      relations: ['addresses'],
+    });
+    if (!user) {
+      throw new BadRequestException('No such user');
+    }
+    if (user.addresses?.length === 0) {
+      throw new NotFoundException('User has no addresses');
+    }
+    return user.addresses;
+  }
+
+  /**
    * Gets the most recent product of given user
+   * @param userId ID of the user to fetch product of
+   * @returns An object containing data of recent product
    */
   async getRecentProduct(userId: number) {
     const user = await this.usersRepository.findOne(userId, {

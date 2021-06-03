@@ -85,4 +85,9 @@ export class UsersController {
   addAddress(@Param('id', ParseIntPipe) id: number, @Body() address) {
     return this.usersService.addAddress(id, address);
   }
+
+  @Get(':id/addresses')
+  getAddresses(@Param('id', ParseIntPipe) id: number) {
+    return this.usersService.getAddresses(id);
+  }
 }

@@ -55,16 +55,18 @@ export abstract class ApiService<Entity> {
   /**
    * Gets an entity with given id
    * @param id The id of entity to find
+   * @param relations Array of string relations to include
    * @returns A promise that resolves to the `Entity` with given id
    */
-  async findOne(id: number): Promise<Entity> {
-    return await this.repository
-      .findOne(id, { relations: this.findOneRelations })
-      .then(async (e) => {
-        if (!e) throw new NotFoundException('Entity not found!');
-        const entityRO = generateRO(this.repository.create(e));
-        return entityRO;
-      });
+  async findOne(
+    id: number,
+    relations = this.findOneRelations,
+  ): Promise<Entity> {
+    return await this.repository.findOne(id, { relations }).then(async (e) => {
+      if (!e) throw new NotFoundException('Entity not found!');
+      const entityRO = generateRO(this.repository.create(e));
+      return entityRO;
+    });
   }
 
   /**
@@ -106,7 +108,7 @@ export abstract class ApiService<Entity> {
    */
   async update(id: number, entity: Entity): Promise<Entity> {
     const e = this.repository.create(entity);
-    const exists = await this.repository.findOne(id);
+    const exists = await this.findOne(id, []);
     if (!exists) throw new NotFoundException('Entity not found!');
     await this.repository.update(id, e);
     return await this.findOne(id);

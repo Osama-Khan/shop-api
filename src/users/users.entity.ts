@@ -18,8 +18,6 @@ import * as bcrypt from 'bcrypt';
 import { Order } from 'src/order/order.entity';
 import EntityParent from 'src/shared/models/entity-parent.model';
 
-const defaultImage = `${process.env.domain}/images/profile/default-profile.png`;
-
 @Entity()
 export class User extends EntityParent {
   @PrimaryGeneratedColumn()
@@ -52,7 +50,7 @@ export class User extends EntityParent {
   @OneToMany((type) => Address, (address) => address.user)
   addresses: Address[];
 
-  @Column({ default: defaultImage, name: 'profile_image', type: 'text' })
+  @Column({ name: 'profile_image', type: 'text' })
   profileImage: string;
 
   @ManyToMany((type) => Role, (role) => role.users)
@@ -77,6 +75,13 @@ export class User extends EntityParent {
   async hashPassword() {
     const salt = 8;
     if (this.password) this.password = await bcrypt.hash(this.password, salt);
+  }
+
+  @BeforeInsert()
+  @BeforeUpdate()
+  setDefaultImage() {
+    if (!this.profileImage)
+      this.profileImage = `${process.env.DOMAIN}/images/profile/default-profile.png`;
   }
 
   static relations = ['roles', 'products', 'orders', 'addresses'];

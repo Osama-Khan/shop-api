@@ -15,6 +15,9 @@ export class Country extends EntityParent {
   @PrimaryColumn()
   id: number;
 
+  @Column()
+  name: string;
+
   @OneToMany((type) => State, (state) => state.country)
   states: State[];
 

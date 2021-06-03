@@ -21,6 +21,9 @@ export class City extends EntityParent {
   state: State;
 
   @Column()
+  name: string;
+
+  @Column()
   latitude: number;
 
   @Column()

@@ -25,6 +25,9 @@ export class State extends EntityParent {
   @OneToMany((type) => City, (city) => city.state)
   cities: City[];
 
+  @Column()
+  name: string;
+
   @Column({ name: 'state_code', nullable: true })
   stateCode: string;
 

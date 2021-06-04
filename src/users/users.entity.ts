@@ -13,10 +13,13 @@ import {
   BeforeInsert,
   BeforeUpdate,
   DeleteDateColumn,
+  OneToOne,
+  JoinColumn,
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { Order } from 'src/order/order.entity';
 import EntityParent from 'src/shared/models/entity-parent.model';
+import { Setting } from 'src/setting/setting.entity';
 
 @Entity()
 export class User extends EntityParent {
@@ -61,6 +64,9 @@ export class User extends EntityParent {
   })
   roles: Role[];
 
+  @OneToOne((setting) => Setting, (setting) => setting.user)
+  setting: Setting;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
@@ -84,7 +90,7 @@ export class User extends EntityParent {
       this.profileImage = `${process.env.DOMAIN}/images/profile/default-profile.png`;
   }
 
-  static relations = ['roles', 'products', 'orders', 'addresses'];
+  static relations = ['roles', 'products', 'orders', 'addresses', 'setting'];
 
   toResponseObject() {
     const obj = {
@@ -109,6 +115,9 @@ export class User extends EntityParent {
     if (this.addresses) {
       // Does not work with map for some reason
       obj['addresses'] = this.addresses; //.map((a) => a.toResponseObject());
+    }
+    if (this.setting) {
+      obj['setting'] = this.setting.toResponseObject();
     }
     return obj;
   }

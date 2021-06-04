@@ -29,6 +29,8 @@ import { StateModule } from './location/state/state.module';
 import { CountryModule } from './location/country/country.module';
 import { join } from 'path';
 import { AddressModule } from './address/address.module';
+import { SettingModule } from './setting/setting.module';
+import { Setting } from './setting/setting.entity';
 
 @Module({
   imports: [
@@ -53,6 +55,7 @@ import { AddressModule } from './address/address.module';
         City,
         State,
         Country,
+        Setting,
       ],
       synchronize: true,
     }),
@@ -70,6 +73,7 @@ import { AddressModule } from './address/address.module';
     StateModule,
     CountryModule,
     AddressModule,
+    SettingModule,
   ],
   controllers: [AppController],
   providers: [AppService],

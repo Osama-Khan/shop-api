@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { Order } from './order.entity';
 import { ApiService } from 'src/shared/services/api.service';
 import { Product } from 'src/products/products.entity';
-import { OrderProduct } from 'src/order-product/order-product.entity';
+import { OrderProduct } from 'src/order/order-product/order-product.entity';
 import { User } from 'src/users/users.entity';
 
 @Injectable()

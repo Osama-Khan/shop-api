@@ -1,6 +1,6 @@
 import { Category } from 'src/categories/categories.entity';
 import { Highlight } from 'src/highlights/highlights.entity';
-import { OrderProduct } from 'src/order-product/order-product.entity';
+import { OrderProduct } from 'src/order/order-product/order-product.entity';
 import EntityParent from 'src/shared/models/entity-parent.model';
 import { User } from 'src/users/users.entity';
 import {

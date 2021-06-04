@@ -10,8 +10,8 @@ import {
   OneToMany,
 } from 'typeorm';
 import { User } from 'src/users/users.entity';
-import { OrderProduct } from 'src/order-product/order-product.entity';
-import { OrderState } from 'src/order-state/order-state.entity';
+import { OrderProduct } from 'src/order/order-product/order-product.entity';
+import { OrderState } from 'src/order/order-state/order-state.entity';
 import EntityParent from 'src/shared/models/entity-parent.model';
 
 @Entity()

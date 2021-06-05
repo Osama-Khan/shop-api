@@ -14,7 +14,6 @@ import {
   BeforeUpdate,
   DeleteDateColumn,
   OneToOne,
-  JoinColumn,
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { Order } from 'src/order/order.entity';
@@ -64,7 +63,7 @@ export class User extends EntityParent {
   })
   roles: Role[];
 
-  @OneToOne((setting) => Setting, (setting) => setting.user)
+  @OneToOne((type) => Setting, (setting) => setting.user)
   setting: Setting;
 
   @CreateDateColumn({ name: 'created_at' })

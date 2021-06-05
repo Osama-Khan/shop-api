@@ -2,19 +2,25 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ObjectLiteral, Repository } from 'typeorm';
 import { Address } from './address.entity';
 import { ApiService } from 'src/shared/services/api.service';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { State } from 'src/location/state/state.entity';
 import { City } from 'src/location/city/city.entity';
+import { Setting } from 'src/setting/setting.entity';
+import { User } from 'src/users/users.entity';
 
 @Injectable()
 export class AddressService extends ApiService<Address> {
   constructor(
     @InjectRepository(Address)
     addressRepository: Repository<Address>,
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
     @InjectRepository(City)
     private citiesRepository: Repository<City>,
     @InjectRepository(State)
     private statesRepository: Repository<State>,
+    @InjectRepository(Setting)
+    private settingsRepository: Repository<Setting>,
   ) {
     super(addressRepository, Address.relations);
   }
@@ -49,5 +55,39 @@ export class AddressService extends ApiService<Address> {
       }
     }
     return addresses;
+  }
+
+  /**
+   * Get the default address of user from settings
+   * @param id ID of the user
+   * @returns Default or first address of the user
+   */
+  async getDefaultAddress(id: number) {
+    const user = await this.userRepository.findOne(id, {
+      relations: ['addresses'],
+    });
+    if (!user) {
+      throw new NotFoundException('User not found!');
+    }
+    if (user.addresses.length === 0) {
+      throw new NotFoundException('User has no addresses!');
+    }
+
+    const setting = await this.settingsRepository.findOne({
+      where: { user: id },
+      relations: ['defaultAddress'],
+    });
+    let idToFetch: number;
+
+    if (!setting) {
+      idToFetch = user.addresses[0].id;
+    } else {
+      idToFetch = setting.defaultAddress.id;
+    }
+    return (
+      await this.findAll(undefined, ['city'], undefined, undefined, {
+        id: idToFetch,
+      })
+    )[0];
   }
 }

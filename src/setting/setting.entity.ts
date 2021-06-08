@@ -3,25 +3,22 @@ import EntityParent from 'src/shared/models/entity-parent.model';
 import { User } from 'src/users/users.entity';
 import {
   Entity,
-  PrimaryGeneratedColumn,
-  ManyToOne,
   JoinColumn,
   CreateDateColumn,
   UpdateDateColumn,
   DeleteDateColumn,
   OneToOne,
+  PrimaryColumn,
+  BeforeInsert,
+  BeforeUpdate,
 } from 'typeorm';
 
 @Entity()
 export class Setting extends EntityParent {
-  @PrimaryGeneratedColumn()
+  @PrimaryColumn()
   id: number;
 
-  @ManyToOne((type) => User, (user) => user.setting, {
-    cascade: true,
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
-  })
+  @OneToOne((type) => User, (user) => user.setting)
   @JoinColumn({ name: 'user_id' })
   user: User;
 
@@ -39,4 +36,27 @@ export class Setting extends EntityParent {
   deletedAt: Date;
 
   static relations = ['user', 'defaultAddress'];
+
+  @BeforeInsert()
+  @BeforeUpdate()
+  syncIdWithUser() {
+    if (this.user) {
+      this.id = this.user.id;
+    }
+  }
+
+  toResponseObject() {
+    const obj = {
+      id: this.id,
+      createdAt: this.createdAt,
+      updatedAt: this.updatedAt,
+    };
+    if (this.user) {
+      obj['user'] = this.user.toResponseObject();
+    }
+    if (this.defaultAddress) {
+      obj['defaultAddress'] = this.defaultAddress.toResponseObject();
+    }
+    return obj;
+  }
 }

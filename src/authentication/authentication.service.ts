@@ -11,12 +11,15 @@ import IRegisterModel from './models/register.model';
 import ILoginModel from './models/login.model';
 import { ApiService } from 'src/shared/services/api.service';
 import JwtHelper from 'src/shared/helpers/jwt.helper';
+import { Setting } from 'src/setting/setting.entity';
 
 @Injectable()
 export class AuthenticationService extends ApiService<User> {
   constructor(
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
+    @InjectRepository(Setting)
+    private readonly settingsRepository: Repository<Setting>,
   ) {
     super(usersRepository);
   }
@@ -57,10 +60,15 @@ export class AuthenticationService extends ApiService<User> {
     if (user) {
       throw new BadRequestException('User already exists');
     }
+
     user = this.usersRepository.create(registerModel);
     const insertResult = await this.usersRepository.insert(user);
-    return (
-      await this.usersRepository.findOne(insertResult.generatedMaps['id'])
-    ).toResponseObject();
+    const id = insertResult.generatedMaps['id'];
+
+    // Create a setting for the user
+    const setting = this.settingsRepository.create({ id, user });
+    this.settingsRepository.insert(setting);
+
+    return (await this.usersRepository.findOne(id)).toResponseObject();
   }
 }

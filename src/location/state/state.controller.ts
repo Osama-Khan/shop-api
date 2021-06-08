@@ -24,6 +24,7 @@ export class StateController {
   static validProperties = [
     'id',
     'name',
+    'country',
     'createdAt',
     'deletedAt',
     'updatedAt',

@@ -57,6 +57,24 @@ export class AddressService extends ApiService<Address> {
     return addresses;
   }
 
+  async findOne(id) {
+    const address: any = await super.findOne(id);
+
+    if (address.city) {
+      let id = address.city.id;
+      const city = await this.citiesRepository.findOne(id, {
+        relations: ['state'],
+      });
+      id = city.state.id;
+      const state = await this.statesRepository.findOne(id, {
+        relations: ['country'],
+      });
+      address.city = city.name;
+      address.state = state.name;
+      address.country = state.country.name;
+    }
+    return address;
+  }
   /**
    * Get the default address of user from settings
    * @param id ID of the user

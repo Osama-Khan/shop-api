@@ -64,11 +64,6 @@ export class AddressController {
     return this.addressService.findOne(id);
   }
 
-  @Get('/default/:userId')
-  getDefaultAddress(@Param('userId', ParseIntPipe) userId: number) {
-    return this.addressService.getDefaultAddress(userId);
-  }
-
   @Put()
   setAddress(@Body() address) {
     return this.addressService.insert(address);

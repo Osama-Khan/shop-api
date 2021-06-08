@@ -75,37 +75,4 @@ export class AddressService extends ApiService<Address> {
     }
     return address;
   }
-  /**
-   * Get the default address of user from settings
-   * @param id ID of the user
-   * @returns Default or first address of the user
-   */
-  async getDefaultAddress(id: number) {
-    const user = await this.userRepository.findOne(id, {
-      relations: ['addresses'],
-    });
-    if (!user) {
-      throw new NotFoundException('User not found!');
-    }
-    if (user.addresses.length === 0) {
-      throw new NotFoundException('User has no addresses!');
-    }
-
-    const setting = await this.settingsRepository.findOne({
-      where: { user: id },
-      relations: ['defaultAddress'],
-    });
-    let idToFetch: number;
-
-    if (!setting) {
-      idToFetch = user.addresses[0].id;
-    } else {
-      idToFetch = setting.defaultAddress.id;
-    }
-    return (
-      await this.findAll(undefined, ['city'], undefined, undefined, {
-        id: idToFetch,
-      })
-    )[0];
-  }
 }

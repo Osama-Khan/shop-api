@@ -33,7 +33,7 @@ export abstract class ApiService<Entity> {
     take = 10,
     relations = [],
     orderBy = 'createdAt',
-    orderDir: 'ASC' | 'DESC' = 'DESC',
+    orderDir: 'ASC' | 'DESC' = 'ASC',
     where: ObjectLiteral | string = {},
   ): Promise<Entity[]> {
     const options = CriteriaHelper.generateOptionsObject(

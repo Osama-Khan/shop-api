@@ -16,11 +16,7 @@ export class Highlight extends EntityParent {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne((type) => Product, (product) => product.highlights, {
-    cascade: true,
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
-  })
+  @ManyToOne((type) => Product, (product) => product.highlights)
   @JoinColumn({ name: 'product_id' })
   product: Product;
 

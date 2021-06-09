@@ -17,11 +17,7 @@ export class Address extends EntityParent {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne((type) => User, (user) => user.addresses, {
-    cascade: true,
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
-  })
+  @ManyToOne((type) => User, (user) => user.addresses)
   @JoinColumn({ name: 'user_id' })
   user: User;
 

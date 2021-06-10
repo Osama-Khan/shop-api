@@ -24,6 +24,8 @@ export class OrderController {
   static validProperties = [
     'id',
     'address',
+    'user',
+    'orderState',
     'createdAt',
     'deletedAt',
     'updatedAt',

@@ -42,7 +42,7 @@ export class Order extends EntityParent {
   @DeleteDateColumn({ name: 'deleted_at' })
   deletedAt: Date;
 
-  static relations = ['user'];
+  static relations = ['user', 'orderProducts', 'orderState'];
 
   toResponseObject() {
     const obj = {
@@ -56,6 +56,9 @@ export class Order extends EntityParent {
       obj['orderProducts'] = this.orderProducts.map((op) =>
         op.toResponseObject(),
       );
+    }
+    if (this.orderState) {
+      obj['orderState'] = this.orderState.toResponseObject();
     }
     return obj;
   }

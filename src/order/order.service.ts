@@ -57,4 +57,15 @@ export class OrderService extends ApiService<Order> {
     }
     return order;
   }
+
+  async getDetail(id: number) {
+    // Verifies if order exists
+    await this.findOne(id);
+
+    const details = await this.opRepository.find({
+      where: { order: id },
+      relations: ['product'],
+    });
+    return details;
+  }
 }

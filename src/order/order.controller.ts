@@ -64,6 +64,11 @@ export class OrderController {
     return this.orderService.findOne(id);
   }
 
+  @Get('detail/:id')
+  getOrderProduct(@Param('id', ParseIntPipe) id: number) {
+    return this.orderService.getDetail(id);
+  }
+
   @Put()
   placeOrder(@Body() orderDetail) {
     return this.orderService.placeOrder(orderDetail);

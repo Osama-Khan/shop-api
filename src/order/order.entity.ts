@@ -48,6 +48,8 @@ export class Order extends EntityParent {
     const obj = {
       id: this.id,
       address: this.address,
+      createdAt: this.createdAt,
+      updatedAt: this.updatedAt,
     };
     if (this.user) {
       obj['user'] = this.user.toResponseObject();

@@ -28,5 +28,5 @@ export class OrderProduct extends EntityParent {
   @Column()
   price: number;
 
-  static relations = ['product'];
+  static relations = ['product', 'order'];
 }

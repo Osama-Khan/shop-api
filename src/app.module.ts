@@ -31,6 +31,8 @@ import { join } from 'path';
 import { AddressModule } from './address/address.module';
 import { SettingModule } from './setting/setting.module';
 import { Setting } from './setting/setting.entity';
+import { FavoriteModule } from './favorite/favorite.module';
+import { Favorite } from './favorite/favorite.entity';
 
 @Module({
   imports: [
@@ -56,6 +58,7 @@ import { Setting } from './setting/setting.entity';
         State,
         Country,
         Setting,
+        Favorite,
       ],
       synchronize: true,
     }),
@@ -74,6 +77,7 @@ import { Setting } from './setting/setting.entity';
     CountryModule,
     AddressModule,
     SettingModule,
+    FavoriteModule,
   ],
   controllers: [AppController],
   providers: [AppService],

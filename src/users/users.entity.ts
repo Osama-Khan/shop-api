@@ -19,6 +19,7 @@ import * as bcrypt from 'bcrypt';
 import { Order } from 'src/order/order.entity';
 import EntityParent from 'src/shared/models/entity-parent.model';
 import { Setting } from 'src/setting/setting.entity';
+import { Favorite } from 'src/favorite/favorite.entity';
 
 @Entity()
 export class User extends EntityParent {
@@ -51,6 +52,9 @@ export class User extends EntityParent {
 
   @OneToMany((type) => Address, (address) => address.user)
   addresses: Address[];
+
+  @OneToMany((type) => Favorite, (favorite) => favorite.user)
+  favorites: Favorite[];
 
   @Column({ name: 'profile_image', type: 'text' })
   profileImage: string;
@@ -89,7 +93,14 @@ export class User extends EntityParent {
       this.profileImage = `${process.env.DOMAIN}/images/profile/default-profile.png`;
   }
 
-  static relations = ['roles', 'products', 'orders', 'addresses', 'setting'];
+  static relations = [
+    'roles',
+    'products',
+    'orders',
+    'addresses',
+    'setting',
+    'favorites',
+  ];
 
   toResponseObject() {
     const obj = {
@@ -117,6 +128,9 @@ export class User extends EntityParent {
     }
     if (this.setting) {
       obj['setting'] = this.setting.toResponseObject();
+    }
+    if (this.favorites) {
+      obj['favorites'] = this.favorites.map((f) => f.toResponseObject());
     }
     return obj;
   }

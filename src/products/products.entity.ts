@@ -1,4 +1,5 @@
 import { Category } from 'src/categories/categories.entity';
+import { Favorite } from 'src/favorite/favorite.entity';
 import { Highlight } from 'src/highlights/highlights.entity';
 import { OrderProduct } from 'src/order/order-product/order-product.entity';
 import EntityParent from 'src/shared/models/entity-parent.model';
@@ -38,6 +39,9 @@ export class Product extends EntityParent {
   @OneToMany((type) => Highlight, (highlight) => highlight.product)
   highlights: Highlight[];
 
+  @OneToMany((type) => Favorite, (favorite) => favorite.product)
+  favorites: Favorite[];
+
   @ManyToOne((type) => Category)
   @JoinColumn({ name: 'category_id' })
   category: Category;
@@ -64,7 +68,13 @@ export class Product extends EntityParent {
   @DeleteDateColumn({ name: 'deleted_at' })
   deletedAt: Date;
 
-  static relations = ['highlights', 'category', 'user', 'orderProducts'];
+  static relations = [
+    'highlights',
+    'category',
+    'user',
+    'orderProducts',
+    'favorites',
+  ];
 
   toResponseObject() {
     const obj = {
@@ -92,6 +102,9 @@ export class Product extends EntityParent {
       obj['orderProducts'] = this.orderProducts.map((op) =>
         op.toResponseObject(),
       );
+    }
+    if (this.favorites) {
+      obj['favorites'] = this.favorites.map((f) => f.toResponseObject());
     }
     return obj;
   }

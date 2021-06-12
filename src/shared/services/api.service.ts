@@ -1,5 +1,10 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
-import { ObjectLiteral, Repository } from 'typeorm';
+import {
+  FindConditions,
+  FindManyOptions,
+  FindOneOptions,
+  Repository,
+} from 'typeorm';
 import { CriteriaHelper } from '../helpers/criteria.helper';
 import generateRO from '../helpers/ro.helper';
 
@@ -34,7 +39,7 @@ export abstract class ApiService<Entity> {
     relations = [],
     orderBy = 'createdAt',
     orderDir: 'ASC' | 'DESC' = 'ASC',
-    where: ObjectLiteral | string = {},
+    where: FindConditions<Entity> | string = {},
   ): Promise<Entity[]> {
     const options = CriteriaHelper.generateOptionsObject(
       take,
@@ -58,11 +63,11 @@ export abstract class ApiService<Entity> {
    * @param relations Array of string relations to include
    * @returns A promise that resolves to the `Entity` with given id
    */
-  async findOne(
-    id: number,
-    relations = this.findOneRelations,
-  ): Promise<Entity> {
-    return await this.repository.findOne(id, { relations }).then(async (e) => {
+  async findOne(id: number, options?: FindOneOptions): Promise<Entity> {
+    if (options && !options.relations) {
+      options.relations = this.findOneRelations;
+    }
+    return await this.repository.findOne(id, options).then(async (e) => {
       if (!e) throw new NotFoundException('Entity not found!');
       const entityRO = generateRO(this.repository.create(e));
       return entityRO;
@@ -108,9 +113,18 @@ export abstract class ApiService<Entity> {
    */
   async update(id: number, entity: Entity): Promise<Entity> {
     const e = this.repository.create(entity);
-    const exists = await this.findOne(id, []);
+    const exists = await this.findOne(id, { relations: [] });
     if (!exists) throw new NotFoundException('Entity not found!');
     await this.repository.update(id, e);
     return await this.findOne(id);
+  }
+
+  /**
+   * Counts rows in entity matching the given options
+   * @param options Options to filters rows
+   * @returns A number representing count of rows
+   */
+  async count(options: FindManyOptions<Entity>): Promise<number> {
+    return await this.repository.count(options);
   }
 }

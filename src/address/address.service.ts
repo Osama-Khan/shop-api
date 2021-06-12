@@ -2,7 +2,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ObjectLiteral, Repository } from 'typeorm';
 import { Address } from './address.entity';
 import { ApiService } from 'src/shared/services/api.service';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { State } from 'src/location/state/state.entity';
 import { City } from 'src/location/city/city.entity';
 import { Setting } from 'src/setting/setting.entity';

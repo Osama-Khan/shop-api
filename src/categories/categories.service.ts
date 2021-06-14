@@ -25,12 +25,14 @@ export class CategoriesService extends ApiService<Category> {
     id: number,
   ): Promise<{ id: number; name: string }[]> {
     const toRo = (c: any) => ({ id: c.id, name: c.name });
-    let c = await this.findOne(id);
+    let c = await this.findOne(id, { relations: ['parentCategory'] });
     if (c) {
       const categoryStack = [];
       while (c && c.parentCategory) {
         categoryStack.push(toRo(c.parentCategory));
-        c = await this.findOne(c.parentCategory.id);
+        c = await this.findOne(c.parentCategory.id, {
+          relations: ['parentCategory'],
+        });
       }
       return categoryStack;
     } else {
@@ -47,12 +49,14 @@ export class CategoriesService extends ApiService<Category> {
     id: number,
   ): Promise<{ id: number; name: string }[]> {
     const toRo = (c: any) => ({ id: c.id, name: c.name });
-    let c = await this.findOne(id);
+    let c = await this.findOne(id, { relations: ['childCategory'] });
     if (c) {
       const categoryStack = [];
       while (c && c.childCategory) {
         categoryStack.push(toRo(c.childCategory));
-        c = await this.findOne(c.childCategory.id);
+        c = await this.findOne(c.childCategory.id, {
+          relations: ['childCategory'],
+        });
       }
       return categoryStack;
     } else {

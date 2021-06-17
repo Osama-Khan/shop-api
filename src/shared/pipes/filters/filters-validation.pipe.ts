@@ -10,7 +10,7 @@ export class FiltersValidationPipe implements PipeTransform {
       const f = filters.split(';');
       const obj = {};
       f.forEach((f, i) => {
-        const keyVal = f.split('=');
+        const keyVal = f.split(':');
         const [key, val] = [keyVal[0].toLowerCase(), keyVal[1]];
         if (
           keyVal.length !== 2 ||

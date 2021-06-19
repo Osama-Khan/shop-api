@@ -1,8 +1,15 @@
-import { Controller, Get, Param, ParseIntPipe, Query } from '@nestjs/common';
-import { FiltersValidationPipe } from 'src/shared/pipes/filters/filters-validation.pipe';
-import { LimitValidationPipe } from 'src/shared/pipes/filters/limit-validation.pipe';
-import { OrderByValidationPipe } from 'src/shared/pipes/filters/orderby-validation.pipe';
-import { OrderDirValidationPipe } from 'src/shared/pipes/filters/orderdir-validation.pipe';
+import {
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Query,
+  UsePipes,
+} from '@nestjs/common';
+import FindManyOptionsDTO from 'src/shared/models/find-many-options.dto';
+import FindOneOptionsDTO from 'src/shared/models/find-one-options.dto';
+import FindManyValidationPipe from 'src/shared/pipes/filters/find-many-validation.pipe';
+import FindOneValidationPipe from 'src/shared/pipes/filters/find-one-validation.pipe';
 import { Permission } from './permissions.entity';
 import { PermissionsService } from './permissions.service';
 
@@ -13,32 +20,29 @@ export class PermissionsController {
   static validProperties = ['id', 'name'];
 
   @Get()
+  @UsePipes(
+    new FindManyValidationPipe(
+      PermissionsController.validProperties,
+      Permission.relations,
+    ),
+  )
   getPermissions(
-    @Query('limit', new LimitValidationPipe()) limit: number,
-    @Query(
-      'orderBy',
-      new OrderByValidationPipe(PermissionsController.validProperties),
-    )
-    orderBy: string,
-    @Query('orderDirection', new OrderDirValidationPipe())
-    orderDir: 'ASC' | 'DESC',
-    @Query(
-      'filters',
-      new FiltersValidationPipe(PermissionsController.validProperties),
-    )
-    filters,
+    @Query() options: FindManyOptionsDTO<Permission>,
   ): Promise<Permission[]> {
-    return this.permissionsService.findAll(
-      limit,
-      [],
-      orderBy,
-      orderDir,
-      filters,
-    );
+    return this.permissionsService.findAll(options);
   }
 
   @Get(':id')
-  getPermission(@Param('id', ParseIntPipe) id: number): Promise<Permission> {
-    return this.permissionsService.findOne(id);
+  @UsePipes(
+    new FindOneValidationPipe(
+      PermissionsController.validProperties,
+      Permission.relations,
+    ),
+  )
+  getPermission(
+    @Param('id', ParseIntPipe) id: number,
+    @Query() options: FindOneOptionsDTO<Permission>,
+  ): Promise<Permission> {
+    return this.permissionsService.findOne(id, options);
   }
 }

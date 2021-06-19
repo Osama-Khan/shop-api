@@ -1,12 +1,8 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
-import {
-  FindConditions,
-  FindManyOptions,
-  FindOneOptions,
-  Repository,
-} from 'typeorm';
-import { CriteriaHelper } from '../helpers/criteria.helper';
+import { Repository } from 'typeorm';
 import generateRO from '../helpers/ro.helper';
+import FindManyOptionsDTO from '../models/find-many-options.dto';
+import FindOneOptionsDTO from '../models/find-one-options.dto';
 
 /**
  * Service containing the general operations of an API service
@@ -27,27 +23,10 @@ export abstract class ApiService<Entity> {
 
   /**
    * Finds entities that match the given criteria
-   * @param take The maximum number of records to return
-   * @param relations A semicolon separated list of related entities to include
-   * @param orderBy A string representing a column of `Entity` to order by
-   * @param orderDir Direction of ordered column
-   * @param where A semicolon separated list of column=value formatted filters
+   * @param options A FindManyOptions DTO that contains the set of filters to apply
    * @returns A promise that resolves to an array of entities
    */
-  async findAll(
-    take = 10,
-    relations = [],
-    orderBy = 'createdAt',
-    orderDir: 'ASC' | 'DESC' = 'ASC',
-    where: FindConditions<Entity> | string = {},
-  ): Promise<Entity[]> {
-    const options = CriteriaHelper.generateOptionsObject(
-      take,
-      relations,
-      orderBy,
-      orderDir,
-      where,
-    );
+  async findAll(options: FindManyOptionsDTO<Entity>): Promise<Entity[]> {
     return await this.repository.find(options).then(async (e) => {
       const entities = e.map(async (e) => {
         const ro = generateRO(e);
@@ -63,7 +42,10 @@ export abstract class ApiService<Entity> {
    * @param relations Array of string relations to include
    * @returns A promise that resolves to the `Entity` with given id
    */
-  async findOne(id: number, options?: FindOneOptions): Promise<Entity> {
+  async findOne(
+    id: number,
+    options?: FindOneOptionsDTO<Entity>,
+  ): Promise<Entity> {
     if (options && !options.relations) {
       options.relations = this.findOneRelations;
     }
@@ -124,7 +106,7 @@ export abstract class ApiService<Entity> {
    * @param options Options to filters rows
    * @returns A number representing count of rows
    */
-  async count(options: FindManyOptions<Entity>): Promise<number> {
+  async count(options: FindManyOptionsDTO<Entity>): Promise<number> {
     return await this.repository.count(options);
   }
 }

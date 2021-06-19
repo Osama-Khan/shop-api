@@ -8,14 +8,14 @@ import {
   Patch,
   Put,
   Query,
+  UsePipes,
 } from '@nestjs/common';
-import { FiltersValidationPipe } from 'src/shared/pipes/filters/filters-validation.pipe';
-import { IncludesValidationPipe } from 'src/shared/pipes/filters/includes-validation.pipe';
-import { LimitValidationPipe } from 'src/shared/pipes/filters/limit-validation.pipe';
-import { OrderByValidationPipe } from 'src/shared/pipes/filters/orderby-validation.pipe';
-import { OrderDirValidationPipe } from 'src/shared/pipes/filters/orderdir-validation.pipe';
 import { Setting } from './setting.entity';
 import { SettingService } from './setting.service';
+import FindManyValidationPipe from 'src/shared/pipes/filters/find-many-validation.pipe';
+import FindOneValidationPipe from 'src/shared/pipes/filters/find-one-validation.pipe';
+import FindManyOptionsDTO from 'src/shared/models/find-many-options.dto';
+import FindOneOptionsDTO from 'src/shared/models/find-one-options.dto';
 
 @Controller({ path: '/settings' })
 export class SettingController {
@@ -31,36 +31,28 @@ export class SettingController {
   ];
 
   @Get()
-  getSettings(
-    @Query('limit', new LimitValidationPipe())
-    limit: number,
-    @Query('include', new IncludesValidationPipe(Setting.relations))
-    include: string[],
-    @Query(
-      'orderBy',
-      new OrderByValidationPipe(SettingController.validProperties),
-    )
-    orderBy: string,
-    @Query('orderDirection', new OrderDirValidationPipe())
-    orderDir: 'ASC' | 'DESC',
-    @Query(
-      'filters',
-      new FiltersValidationPipe(SettingController.validProperties),
-    )
-    filters,
-  ) {
-    return this.settingService.findAll(
-      limit,
-      include,
-      orderBy,
-      orderDir,
-      filters,
-    );
+  @UsePipes(
+    new FindManyValidationPipe(
+      SettingController.validProperties,
+      Setting.relations,
+    ),
+  )
+  getSettings(@Query() options: FindManyOptionsDTO<Setting>) {
+    return this.settingService.findAll(options);
   }
 
   @Get(':id')
-  getSetting(@Param('id', ParseIntPipe) id: number) {
-    return this.settingService.findOne(id);
+  @UsePipes(
+    new FindOneValidationPipe(
+      SettingController.validProperties,
+      Setting.relations,
+    ),
+  )
+  getSetting(
+    @Param('id', ParseIntPipe) id: number,
+    @Query() options: FindOneOptionsDTO<Setting>,
+  ) {
+    return this.settingService.findOne(id, options);
   }
 
   @Put()

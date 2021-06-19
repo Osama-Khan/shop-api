@@ -8,14 +8,14 @@ import {
   Patch,
   Put,
   Query,
+  UsePipes,
 } from '@nestjs/common';
-import { FiltersValidationPipe } from 'src/shared/pipes/filters/filters-validation.pipe';
-import { IncludesValidationPipe } from 'src/shared/pipes/filters/includes-validation.pipe';
-import { LimitValidationPipe } from 'src/shared/pipes/filters/limit-validation.pipe';
-import { OrderByValidationPipe } from 'src/shared/pipes/filters/orderby-validation.pipe';
-import { OrderDirValidationPipe } from 'src/shared/pipes/filters/orderdir-validation.pipe';
 import { State } from './state.entity';
 import { StateService } from './state.service';
+import FindOneOptionsDTO from 'src/shared/models/find-one-options.dto';
+import FindManyOptionsDTO from 'src/shared/models/find-many-options.dto';
+import FindManyValidationPipe from 'src/shared/pipes/filters/find-many-validation.pipe';
+import FindOneValidationPipe from 'src/shared/pipes/filters/find-one-validation.pipe';
 
 @Controller({ path: '/states' })
 export class StateController {
@@ -31,36 +31,25 @@ export class StateController {
   ];
 
   @Get()
-  getStates(
-    @Query('limit', new LimitValidationPipe())
-    limit: number,
-    @Query('include', new IncludesValidationPipe(State.relations))
-    include: string[],
-    @Query(
-      'orderBy',
-      new OrderByValidationPipe(StateController.validProperties),
-    )
-    orderBy: string,
-    @Query('orderDirection', new OrderDirValidationPipe())
-    orderDir: 'ASC' | 'DESC',
-    @Query(
-      'filters',
-      new FiltersValidationPipe(StateController.validProperties),
-    )
-    filters,
-  ) {
-    return this.stateService.findAll(
-      limit,
-      include,
-      orderBy,
-      orderDir,
-      filters,
-    );
+  @UsePipes(
+    new FindManyValidationPipe(
+      StateController.validProperties,
+      State.relations,
+    ),
+  )
+  getStates(@Query() options: FindManyOptionsDTO<State>) {
+    return this.stateService.findAll(options);
   }
 
   @Get(':id')
-  getState(@Param('id', ParseIntPipe) id: number) {
-    return this.stateService.findOne(id);
+  @UsePipes(
+    new FindOneValidationPipe(StateController.validProperties, State.relations),
+  )
+  getState(
+    @Param('id', ParseIntPipe) id: number,
+    @Query() options: FindOneOptionsDTO<State>,
+  ) {
+    return this.stateService.findOne(id, options);
   }
 
   @Put()

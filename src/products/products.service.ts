@@ -1,38 +1,27 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOneOptions, ObjectLiteral, Repository } from 'typeorm';
+import { FindOneOptions, Repository } from 'typeorm';
 import { Product } from './products.entity';
 import { ApiService } from 'src/shared/services/api.service';
 import { Highlight } from 'src/highlights/highlights.entity';
 import { Favorite } from 'src/favorite/favorite.entity';
+import FindManyOptionsDTO from 'src/shared/models/find-many-options.dto';
 
 @Injectable()
 export class ProductsService extends ApiService<Product> {
   constructor(
     @InjectRepository(Product)
-    productsRepository: Repository<Product>,
+    productRepository: Repository<Product>,
     @InjectRepository(Highlight)
     private highlightsRepository: Repository<Highlight>,
     @InjectRepository(Favorite)
     private favoritesRepository: Repository<Favorite>,
   ) {
-    super(productsRepository, Product.relations);
+    super(productRepository, Product.relations);
   }
 
-  async findAll(
-    take?: number,
-    relations?: any[],
-    orderBy?: string,
-    orderDir?: 'ASC' | 'DESC',
-    where?: string | ObjectLiteral,
-  ): Promise<any[]> {
-    const products = await super.findAll(
-      take,
-      relations,
-      orderBy,
-      orderDir,
-      where,
-    );
+  async findAll(options: FindManyOptionsDTO<Product>): Promise<any[]> {
+    const products = await super.findAll(options);
 
     const prods = [];
     for (const p of products) {

@@ -8,14 +8,14 @@ import {
   Patch,
   Put,
   Query,
+  UsePipes,
 } from '@nestjs/common';
-import { FiltersValidationPipe } from 'src/shared/pipes/filters/filters-validation.pipe';
-import { IncludesValidationPipe } from 'src/shared/pipes/filters/includes-validation.pipe';
-import { LimitValidationPipe } from 'src/shared/pipes/filters/limit-validation.pipe';
-import { OrderByValidationPipe } from 'src/shared/pipes/filters/orderby-validation.pipe';
-import { OrderDirValidationPipe } from 'src/shared/pipes/filters/orderdir-validation.pipe';
 import { Country } from './country.entity';
 import { CountryService } from './country.service';
+import FindOneValidationPipe from 'src/shared/pipes/filters/find-one-validation.pipe';
+import FindManyValidationPipe from 'src/shared/pipes/filters/find-many-validation.pipe';
+import FindManyOptionsDTO from 'src/shared/models/find-many-options.dto';
+import FindOneOptionsDTO from 'src/shared/models/find-one-options.dto';
 
 @Controller({ path: '/countries' })
 export class CountryController {
@@ -30,36 +30,28 @@ export class CountryController {
   ];
 
   @Get()
-  getCountrys(
-    @Query('limit', new LimitValidationPipe())
-    limit: number,
-    @Query('include', new IncludesValidationPipe(Country.relations))
-    include: string[],
-    @Query(
-      'orderBy',
-      new OrderByValidationPipe(CountryController.validProperties),
-    )
-    orderBy: string,
-    @Query('orderDirection', new OrderDirValidationPipe())
-    orderDir: 'ASC' | 'DESC',
-    @Query(
-      'filters',
-      new FiltersValidationPipe(CountryController.validProperties),
-    )
-    filters,
-  ) {
-    return this.countryService.findAll(
-      limit,
-      include,
-      orderBy,
-      orderDir,
-      filters,
-    );
+  @UsePipes(
+    new FindManyValidationPipe(
+      CountryController.validProperties,
+      Country.relations,
+    ),
+  )
+  getCountries(@Query() options: FindManyOptionsDTO<Country>) {
+    return this.countryService.findAll(options);
   }
 
   @Get(':id')
-  getCountry(@Param('id', ParseIntPipe) id: number) {
-    return this.countryService.findOne(id);
+  @UsePipes(
+    new FindOneValidationPipe(
+      CountryController.validProperties,
+      Country.relations,
+    ),
+  )
+  getCountry(
+    @Param('id', ParseIntPipe) id: number,
+    @Query() options: FindOneOptionsDTO<Country>,
+  ) {
+    return this.countryService.findOne(id, options);
   }
 
   @Put()

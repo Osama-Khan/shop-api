@@ -8,15 +8,14 @@ import {
   Patch,
   Put,
   Query,
+  UsePipes,
 } from '@nestjs/common';
-import { FiltersValidationPipe } from 'src/shared/pipes/filters/filters-validation.pipe';
-import { IncludesValidationPipe } from 'src/shared/pipes/filters/includes-validation.pipe';
-import { LimitValidationPipe } from 'src/shared/pipes/filters/limit-validation.pipe';
-import { OrderByValidationPipe } from 'src/shared/pipes/filters/orderby-validation.pipe';
-import { OrderDirValidationPipe } from 'src/shared/pipes/filters/orderdir-validation.pipe';
-import { ObjectLiteral } from 'typeorm';
 import { Role } from './roles.entity';
 import { RolesService } from './roles.service';
+import FindManyOptionsDTO from 'src/shared/models/find-many-options.dto';
+import FindOneOptionsDTO from 'src/shared/models/find-one-options.dto';
+import FindOneValidationPipe from 'src/shared/pipes/filters/find-one-validation.pipe';
+import FindManyValidationPipe from 'src/shared/pipes/filters/find-many-validation.pipe';
 
 @Controller({ path: '/roles' })
 export class RolesController {
@@ -25,35 +24,22 @@ export class RolesController {
   static validProperties = ['id', 'name'];
 
   @Get()
-  getRoles(
-    @Query('limit', new LimitValidationPipe())
-    limit: number,
-    @Query('include', new IncludesValidationPipe(Role.relations))
-    include: string[],
-    @Query(
-      'orderBy',
-      new OrderByValidationPipe(RolesController.validProperties),
-    )
-    orderBy: string,
-    @Query('orderDirection', new OrderDirValidationPipe()) orderDir: string,
-    @Query(
-      'filters',
-      new FiltersValidationPipe(RolesController.validProperties),
-    )
-    filters: ObjectLiteral | string,
-  ): Promise<Role[]> {
-    return this.rolesService.findAll(
-      limit,
-      include,
-      orderBy,
-      orderDir as 'ASC' | 'DESC',
-      filters,
-    );
+  @UsePipes(
+    new FindManyValidationPipe(RolesController.validProperties, Role.relations),
+  )
+  getRoles(@Query() options: FindManyOptionsDTO<Role>): Promise<Role[]> {
+    return this.rolesService.findAll(options);
   }
 
   @Get(':id')
-  getRole(@Param('id', ParseIntPipe) id: number): Promise<Role> {
-    return this.rolesService.findOne(id);
+  @UsePipes(
+    new FindOneValidationPipe(RolesController.validProperties, Role.relations),
+  )
+  getRole(
+    @Param('id', ParseIntPipe) id: number,
+    @Query() options: FindOneOptionsDTO<Role>,
+  ): Promise<Role> {
+    return this.rolesService.findOne(id, options);
   }
 
   @Put()

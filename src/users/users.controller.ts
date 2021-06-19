@@ -8,14 +8,14 @@ import {
   Patch,
   Put,
   Query,
+  UsePipes,
 } from '@nestjs/common';
-import { FiltersValidationPipe } from 'src/shared/pipes/filters/filters-validation.pipe';
-import { IncludesValidationPipe } from 'src/shared/pipes/filters/includes-validation.pipe';
-import { LimitValidationPipe } from 'src/shared/pipes/filters/limit-validation.pipe';
-import { OrderByValidationPipe } from 'src/shared/pipes/filters/orderby-validation.pipe';
-import { OrderDirValidationPipe } from 'src/shared/pipes/filters/orderdir-validation.pipe';
 import { User } from './users.entity';
 import { UsersService } from './users.service';
+import FindOneOptionsDTO from 'src/shared/models/find-one-options.dto';
+import FindOneValidationPipe from 'src/shared/pipes/filters/find-one-validation.pipe';
+import FindManyOptionsDTO from 'src/shared/models/find-many-options.dto';
+import FindManyValidationPipe from 'src/shared/pipes/filters/find-many-validation.pipe';
 
 @Controller({ path: '/users' })
 export class UsersController {
@@ -24,36 +24,22 @@ export class UsersController {
   static validProperties = ['id', 'firstName', 'lastName', 'username'];
 
   @Get()
-  getUsers(
-    @Query('limit', new LimitValidationPipe())
-    limit: number,
-    @Query('include', new IncludesValidationPipe(User.relations))
-    include: string[],
-    @Query(
-      'orderBy',
-      new OrderByValidationPipe(UsersController.validProperties),
-    )
-    orderBy: string,
-    @Query('orderDirection', new OrderDirValidationPipe())
-    orderDir: 'ASC' | 'DESC',
-    @Query(
-      'filters',
-      new FiltersValidationPipe(UsersController.validProperties),
-    )
-    filters,
-  ) {
-    return this.usersService.findAll(
-      limit,
-      include,
-      orderBy,
-      orderDir,
-      filters,
-    );
+  @UsePipes(
+    new FindManyValidationPipe(UsersController.validProperties, User.relations),
+  )
+  getUsers(@Query() options: FindManyOptionsDTO<User>) {
+    return this.usersService.findAll(options);
   }
 
   @Get(':id')
-  getUser(@Param('id', ParseIntPipe) id: number) {
-    return this.usersService.findOne(id);
+  @UsePipes(
+    new FindOneValidationPipe(UsersController.validProperties, User.relations),
+  )
+  getUser(
+    @Param('id', ParseIntPipe) id: number,
+    @Query() options: FindOneOptionsDTO<User>,
+  ) {
+    return this.usersService.findOne(id, options);
   }
 
   @Get(':id/products/recent')

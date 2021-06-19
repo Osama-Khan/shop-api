@@ -55,16 +55,12 @@ export class FavoriteService extends ApiService<Favorite> {
   }
 
   async insert(favorite) {
-    const prev = await this.findAll(
-      undefined,
-      undefined,
-      undefined,
-      undefined,
-      {
+    const prev = await this.findAll({
+      where: {
         user: favorite.user,
         product: favorite.product,
       },
-    );
+    });
     if (prev.length > 0) {
       throw new BadRequestException('Product already favorited by user');
     }

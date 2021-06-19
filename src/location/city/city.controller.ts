@@ -8,14 +8,14 @@ import {
   Patch,
   Put,
   Query,
+  UsePipes,
 } from '@nestjs/common';
-import { FiltersValidationPipe } from 'src/shared/pipes/filters/filters-validation.pipe';
-import { IncludesValidationPipe } from 'src/shared/pipes/filters/includes-validation.pipe';
-import { LimitValidationPipe } from 'src/shared/pipes/filters/limit-validation.pipe';
-import { OrderByValidationPipe } from 'src/shared/pipes/filters/orderby-validation.pipe';
-import { OrderDirValidationPipe } from 'src/shared/pipes/filters/orderdir-validation.pipe';
 import { City } from './city.entity';
 import { CityService } from './city.service';
+import FindManyOptionsDTO from 'src/shared/models/find-many-options.dto';
+import FindManyValidationPipe from 'src/shared/pipes/filters/find-many-validation.pipe';
+import FindOneValidationPipe from 'src/shared/pipes/filters/find-one-validation.pipe';
+import FindOneOptionsDTO from 'src/shared/models/find-one-options.dto';
 
 @Controller({ path: '/cities' })
 export class CityController {
@@ -31,24 +31,22 @@ export class CityController {
   ];
 
   @Get()
-  getCitys(
-    @Query('limit', new LimitValidationPipe())
-    limit: number,
-    @Query('include', new IncludesValidationPipe(City.relations))
-    include: string[],
-    @Query('orderBy', new OrderByValidationPipe(CityController.validProperties))
-    orderBy: string,
-    @Query('orderDirection', new OrderDirValidationPipe())
-    orderDir: 'ASC' | 'DESC',
-    @Query('filters', new FiltersValidationPipe(CityController.validProperties))
-    filters,
-  ) {
-    return this.cityService.findAll(limit, include, orderBy, orderDir, filters);
+  @UsePipes(
+    new FindManyValidationPipe(CityController.validProperties, City.relations),
+  )
+  getCities(@Query() options: FindManyOptionsDTO<City>) {
+    return this.cityService.findAll(options);
   }
 
   @Get(':id')
-  getCity(@Param('id', ParseIntPipe) id: number) {
-    return this.cityService.findOne(id);
+  @UsePipes(
+    new FindOneValidationPipe(CityController.validProperties, City.relations),
+  )
+  getCity(
+    @Param('id', ParseIntPipe) id: number,
+    @Query() options: FindOneOptionsDTO<City>,
+  ) {
+    return this.cityService.findOne(id, options);
   }
 
   @Put()

@@ -8,14 +8,14 @@ import {
   Patch,
   Put,
   Query,
+  UsePipes,
 } from '@nestjs/common';
-import { FiltersValidationPipe } from 'src/shared/pipes/filters/filters-validation.pipe';
-import { IncludesValidationPipe } from 'src/shared/pipes/filters/includes-validation.pipe';
-import { LimitValidationPipe } from 'src/shared/pipes/filters/limit-validation.pipe';
-import { OrderByValidationPipe } from 'src/shared/pipes/filters/orderby-validation.pipe';
-import { OrderDirValidationPipe } from 'src/shared/pipes/filters/orderdir-validation.pipe';
 import { Order } from './order.entity';
 import { OrderService } from './order.service';
+import FindManyValidationPipe from 'src/shared/pipes/filters/find-many-validation.pipe';
+import FindOneOptionsDTO from 'src/shared/models/find-one-options.dto';
+import FindManyOptionsDTO from 'src/shared/models/find-many-options.dto';
+import FindOneValidationPipe from 'src/shared/pipes/filters/find-one-validation.pipe';
 
 @Controller({ path: '/orders' })
 export class OrderController {
@@ -32,36 +32,25 @@ export class OrderController {
   ];
 
   @Get()
-  getOrders(
-    @Query('limit', new LimitValidationPipe())
-    limit: number,
-    @Query('include', new IncludesValidationPipe(Order.relations))
-    include: string[],
-    @Query(
-      'orderBy',
-      new OrderByValidationPipe(OrderController.validProperties),
-    )
-    orderBy: string,
-    @Query('orderDirection', new OrderDirValidationPipe())
-    orderDir: 'ASC' | 'DESC',
-    @Query(
-      'filters',
-      new FiltersValidationPipe(OrderController.validProperties),
-    )
-    filters,
-  ) {
-    return this.orderService.findAll(
-      limit,
-      include,
-      orderBy,
-      orderDir,
-      filters,
-    );
+  @UsePipes(
+    new FindManyValidationPipe(
+      OrderController.validProperties,
+      Order.relations,
+    ),
+  )
+  getOrders(@Query() options: FindManyOptionsDTO<Order>) {
+    return this.orderService.findAll(options);
   }
 
   @Get(':id')
-  getOrder(@Param('id', ParseIntPipe) id: number) {
-    return this.orderService.findOne(id);
+  @UsePipes(
+    new FindOneValidationPipe(OrderController.validProperties, Order.relations),
+  )
+  getOrder(
+    @Param('id', ParseIntPipe) id: number,
+    @Query() options: FindOneOptionsDTO<Order>,
+  ) {
+    return this.orderService.findOne(id, options);
   }
 
   @Get('detail/:id')

@@ -7,14 +7,14 @@ import {
   ParseIntPipe,
   Put,
   Query,
+  UsePipes,
 } from '@nestjs/common';
-import { FiltersValidationPipe } from 'src/shared/pipes/filters/filters-validation.pipe';
-import { IncludesValidationPipe } from 'src/shared/pipes/filters/includes-validation.pipe';
-import { LimitValidationPipe } from 'src/shared/pipes/filters/limit-validation.pipe';
-import { OrderByValidationPipe } from 'src/shared/pipes/filters/orderby-validation.pipe';
-import { OrderDirValidationPipe } from 'src/shared/pipes/filters/orderdir-validation.pipe';
 import { Favorite } from './favorite.entity';
 import { FavoriteService } from './favorite.service';
+import FindManyOptionsDTO from 'src/shared/models/find-many-options.dto';
+import FindManyValidationPipe from 'src/shared/pipes/filters/find-many-validation.pipe';
+import FindOneValidationPipe from 'src/shared/pipes/filters/find-one-validation.pipe';
+import FindOneOptionsDTO from 'src/shared/models/find-one-options.dto';
 
 @Controller({ path: '/favorites' })
 export class FavoriteController {
@@ -30,36 +30,28 @@ export class FavoriteController {
   ];
 
   @Get()
-  getFavorites(
-    @Query('limit', new LimitValidationPipe())
-    limit: number,
-    @Query('include', new IncludesValidationPipe(Favorite.relations))
-    include: string[],
-    @Query(
-      'orderBy',
-      new OrderByValidationPipe(FavoriteController.validProperties),
-    )
-    orderBy: string,
-    @Query('orderDirection', new OrderDirValidationPipe())
-    orderDir: 'ASC' | 'DESC',
-    @Query(
-      'filters',
-      new FiltersValidationPipe(FavoriteController.validProperties),
-    )
-    filters,
-  ) {
-    return this.favoriteService.findAll(
-      limit,
-      include,
-      orderBy,
-      orderDir,
-      filters,
-    );
+  @UsePipes(
+    new FindManyValidationPipe(
+      FavoriteController.validProperties,
+      Favorite.relations,
+    ),
+  )
+  getFavorites(@Query() options: FindManyOptionsDTO<Favorite>) {
+    return this.favoriteService.findAll(options);
   }
 
   @Get(':id')
-  getFavorite(@Param('id', ParseIntPipe) id: number) {
-    return this.favoriteService.findOne(id);
+  @UsePipes(
+    new FindOneValidationPipe(
+      FavoriteController.validProperties,
+      Favorite.relations,
+    ),
+  )
+  getFavorite(
+    @Param('id', ParseIntPipe) id: number,
+    @Query() options: FindOneOptionsDTO<Favorite>,
+  ) {
+    return this.favoriteService.findOne(id, options);
   }
 
   @Get('product-count/:id')

@@ -8,15 +8,15 @@ import {
   Patch,
   Put,
   Query,
+  UsePipes,
 } from '@nestjs/common';
 import { Product } from 'src/products/products.entity';
-import { FiltersValidationPipe } from 'src/shared/pipes/filters/filters-validation.pipe';
-import { IncludesValidationPipe } from 'src/shared/pipes/filters/includes-validation.pipe';
-import { LimitValidationPipe } from 'src/shared/pipes/filters/limit-validation.pipe';
-import { OrderByValidationPipe } from 'src/shared/pipes/filters/orderby-validation.pipe';
-import { OrderDirValidationPipe } from 'src/shared/pipes/filters/orderdir-validation.pipe';
 import { Category } from './categories.entity';
 import { CategoriesService } from './categories.service';
+import FindManyOptionsDTO from 'src/shared/models/find-many-options.dto';
+import FindManyValidationPipe from 'src/shared/pipes/filters/find-many-validation.pipe';
+import FindOneOptionsDTO from 'src/shared/models/find-one-options.dto';
+import FindOneValidationPipe from 'src/shared/pipes/filters/find-one-validation.pipe';
 
 @Controller({ path: '/categories' })
 export class CategoriesController {
@@ -25,46 +25,33 @@ export class CategoriesController {
   static validProperties = ['id', 'name'];
 
   @Get()
-  getCategories(
-    @Query('limit', new LimitValidationPipe()) limit: number,
-    @Query('include', new IncludesValidationPipe(Category.relations))
-    include: string[],
-    @Query(
-      'orderBy',
-      new OrderByValidationPipe(CategoriesController.validProperties),
-    )
-    orderBy: string,
-    @Query('orderDirection', new OrderDirValidationPipe())
-    orderDir: 'ASC' | 'DESC' = 'ASC',
-    @Query(
-      'filters',
-      new FiltersValidationPipe(CategoriesController.validProperties),
-    )
-    filters,
-  ) {
-    return this.categoriesService.findAll(
-      limit,
-      include,
-      orderBy,
-      orderDir,
-      filters,
-    );
+  @UsePipes(
+    new FindManyValidationPipe(
+      CategoriesController.validProperties,
+      Category.relations,
+    ),
+  )
+  getCategories(@Query() options: FindManyOptionsDTO<Category>) {
+    return this.categoriesService.findAll(options);
   }
 
   @Get('root')
   getRootCategories() {
-    return this.categoriesService.findAll(
-      undefined,
-      undefined,
-      undefined,
-      undefined,
-      { parentCategory: null },
-    );
+    return this.categoriesService.findAll({ where: { parentCategory: null } });
   }
 
   @Get(':id')
-  getCategory(@Param('id', ParseIntPipe) id: number) {
-    return this.categoriesService.findOne(id);
+  @UsePipes(
+    new FindOneValidationPipe(
+      CategoriesController.validProperties,
+      Category.relations,
+    ),
+  )
+  getCategory(
+    @Param('id', ParseIntPipe) id: number,
+    @Query() options: FindOneOptionsDTO<Category>,
+  ) {
+    return this.categoriesService.findOne(id, options);
   }
 
   @Get('parents/:id')

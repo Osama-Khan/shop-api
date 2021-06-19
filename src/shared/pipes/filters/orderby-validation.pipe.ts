@@ -9,7 +9,7 @@ export class OrderByValidationPipe implements PipeTransform {
   transform(orderBy) {
     if (orderBy) {
       orderBy.toLowerCase();
-      if (this.validProps && this.validProps.indexOf(orderBy) === -1) {
+      if (this.validProps && !this.validProps.includes(orderBy)) {
         throw new BadRequestException('Invalid order column');
       }
     }

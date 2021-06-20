@@ -18,6 +18,13 @@ export default class FindManyValidationPipe
     query = super.transform(query);
     if (query.limit) {
       query.take = new LimitValidationPipe().transform(query.limit);
+    } else {
+      query.take = 10;
+    }
+    if (query.page) {
+      query.skip = (parseInt(query.page) - 1) * parseInt(query.take);
+    } else {
+      query.skip = 0;
     }
     return query;
   }

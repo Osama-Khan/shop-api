@@ -17,6 +17,7 @@ import FindManyOptionsDTO from 'src/shared/models/find-many-options.dto';
 import FindManyValidationPipe from 'src/shared/pipes/filters/find-many-validation.pipe';
 import FindOneOptionsDTO from 'src/shared/models/find-one-options.dto';
 import FindOneValidationPipe from 'src/shared/pipes/filters/find-one-validation.pipe';
+import { ProductsController } from 'src/products/products.controller';
 
 @Controller({ path: '/categories' })
 export class CategoriesController {
@@ -83,7 +84,16 @@ export class CategoriesController {
   }
 
   @Get('products/:name')
-  getProductsByCategory(@Param('name') category: string): Promise<Product[]> {
-    return this.categoriesService.findProducts(category);
+  getProductsByCategory(
+    @Param('name') category: string,
+    @Query(
+      new FindManyValidationPipe(
+        ProductsController.validProperties,
+        Product.relations,
+      ),
+    )
+    options: FindManyOptionsDTO<Product>,
+  ) {
+    return this.categoriesService.findProducts(category, options);
   }
 }

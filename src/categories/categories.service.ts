@@ -1,6 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Favorite } from 'src/favorite/favorite.entity';
 import { Product } from 'src/products/products.entity';
+import withFavoriteCount from 'src/shared/helpers/favorite-count.helper';
+import paginate from 'src/shared/helpers/paginate.helper';
+import FindManyOptionsDTO from 'src/shared/models/find-many-options.dto';
+import IMetaModel from 'src/shared/models/meta.model';
 import { ApiService } from 'src/shared/services/api.service';
 import { Repository } from 'typeorm';
 import { Category } from './categories.entity';
@@ -12,6 +17,8 @@ export class CategoriesService extends ApiService<Category> {
     private categoriesRepository: Repository<Category>,
     @InjectRepository(Product)
     private productsRepository: Repository<Product>,
+    @InjectRepository(Favorite)
+    private favoritesRepository: Repository<Favorite>,
   ) {
     super(categoriesRepository, Category.relations);
   }
@@ -68,16 +75,23 @@ export class CategoriesService extends ApiService<Category> {
    * @param name The name of category
    * @returns A list of products from the given category
    */
-  async findProducts(name: string): Promise<any[]> {
+  async findProducts(
+    name: string,
+    options: FindManyOptionsDTO<Product>,
+  ): Promise<{ data: any[]; meta: IMetaModel }> {
     const category = await this.categoriesRepository.findOne({
       where: { name },
     });
     if (!category) {
       throw new NotFoundException('Category not found!');
     }
-    const products = await this.productsRepository.find({
-      relations: ['category'],
-    });
+
+    if (!options.relations) options.relations = ['category'];
+    if (!options.relations?.includes('category'))
+      options.relations.push('category');
+    const [products, count] = await this.productsRepository.findAndCount(
+      options,
+    );
 
     const childIds = (await this.getCategoryChildren(category.id)).map(
       (c) => c.id,
@@ -89,6 +103,8 @@ export class CategoriesService extends ApiService<Category> {
         childIds.some((id) => p.category?.id === id)
       );
     });
-    return p.map((p) => p.toResponseObject());
+    const pRes = p.map((p) => p.toResponseObject());
+    const prods = await withFavoriteCount(pRes, this.favoritesRepository);
+    return paginate(prods, options, count);
   }
 }

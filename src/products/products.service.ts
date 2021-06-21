@@ -6,6 +6,7 @@ import { ApiService } from 'src/shared/services/api.service';
 import { Highlight } from 'src/highlights/highlights.entity';
 import { Favorite } from 'src/favorite/favorite.entity';
 import FindManyOptionsDTO from 'src/shared/models/find-many-options.dto';
+import withFavoriteCount from 'src/shared/helpers/favorite-count.helper';
 
 @Injectable()
 export class ProductsService extends ApiService<Product> {
@@ -24,18 +25,11 @@ export class ProductsService extends ApiService<Product> {
     ]);
   }
 
-  async findAll(options: FindManyOptionsDTO<Product>): Promise<any[]> {
-    const products = await super.findAll(options);
+  async findAll(options: FindManyOptionsDTO<Product>) {
+    const { data, meta } = await super.findAll(options);
 
-    const prods = [];
-    for (const p of products) {
-      const count = await this.favoritesRepository.count({
-        where: { product: p.id },
-      });
-      (p as any).favoriteCount = count;
-      prods.push(p);
-    }
-    return prods;
+    const prods = await withFavoriteCount(data, this.favoritesRepository);
+    return { data: prods, meta };
   }
 
   async findOne(id: number, options?: FindOneOptions<Product>) {

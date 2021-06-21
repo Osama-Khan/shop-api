@@ -39,12 +39,12 @@ export class ProductsService extends ApiService<Product> {
   }
 
   async findOne(id: number, options?: FindOneOptions<Product>) {
-    if (options?.relations && options?.relations.includes('favorites')) {
-      return await super.findOne(id);
+    if (options?.relations?.includes('favorites')) {
+      return await super.findOne(id, options);
     }
 
     // Adding count of favorites
-    const relations = options?.relations.filter((r) => r !== 'favorites');
+    const relations = options?.relations?.filter((r) => r !== 'favorites');
     const prod: any = await super.findOne(id, { relations });
     prod.favoriteCount = await this.favoritesRepository.count({
       where: { product: id },

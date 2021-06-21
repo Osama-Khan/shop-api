@@ -17,7 +17,11 @@ export class ProductsService extends ApiService<Product> {
     @InjectRepository(Favorite)
     private favoritesRepository: Repository<Favorite>,
   ) {
-    super(productRepository, Product.relations);
+    super(productRepository, Product.relations, [
+      'highlights',
+      'category',
+      'user',
+    ]);
   }
 
   async findAll(options: FindManyOptionsDTO<Product>): Promise<any[]> {

@@ -27,7 +27,7 @@ export class RolesController {
   @UsePipes(
     new FindManyValidationPipe(RolesController.validProperties, Role.relations),
   )
-  getRoles(@Query() options: FindManyOptionsDTO<Role>): Promise<Role[]> {
+  getRoles(@Query() options: FindManyOptionsDTO<Role>) {
     return this.rolesService.findAll(options);
   }
 

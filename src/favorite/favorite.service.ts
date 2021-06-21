@@ -55,7 +55,7 @@ export class FavoriteService extends ApiService<Favorite> {
   }
 
   async insert(favorite) {
-    const prev = await this.findAll({
+    const { data: prev } = await this.findAll({
       where: {
         user: favorite.user,
         product: favorite.product,

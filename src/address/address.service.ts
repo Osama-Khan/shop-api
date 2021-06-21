@@ -21,8 +21,8 @@ export class AddressService extends ApiService<Address> {
     super(addressRepository, Address.relations);
   }
 
-  async findAll(options: FindManyOptionsDTO<Address>): Promise<any[]> {
-    const addresses: any = await super.findAll(options);
+  async findAll(options: FindManyOptionsDTO<Address>) {
+    const { data: addresses, meta } = await super.findAll(options);
     if (options.relations?.includes('city')) {
       for (let i = 0; i < addresses.length; i++) {
         let id = addresses[i].city.id;
@@ -38,7 +38,7 @@ export class AddressService extends ApiService<Address> {
         addresses[i].country = state.country.name;
       }
     }
-    return addresses;
+    return { data: addresses, meta };
   }
 
   async findOne(id, options: FindOneOptionsDTO<Address>) {

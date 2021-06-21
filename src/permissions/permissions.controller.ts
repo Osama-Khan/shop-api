@@ -26,9 +26,7 @@ export class PermissionsController {
       Permission.relations,
     ),
   )
-  getPermissions(
-    @Query() options: FindManyOptionsDTO<Permission>,
-  ): Promise<Permission[]> {
+  getPermissions(@Query() options: FindManyOptionsDTO<Permission>) {
     return this.permissionsService.findAll(options);
   }
 

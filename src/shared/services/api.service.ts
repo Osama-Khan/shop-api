@@ -1,5 +1,6 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { Repository } from 'typeorm';
+import paginate from '../helpers/paginate.helper';
 import generateRO from '../helpers/ro.helper';
 import FindManyOptionsDTO from '../models/find-many-options.dto';
 import FindOneOptionsDTO from '../models/find-one-options.dto';
@@ -26,20 +27,21 @@ export abstract class ApiService<Entity> {
    * @param options A FindManyOptions DTO that contains the set of filters to apply
    * @returns A promise that resolves to an array of entities
    */
-  async findAll(options: FindManyOptionsDTO<Entity>): Promise<Entity[]> {
-    return await this.repository.find(options).then(async (e) => {
-      const entities = e.map(async (e) => {
-        const ro = generateRO(e);
-        return ro;
-      });
-      return await Promise.all(entities);
+  async findAll(
+    options: FindManyOptionsDTO<Entity>,
+  ): Promise<{ data: any[]; meta: any }> {
+    const [dt, count] = await this.repository.findAndCount(options);
+    const data = dt.map((e: any) => {
+      return e.toResponseObject();
     });
+
+    return paginate(data, options, count);
   }
 
   /**
    * Gets an entity with given id
    * @param id The id of entity to find
-   * @param relations Array of string relations to include
+   * @param options A FindOneOptionsDTO containing options to further filter the records
    * @returns A promise that resolves to the `Entity` with given id
    */
   async findOne(

@@ -11,10 +11,10 @@ export class FiltersValidationPipe implements PipeTransform {
       const obj = {};
       f.forEach((f, i) => {
         const keyVal = f.split(':');
-        const [key, val] = [keyVal[0].toLowerCase(), keyVal[1]];
+        const [key, val] = keyVal;
         if (
           keyVal.length !== 2 ||
-          (this.validProps && this.validProps.indexOf(key) === -1)
+          (this.validProps && !this.validProps.includes(key))
         ) {
           throw new BadRequestException(
             `Invalid key value pair for filter at index ${i}`,

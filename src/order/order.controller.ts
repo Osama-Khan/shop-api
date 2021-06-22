@@ -42,6 +42,11 @@ export class OrderController {
     return this.orderService.findAll(options);
   }
 
+  @Get('states')
+  getOrderStates() {
+    return this.orderService.getOrderStates();
+  }
+
   @Get(':id')
   @UsePipes(
     new FindOneValidationPipe(OrderController.validProperties, Order.relations),

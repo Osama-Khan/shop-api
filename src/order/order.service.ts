@@ -6,6 +6,7 @@ import { ApiService } from 'src/shared/services/api.service';
 import { Product } from 'src/products/products.entity';
 import { OrderProduct } from 'src/order/order-product/order-product.entity';
 import { User } from 'src/users/users.entity';
+import { OrderState } from './order-state/order-state.entity';
 
 @Injectable()
 export class OrderService extends ApiService<Order> {
@@ -14,6 +15,8 @@ export class OrderService extends ApiService<Order> {
     private orderRepository: Repository<Order>,
     @InjectRepository(OrderProduct)
     private opRepository: Repository<OrderProduct>,
+    @InjectRepository(OrderState)
+    private osRepository: Repository<OrderState>,
     @InjectRepository(Product)
     private productRepository: Repository<Product>,
     @InjectRepository(User)
@@ -67,5 +70,9 @@ export class OrderService extends ApiService<Order> {
       relations: ['product'],
     });
     return details;
+  }
+
+  async getOrderStates() {
+    return await this.osRepository.find();
   }
 }

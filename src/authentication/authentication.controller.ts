@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, Req } from '@nestjs/common';
 import { AuthenticationService } from './authentication.service';
 import ILoginModel from './models/login.model';
 import IRegisterModel from './models/register.model';
@@ -12,6 +12,11 @@ export class AuthenticationController {
   @Post('/login')
   login(@Body(new LoginDataValidationPipe()) userData: ILoginModel) {
     return this.authService.login(userData);
+  }
+
+  @Post('/login/token')
+  loginWithToken(@Req() req) {
+    return this.authService.loginWithToken(req.headers.authorization);
   }
 
   @Post('/register')

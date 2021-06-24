@@ -50,6 +50,25 @@ export class AuthenticationService extends ApiService<User> {
     return response;
   }
 
+  async loginWithToken(authHeader: string) {
+    try {
+      const token = authHeader.split(' ')[1];
+      const { username } = JwtHelper.verify(token) as any;
+      const user = await this.usersRepository.findOne({ where: { username } });
+      if (!user) {
+        throw Error;
+      }
+
+      const res = user.toResponseObject();
+      res['email'] = user.email;
+      return res;
+    } catch (ex) {
+      throw new UnauthorizedException(
+        'Your session is either invalid or has expired. Please login again!',
+      );
+    }
+  }
+
   async register(registerModel: IRegisterModel): Promise<any> {
     let user = await this.usersRepository.findOne({
       where: [

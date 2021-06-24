@@ -2,7 +2,7 @@ import {
   CanActivate,
   ExecutionContext,
   Injectable,
-  UnauthorizedException,
+  ForbiddenException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Observable } from 'rxjs';
@@ -36,7 +36,7 @@ export class RolesGuard implements CanActivate {
       ) {
         return true;
       } else {
-        throw new UnauthorizedException(
+        throw new ForbiddenException(
           'You are not authorized to perform this action',
         );
       }

@@ -1,4 +1,4 @@
-import { ForbiddenException } from '@nestjs/common';
+import { UnauthorizedException } from '@nestjs/common';
 import * as jwt from 'jsonwebtoken';
 
 export default class JwtHelper {
@@ -24,12 +24,12 @@ export default class JwtHelper {
           return ver;
         }
       } catch (e) {
-        throw new ForbiddenException(
+        throw new UnauthorizedException(
           'Your session is either invalid or has expired',
         );
       }
     }
-    throw new ForbiddenException(
+    throw new UnauthorizedException(
       'You need to be logged in to access this resource',
     );
   }

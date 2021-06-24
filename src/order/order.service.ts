@@ -31,20 +31,36 @@ export class OrderService extends ApiService<Order> {
     if (!user) {
       throw new BadRequestException('The user placing order does not exist');
     }
+
     let order = this.orderRepository.create({
       address,
       user,
       orderState: { id: 0 }, // Default State 'Processing'
     });
-    const orderRes = await this.orderRepository.insert(order);
-    order = await this.orderRepository.findOne(orderRes.generatedMaps[0].id);
-    const orderDetails = await orderDetail.products.map(async (od: any) => {
-      const product = await this.productRepository.findOne(od.id);
-      if (!product) {
+
+    const products = [];
+    for (let i = 0; i < orderDetail.products.length; i++) {
+      const p = orderDetail.products[i];
+      const prod = await this.productRepository.findOne(p.id);
+      if (prod.stock < p.quantity)
+        throw new BadRequestException(
+          'One of the products does not have enough stock',
+        );
+      if (!prod)
         throw new BadRequestException(
           'One of the provided products does not exist',
         );
-      }
+      products.push(prod);
+    }
+
+    if (products.length === 0) {
+      throw new BadRequestException('No products provided');
+    }
+
+    const orderRes = await this.orderRepository.insert(order);
+    order = await this.orderRepository.findOne(orderRes.generatedMaps[0].id);
+    await orderDetail.products.map(async (od: any, i: number) => {
+      const product = products[i];
       const price = product.price * od.quantity;
       const detail = this.opRepository.create({
         order,
@@ -52,12 +68,11 @@ export class OrderService extends ApiService<Order> {
         quantity: od.quantity,
         price,
       });
+      const newStock = product.stock - od.quantity;
+      await this.productRepository.update(product.id, { stock: newStock });
       await this.opRepository.insert(detail);
       return detail;
     });
-    if (orderDetails.length === 0) {
-      throw new BadRequestException('No products provided');
-    }
     return order;
   }
 

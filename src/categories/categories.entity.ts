@@ -5,9 +5,10 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
-  OneToOne,
   JoinColumn,
   DeleteDateColumn,
+  ManyToOne,
+  OneToMany,
 } from 'typeorm';
 
 @Entity()
@@ -18,12 +19,12 @@ export class Category extends EntityParent {
   @Column({ unique: true })
   name: string;
 
-  @OneToOne((type) => Category, (category) => category.childCategory)
+  @ManyToOne((type) => Category, (category) => category.childCategories)
   @JoinColumn({ name: 'parent_category_id' })
   parentCategory: Category;
 
-  @OneToOne((type) => Category, (category) => category.parentCategory)
-  childCategory: Category;
+  @OneToMany((type) => Category, (category) => category.parentCategory)
+  childCategories: Category[];
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
@@ -34,15 +35,15 @@ export class Category extends EntityParent {
   @DeleteDateColumn({ name: 'deleted_at' })
   deletedAt: Date;
 
-  static relations = ['parentCategory', 'childCategory'];
+  static relations = ['parentCategory', 'childCategories'];
 
   toResponseObject() {
     const obj = { id: this.id, name: this.name };
     if (this.parentCategory) {
       obj['parentCategory'] = this.parentCategory;
     }
-    if (this.childCategory) {
-      obj['childCategory'] = this.childCategory;
+    if (this.childCategories) {
+      obj['childCategories'] = this.childCategories;
     }
     return obj;
   }

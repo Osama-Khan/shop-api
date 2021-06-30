@@ -56,16 +56,26 @@ export class CategoriesService extends ApiService<Category> {
     id: number,
   ): Promise<{ id: number; name: string }[]> {
     const toRo = (c: any) => ({ id: c.id, name: c.name });
-    let c = await this.findOne(id, { relations: ['childCategory'] });
-    if (c) {
-      const categoryStack = [];
-      while (c && c.childCategory) {
-        categoryStack.push(toRo(c.childCategory));
-        c = await this.findOne(c.childCategory.id, {
-          relations: ['childCategory'],
-        });
-      }
-      return categoryStack;
+    const rootCategory = await this.findOne(id, {
+      relations: ['childCategories'],
+    });
+    if (rootCategory) {
+      const categories = [];
+      // Recursively pushes children into categories until child has no further children
+      const pushChildrenOf = async (c: Category) => {
+        if (c.childCategories) {
+          const childrenPromises = c.childCategories.map(async (cat) => {
+            cat = await this.categoriesRepository.findOne(cat.id, {
+              relations: ['childCategories'],
+            });
+            await pushChildrenOf(cat);
+          });
+          await Promise.all(childrenPromises);
+        }
+        if (c.id != rootCategory.id) categories.push(toRo(c));
+      };
+      await pushChildrenOf(rootCategory);
+      return categories;
     } else {
       throw new NotFoundException('No category with given id!');
     }

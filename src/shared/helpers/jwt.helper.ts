@@ -1,5 +1,6 @@
 import { UnauthorizedException } from '@nestjs/common';
 import * as jwt from 'jsonwebtoken';
+import { getBearerFromRequest } from './request.helper';
 
 export default class JwtHelper {
   static sign(object: any, options: jwt.SignOptions = {}) {
@@ -15,8 +16,8 @@ export default class JwtHelper {
   }
 
   static verifySession(req: any) {
-    if (req.headers && req.headers.authorization) {
-      const bearer: string = req.headers.authorization;
+    const bearer = getBearerFromRequest(req);
+    if (bearer) {
       const token = bearer.split(' ')[1];
       try {
         const ver = JwtHelper.verify(token);

@@ -55,7 +55,10 @@ export class AuthenticationService extends ApiService<User> {
     try {
       const token = authHeader.split(' ')[1];
       const { username } = JwtHelper.verify(token) as any;
-      const user = await this.usersRepository.findOne({ where: { username } });
+      const user = await this.usersRepository.findOne({
+        where: { username },
+        relations: ['roles'],
+      });
       if (!user) {
         throw Error;
       }

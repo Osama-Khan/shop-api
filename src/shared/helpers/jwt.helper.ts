@@ -26,12 +26,12 @@ export default class JwtHelper {
         }
       } catch (e) {
         throw new UnauthorizedException(
-          'Your session is either invalid or has expired',
+          'Your session is either invalid or has expired. Please login again.',
         );
       }
     }
     throw new UnauthorizedException(
-      'You need to be logged in to access this resource',
+      'You need to be logged in to access this resource.',
     );
   }
 }

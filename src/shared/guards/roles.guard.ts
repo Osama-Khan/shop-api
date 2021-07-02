@@ -37,7 +37,7 @@ export class RolesGuard implements CanActivate {
         return true;
       } else {
         throw new ForbiddenException(
-          'You are not authorized to perform this action',
+          "You don't have permission to access this resource.",
         );
       }
     }

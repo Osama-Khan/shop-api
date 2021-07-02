@@ -39,6 +39,7 @@ export class AuthenticationService extends ApiService<User> {
     }
     response.token = JwtHelper.sign(
       {
+        id: u.id,
         username: loginModel.username,
         password: u.password,
         roles: u.roles.map((r) => r.name),

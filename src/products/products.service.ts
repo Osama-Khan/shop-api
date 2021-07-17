@@ -59,4 +59,23 @@ export class ProductsService extends ApiService<Product> {
     product.highlights = p.highlights;
     return product;
   }
+
+  async update(id: number, p: any): Promise<Product> {
+    const product = await super.findOne(id);
+    const highlights = p.highlights;
+    delete p.highlights;
+    await super.update(id, p);
+    if (highlights) {
+      this.highlightsRepository.delete({ product: { id } });
+      highlights.forEach((h: string) => {
+        const hObj = new Highlight();
+        hObj.highlight = h;
+        hObj.product = product;
+        const highlight = this.highlightsRepository.create(hObj);
+        this.highlightsRepository.insert(highlight);
+      });
+      product.highlights = highlights;
+    }
+    return product;
+  }
 }

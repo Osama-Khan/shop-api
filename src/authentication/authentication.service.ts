@@ -86,7 +86,7 @@ export class AuthenticationService extends ApiService<User> {
 
     user = this.usersRepository.create(registerModel);
     const insertResult = await this.usersRepository.insert(user);
-    const id = insertResult.generatedMaps['id'];
+    const id = insertResult.generatedMaps[0].id;
 
     // Create a setting for the user
     const setting = this.settingsRepository.create({ id, user });

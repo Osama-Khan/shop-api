@@ -22,13 +22,46 @@ export class ProductsService extends ApiService<Product> {
       'highlights',
       'category',
       'user',
+      'ratings',
     ]);
   }
 
+  // Attaches favoriteCount and ratings to products
   async findAll(options: FindManyOptionsDTO<Product>) {
+    const hasRatings = options?.relations?.includes('ratings');
+
+    // Add ratings relation to calculate rating of product
+    if (!hasRatings) {
+      if (options.relations) options.relations.push('ratings');
+      else if (options) options = { ...options, relations: ['ratings'] };
+      else options = { relations: ['ratings'] };
+    }
+
     const { data, meta } = await super.findAll(options);
 
-    const prods = await withFavoriteCount(data, this.favoritesRepository);
+    // Attach favorite count of product to object
+    let prods = await withFavoriteCount(data, this.favoritesRepository);
+    // If ratings are not requested, attach only average stars
+    if (!hasRatings) {
+      prods = prods.map((p) => {
+        const stars = p.ratings?.map((r) => r.stars);
+        const size = stars?.length;
+
+        // Calculate average of ratings if multiple ratings exist
+        // Get the first rating stars if only one rating exists
+        // Return undefined if there are no ratings
+        p.rating =
+          stars && stars.length > 0
+            ? stars.length === 1
+              ? stars[0]
+              : (stars.reduce((x, y) => x + y) / size).toFixed(1)
+            : undefined;
+
+        // Remove ratings property to prevent unnecessary data transfer
+        delete p.ratings;
+        return p;
+      });
+    }
     return { data: prods, meta };
   }
 

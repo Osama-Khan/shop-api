@@ -63,6 +63,15 @@ export class OrderController {
     return this.orderService.getDetail(id);
   }
 
+  // Checks if user has ordered a product
+  @Get('user/:uid/product/:pid')
+  getUserProduct(
+    @Param('uid', ParseIntPipe) uid: number,
+    @Param('pid', ParseIntPipe) pid: number,
+  ) {
+    return this.orderService.getUserProduct(uid, pid);
+  }
+
   @Put()
   placeOrder(@Body() orderDetail) {
     return this.orderService.placeOrder(orderDetail);

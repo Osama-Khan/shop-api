@@ -20,6 +20,7 @@ import { Order } from 'src/order/order.entity';
 import EntityParent from 'src/shared/models/entity-parent.model';
 import { Setting } from 'src/setting/setting.entity';
 import { Favorite } from 'src/favorite/favorite.entity';
+import { ProductRating } from 'src/products/product-rating/product-rating.entity';
 
 @Entity()
 export class User extends EntityParent {
@@ -46,6 +47,9 @@ export class User extends EntityParent {
 
   @OneToMany((type) => Product, (product) => product.user)
   products: Product[];
+
+  @OneToMany((type) => ProductRating, (pr) => pr.product)
+  ratings: ProductRating[];
 
   @OneToMany((type) => Order, (order) => order.user)
   orders: Order[];
@@ -100,6 +104,7 @@ export class User extends EntityParent {
     'addresses',
     'setting',
     'favorites',
+    'ratings',
   ];
 
   toResponseObject() {

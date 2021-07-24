@@ -15,6 +15,7 @@ import {
   JoinColumn,
   DeleteDateColumn,
 } from 'typeorm';
+import { ProductRating } from './product-rating/product-rating.entity';
 
 @Entity()
 export class Product extends EntityParent {
@@ -33,8 +34,8 @@ export class Product extends EntityParent {
   @Column({ type: 'float' })
   price: number;
 
-  @Column({ default: null, type: 'float' })
-  rating: number;
+  @OneToMany((type) => ProductRating, (pr) => pr.product)
+  ratings: ProductRating[];
 
   @OneToMany((type) => Highlight, (highlight) => highlight.product)
   highlights: Highlight[];
@@ -74,6 +75,7 @@ export class Product extends EntityParent {
     'user',
     'orderProducts',
     'favorites',
+    'ratings',
   ];
 
   toResponseObject() {
@@ -82,7 +84,6 @@ export class Product extends EntityParent {
       title: this.title,
       code: this.code,
       description: this.description,
-      rating: this.rating,
       price: this.price,
       stock: this.stock,
       img: this.img,
@@ -102,6 +103,9 @@ export class Product extends EntityParent {
       obj['orderProducts'] = this.orderProducts.map((op) =>
         op.toResponseObject(),
       );
+    }
+    if (this.ratings) {
+      obj['ratings'] = this.ratings.map((r) => r.toResponseObject());
     }
     if (this.favorites) {
       obj['favorites'] = this.favorites.map((f) => f.toResponseObject());

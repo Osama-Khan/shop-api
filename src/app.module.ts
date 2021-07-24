@@ -33,6 +33,8 @@ import { SettingModule } from './setting/setting.module';
 import { Setting } from './setting/setting.entity';
 import { FavoriteModule } from './favorite/favorite.module';
 import { Favorite } from './favorite/favorite.entity';
+import { ProductRating } from './products/product-rating/product-rating.entity';
+import { ProductRatingModule } from './products/product-rating/product-rating.module';
 
 @Module({
   imports: [
@@ -45,6 +47,7 @@ import { Favorite } from './favorite/favorite.entity';
       database: db.dbname,
       entities: [
         Product,
+        ProductRating,
         Category,
         Highlight,
         User,
@@ -78,6 +81,7 @@ import { Favorite } from './favorite/favorite.entity';
     AddressModule,
     SettingModule,
     FavoriteModule,
+    ProductRatingModule,
   ],
   controllers: [AppController],
   providers: [AppService],

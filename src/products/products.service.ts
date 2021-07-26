@@ -7,6 +7,7 @@ import { Highlight } from 'src/highlights/highlights.entity';
 import { Favorite } from 'src/favorite/favorite.entity';
 import FindManyOptionsDTO from 'src/shared/models/find-many-options.dto';
 import withFavoriteCount from 'src/shared/helpers/favorite-count.helper';
+import { ProductImage } from './product-image/product-image.entity';
 
 @Injectable()
 export class ProductsService extends ApiService<Product> {
@@ -15,6 +16,8 @@ export class ProductsService extends ApiService<Product> {
     productRepository: Repository<Product>,
     @InjectRepository(Highlight)
     private highlightsRepository: Repository<Highlight>,
+    @InjectRepository(ProductImage)
+    private imagesRepository: Repository<ProductImage>,
     @InjectRepository(Favorite)
     private favoritesRepository: Repository<Favorite>,
   ) {
@@ -23,6 +26,7 @@ export class ProductsService extends ApiService<Product> {
       'category',
       'user',
       'ratings',
+      'images',
     ]);
   }
 
@@ -79,7 +83,7 @@ export class ProductsService extends ApiService<Product> {
     return prod;
   }
 
-  // Inserts highlights into database before product insertion
+  // Inserts highlights & images into database before product insertion
   async insert(p: any): Promise<Product> {
     const product = await super.insert(p);
     p.highlights.forEach(async (h: string) => {
@@ -89,6 +93,13 @@ export class ProductsService extends ApiService<Product> {
       const highlight = this.highlightsRepository.create(hObj);
       await this.highlightsRepository.insert(highlight);
     });
+    p.images.forEach(async (i: string) => {
+      const img = new ProductImage();
+      img.image = i;
+      img.product = product;
+      const image = this.imagesRepository.create(img);
+      await this.imagesRepository.insert(image);
+    });
     product.highlights = p.highlights;
     return product;
   }
@@ -96,10 +107,12 @@ export class ProductsService extends ApiService<Product> {
   async update(id: number, p: any): Promise<Product> {
     const product = await super.findOne(id);
     const highlights = p.highlights;
+    const images = p.images;
     delete p.highlights;
+    delete p.images;
     await super.update(id, p);
     if (highlights) {
-      this.highlightsRepository.delete({ product: { id } });
+      await this.highlightsRepository.delete({ product: { id } });
       highlights.forEach((h: string) => {
         const hObj = new Highlight();
         hObj.highlight = h;
@@ -108,6 +121,17 @@ export class ProductsService extends ApiService<Product> {
         this.highlightsRepository.insert(highlight);
       });
       product.highlights = highlights;
+    }
+    if (images) {
+      await this.imagesRepository.delete({ product: { id } });
+      images.forEach((i: string) => {
+        const img = new ProductImage();
+        img.image = i;
+        img.product = product;
+        const image = this.imagesRepository.create(img);
+        this.imagesRepository.insert(image);
+      });
+      product.images = images;
     }
     return product;
   }

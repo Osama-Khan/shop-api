@@ -15,6 +15,7 @@ import {
   JoinColumn,
   DeleteDateColumn,
 } from 'typeorm';
+import { ProductImage } from './product-image/product-image.entity';
 import { ProductRating } from './product-rating/product-rating.entity';
 
 @Entity()
@@ -57,8 +58,8 @@ export class Product extends EntityParent {
   @Column({ default: 1 })
   stock: number;
 
-  @Column()
-  img: string;
+  @OneToMany((type) => ProductImage, (pi) => pi.product)
+  images: ProductImage[];
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
@@ -76,6 +77,7 @@ export class Product extends EntityParent {
     'orderProducts',
     'favorites',
     'ratings',
+    'images',
   ];
 
   toResponseObject() {
@@ -86,7 +88,6 @@ export class Product extends EntityParent {
       description: this.description,
       price: this.price,
       stock: this.stock,
-      img: this.img,
       updatedAt: this.updatedAt,
       createdAt: this.createdAt,
     };
@@ -106,6 +107,9 @@ export class Product extends EntityParent {
     }
     if (this.ratings) {
       obj['ratings'] = this.ratings.map((r) => r.toResponseObject());
+    }
+    if (this.images) {
+      obj['images'] = this.images.map((r) => r.toResponseObject());
     }
     if (this.favorites) {
       obj['favorites'] = this.favorites.map((f) => f.toResponseObject());

@@ -35,6 +35,7 @@ import { FavoriteModule } from './favorite/favorite.module';
 import { Favorite } from './favorite/favorite.entity';
 import { ProductRating } from './products/product-rating/product-rating.entity';
 import { ProductRatingModule } from './products/product-rating/product-rating.module';
+import { ProductImage } from './products/product-image/product-image.entity';
 
 @Module({
   imports: [
@@ -48,6 +49,7 @@ import { ProductRatingModule } from './products/product-rating/product-rating.mo
       entities: [
         Product,
         ProductRating,
+        ProductImage,
         Category,
         Highlight,
         User,

@@ -83,56 +83,75 @@ export class ProductsService extends ApiService<Product> {
     return prod;
   }
 
-  // Inserts highlights & images into database before product insertion
   async insert(p: any): Promise<Product> {
     const product = await super.insert(p);
-    p.highlights.forEach(async (h: string) => {
-      const hObj = new Highlight();
-      hObj.highlight = h;
-      hObj.product = product;
-      const highlight = this.highlightsRepository.create(hObj);
-      await this.highlightsRepository.insert(highlight);
-    });
-    p.images.forEach(async (i: string) => {
-      const img = new ProductImage();
-      img.image = i;
-      img.product = product;
-      const image = this.imagesRepository.create(img);
-      await this.imagesRepository.insert(image);
-    });
-    product.highlights = p.highlights;
+    p.highlights = this.insertRelations(
+      p.highlights,
+      product,
+      this.highlightsRepository,
+      'highlight',
+    );
+    p.images = this.insertRelations(
+      p.images,
+      product,
+      this.imagesRepository,
+      'image',
+    );
     return product;
   }
 
   async update(id: number, p: any): Promise<Product> {
     const product = await super.findOne(id);
-    const highlights = p.highlights;
-    const images = p.images;
-    delete p.highlights;
-    delete p.images;
-    await super.update(id, p);
+    const { highlights, images, ...prod } = p;
+    await super.update(id, prod);
+
+    // Delete previous and insert new highlights data
     if (highlights) {
       await this.highlightsRepository.delete({ product: { id } });
-      highlights.forEach((h: string) => {
-        const hObj = new Highlight();
-        hObj.highlight = h;
-        hObj.product = product;
-        const highlight = this.highlightsRepository.create(hObj);
-        this.highlightsRepository.insert(highlight);
-      });
-      product.highlights = highlights;
+      product.highlights = this.insertRelations(
+        highlights,
+        product,
+        this.highlightsRepository,
+        'highlight',
+      );
     }
+
+    // Delete previous and insert new images data
     if (images) {
       await this.imagesRepository.delete({ product: { id } });
-      images.forEach((i: string) => {
-        const img = new ProductImage();
-        img.image = i;
-        img.product = product;
-        const image = this.imagesRepository.create(img);
-        this.imagesRepository.insert(image);
-      });
-      product.images = images;
+      product.images = this.insertRelations(
+        images,
+        product,
+        this.imagesRepository,
+        'image',
+      );
     }
     return product;
+  }
+
+  /**
+   * Inserts product relation and returns array of objects containing entity property
+   * @param values array of values
+   * @param product product owning the entities
+   * @param repo repository to use for insertion
+   * @param propName name of the property containing value
+   * @returns Array of objects containing the property and value
+   */
+  insertRelations(
+    values: string[],
+    product: any,
+    repo: Repository<any>,
+    propName: string,
+  ) {
+    const rels = [];
+    for (const key in values) {
+      const rel = {};
+      rel[propName] = values[key];
+      rel['product'] = product;
+      const highlight = repo.create(rel);
+      repo.insert(highlight);
+      rels.push({ highlight: values[key] });
+    }
+    return rels;
   }
 }

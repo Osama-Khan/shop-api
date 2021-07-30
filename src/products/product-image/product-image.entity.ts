@@ -16,7 +16,7 @@ export class ProductImage extends EntityParent {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ type: 'text' })
   image: string;
 
   @ManyToOne((type) => Product)

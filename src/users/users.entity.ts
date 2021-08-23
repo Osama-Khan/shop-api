@@ -91,7 +91,6 @@ export class User extends EntityParent {
   }
 
   @BeforeInsert()
-  @BeforeUpdate()
   setDefaultImage() {
     if (!this.profileImage)
       this.profileImage = `${process.env.DOMAIN}/images/profile/default-profile.png`;

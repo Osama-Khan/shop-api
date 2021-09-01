@@ -31,6 +31,8 @@ export class ProductsController {
     'rating',
     'stock',
     'img',
+    'createdAt',
+    'updatedAt',
   ];
 
   @Get()

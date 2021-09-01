@@ -1,13 +1,11 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Favorite } from 'src/favorite/favorite.entity';
 import { Product } from 'src/products/products.entity';
-import withFavoriteCount from 'src/shared/helpers/favorite-count.helper';
-import paginate from 'src/shared/helpers/paginate.helper';
+import { ProductsService } from 'src/products/products.service';
 import FindManyOptionsDTO from 'src/shared/models/find-many-options.dto';
 import IMetaModel from 'src/shared/models/meta.model';
 import { ApiService } from 'src/shared/services/api.service';
-import { Repository } from 'typeorm';
+import { FindConditions, Repository } from 'typeorm';
 import { Category } from './categories.entity';
 
 @Injectable()
@@ -15,10 +13,8 @@ export class CategoriesService extends ApiService<Category> {
   constructor(
     @InjectRepository(Category)
     private categoriesRepository: Repository<Category>,
-    @InjectRepository(Product)
-    private productsRepository: Repository<Product>,
-    @InjectRepository(Favorite)
-    private favoritesRepository: Repository<Favorite>,
+    @Inject(forwardRef(() => ProductsService)) 
+    private productsService: ProductsService,
   ) {
     super(categoriesRepository, Category.relations);
   }
@@ -97,24 +93,23 @@ export class CategoriesService extends ApiService<Category> {
     }
 
     if (!options.relations) options.relations = ['category'];
-    if (!options.relations?.includes('category'))
+    else if (!options.relations.includes('category'))
       options.relations.push('category');
-    const [products, count] = await this.productsRepository.findAndCount(
-      options,
-    );
 
     const childIds = (await this.getCategoryChildren(category.id)).map(
       (c) => c.id,
     );
 
-    const p = products.filter((p) => {
-      return (
-        p.category?.id === category.id ||
-        childIds.some((id) => p.category?.id === id)
-      );
+    // Generate condition array for all categories
+    let categoryWheres: FindConditions<Product>[] = [];
+    childIds.forEach(id => {
+      categoryWheres.push({category: {id}});
+    })
+    categoryWheres.push({category: {id: category.id}})
+
+    return await this.productsService.findAll({
+      ...options,
+      where: categoryWheres,
     });
-    const pRes = p.map((p) => p.toResponseObject());
-    const prods = await withFavoriteCount(pRes, this.favoritesRepository);
-    return paginate(prods, options, count);
   }
 }

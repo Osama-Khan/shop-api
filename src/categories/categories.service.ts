@@ -1,4 +1,9 @@
-import { forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  forwardRef,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from 'src/products/products.entity';
 import { ProductsService } from 'src/products/products.service';
@@ -13,7 +18,7 @@ export class CategoriesService extends ApiService<Category> {
   constructor(
     @InjectRepository(Category)
     private categoriesRepository: Repository<Category>,
-    @Inject(forwardRef(() => ProductsService)) 
+    @Inject(forwardRef(() => ProductsService))
     private productsService: ProductsService,
   ) {
     super(categoriesRepository, Category.relations);
@@ -102,10 +107,10 @@ export class CategoriesService extends ApiService<Category> {
 
     // Generate condition array for all categories
     let categoryWheres: FindConditions<Product>[] = [];
-    childIds.forEach(id => {
-      categoryWheres.push({category: {id}});
-    })
-    categoryWheres.push({category: {id: category.id}})
+    childIds.forEach((id) => {
+      categoryWheres.push({ category: { id } });
+    });
+    categoryWheres.push({ category: { id: category.id } });
 
     return await this.productsService.findAll({
       ...options,

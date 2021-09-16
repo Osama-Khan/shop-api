@@ -80,4 +80,18 @@ export class ProductsController {
   ): Promise<Product> {
     return this.productsService.update(id, product);
   }
+
+  @Get('category/:name')
+  getProductsByCategory(
+    @Param('name') category: string,
+    @Query(
+      new FindManyValidationPipe(
+        ProductsController.validProperties,
+        Product.relations,
+      ),
+    )
+    options: FindManyOptionsDTO<Product>,
+  ) {
+    return this.productsService.findProducts(category, options);
+  }
 }

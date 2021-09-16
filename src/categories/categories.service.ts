@@ -1,16 +1,7 @@
-import {
-  forwardRef,
-  Inject,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Product } from 'src/products/products.entity';
-import { ProductsService } from 'src/products/products.service';
-import FindManyOptionsDTO from 'src/shared/models/find-many-options.dto';
-import IMetaModel from 'src/shared/models/meta.model';
 import { ApiService } from 'src/shared/services/api.service';
-import { FindConditions, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { Category } from './categories.entity';
 
 @Injectable()
@@ -18,8 +9,6 @@ export class CategoriesService extends ApiService<Category> {
   constructor(
     @InjectRepository(Category)
     private categoriesRepository: Repository<Category>,
-    @Inject(forwardRef(() => ProductsService))
-    private productsService: ProductsService,
   ) {
     super(categoriesRepository, Category.relations);
   }
@@ -80,41 +69,5 @@ export class CategoriesService extends ApiService<Category> {
     } else {
       throw new NotFoundException('No category with given id!');
     }
-  }
-
-  /** Returns a list of products with the given category
-   * @param name The name of category
-   * @returns A list of products from the given category
-   */
-  async findProducts(
-    name: string,
-    options: FindManyOptionsDTO<Product>,
-  ): Promise<{ data: any[]; meta: IMetaModel }> {
-    const category = await this.categoriesRepository.findOne({
-      where: { name },
-    });
-    if (!category) {
-      throw new NotFoundException('Category not found!');
-    }
-
-    if (!options.relations) options.relations = ['category'];
-    else if (!options.relations.includes('category'))
-      options.relations.push('category');
-
-    const childIds = (await this.getCategoryChildren(category.id)).map(
-      (c) => c.id,
-    );
-
-    // Generate condition array for all categories
-    let categoryWheres: FindConditions<Product>[] = [];
-    childIds.forEach((id) => {
-      categoryWheres.push({ category: { id } });
-    });
-    categoryWheres.push({ category: { id: category.id } });
-
-    return await this.productsService.findAll({
-      ...options,
-      where: categoryWheres,
-    });
   }
 }

@@ -1,6 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import {
+  forwardRef,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOneOptions, Repository } from 'typeorm';
+import { FindConditions, FindOneOptions, In, Repository } from 'typeorm';
 import { Product } from './products.entity';
 import { ApiService } from 'src/shared/services/api.service';
 import { Highlight } from 'src/highlights/highlights.entity';
@@ -8,6 +13,9 @@ import { Favorite } from 'src/favorite/favorite.entity';
 import FindManyOptionsDTO from 'src/shared/models/find-many-options.dto';
 import withFavoriteCount from 'src/shared/helpers/favorite-count.helper';
 import { ProductImage } from './product-image/product-image.entity';
+import IMetaModel from 'src/shared/models/meta.model';
+import { CategoriesService } from 'src/categories/categories.service';
+import { Category } from 'src/categories/categories.entity';
 
 @Injectable()
 export class ProductsService extends ApiService<Product> {
@@ -20,6 +28,10 @@ export class ProductsService extends ApiService<Product> {
     private imagesRepository: Repository<ProductImage>,
     @InjectRepository(Favorite)
     private favoritesRepository: Repository<Favorite>,
+    @InjectRepository(Category)
+    private categoriesRepository: Repository<Category>,
+    @Inject(forwardRef(() => CategoriesService))
+    private categoriesService: CategoriesService,
   ) {
     super(productRepository, Product.relations, [
       'highlights',
@@ -127,6 +139,39 @@ export class ProductsService extends ApiService<Product> {
       );
     }
     return product;
+  }
+
+  /** Returns a list of products with the given category
+   * @param name The name of category
+   * @returns A list of products from the given category
+   */
+  async findProducts(
+    name: string,
+    options: FindManyOptionsDTO<Product>,
+  ): Promise<{ data: any[]; meta: IMetaModel }> {
+    const category = await this.categoriesRepository.findOne({
+      where: { name },
+    });
+    if (!category) {
+      throw new NotFoundException('Category not found!');
+    }
+
+    if (!options.relations) options.relations = ['category'];
+    else if (!options.relations.includes('category'))
+      options.relations.push('category');
+
+    const childIds = (
+      await this.categoriesService.getCategoryChildren(category.id)
+    ).map((c) => c.id);
+    const ids = [category.id, ...childIds];
+
+    return await this.findAll({
+      ...options,
+      where: {
+        category: { id: In(ids) },
+        ...(options.where as any),
+      },
+    });
   }
 
   /**

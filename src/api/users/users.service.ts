@@ -7,7 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './users.entity';
 import { Role } from 'src/api/roles/roles.entity';
-import { ApiService } from 'src/api/shared/services/api.service';
+import { ApiService } from 'src/shared/services/api.service';
 import { Address } from 'src/api/address/address.entity';
 
 @Injectable()

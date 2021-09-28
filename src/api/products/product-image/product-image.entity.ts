@@ -1,4 +1,4 @@
-import EntityParent from 'src/api/shared/models/entity-parent.model';
+import EntityParent from 'src/shared/models/entity-parent.model';
 import {
   Entity,
   Column,

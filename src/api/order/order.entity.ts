@@ -12,7 +12,7 @@ import {
 import { User } from 'src/api/users/users.entity';
 import { OrderProduct } from 'src/api/order/order-product/order-product.entity';
 import { OrderState } from 'src/api/order/order-state/order-state.entity';
-import EntityParent from 'src/api/shared/models/entity-parent.model';
+import EntityParent from 'src/shared/models/entity-parent.model';
 
 @Entity()
 export class Order extends EntityParent {

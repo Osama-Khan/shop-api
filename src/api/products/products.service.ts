@@ -7,13 +7,13 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindConditions, FindOneOptions, In, Repository } from 'typeorm';
 import { Product } from './products.entity';
-import { ApiService } from 'src/api/shared/services/api.service';
+import { ApiService } from 'src/shared/services/api.service';
 import { Highlight } from 'src/api/highlights/highlights.entity';
 import { Favorite } from 'src/api/favorite/favorite.entity';
-import FindManyOptionsDTO from 'src/api/shared/models/find-many-options.dto';
+import FindManyOptionsDTO from 'src/shared/models/find-many-options.dto';
 import withFavoriteCount from 'src/api/shared/helpers/favorite-count.helper';
 import { ProductImage } from './product-image/product-image.entity';
-import IMetaModel from 'src/api/shared/models/meta.model';
+import IMetaModel from 'src/shared/models/meta.model';
 import { CategoriesService } from 'src/api/categories/categories.service';
 import { Category } from 'src/api/categories/categories.entity';
 

@@ -9,7 +9,7 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import IRegisterModel from './models/register.model';
 import ILoginModel from './models/login.model';
-import { ApiService } from 'src/api/shared/services/api.service';
+import { ApiService } from 'src/shared/services/api.service';
 import JwtHelper from 'src/api/shared/helpers/jwt.helper';
 import { Setting } from 'src/api/setting/setting.entity';
 

@@ -1,5 +1,5 @@
 import { Order } from 'src/api/order/order.entity';
-import EntityParent from 'src/api/shared/models/entity-parent.model';
+import EntityParent from 'src/shared/models/entity-parent.model';
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 
 @Entity()

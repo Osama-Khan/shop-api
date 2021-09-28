@@ -1,5 +1,5 @@
 import { Address } from 'src/api/address/address.entity';
-import EntityParent from 'src/api/shared/models/entity-parent.model';
+import EntityParent from 'src/shared/models/entity-parent.model';
 import { User } from 'src/api/users/users.entity';
 import {
   Entity,

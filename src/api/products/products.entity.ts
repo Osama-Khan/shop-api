@@ -2,7 +2,7 @@ import { Category } from 'src/api/categories/categories.entity';
 import { Favorite } from 'src/api/favorite/favorite.entity';
 import { Highlight } from 'src/api/highlights/highlights.entity';
 import { OrderProduct } from 'src/api/order/order-product/order-product.entity';
-import EntityParent from 'src/api/shared/models/entity-parent.model';
+import EntityParent from 'src/shared/models/entity-parent.model';
 import { User } from 'src/api/users/users.entity';
 import {
   Entity,

@@ -17,7 +17,7 @@ import {
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { Order } from 'src/api/order/order.entity';
-import EntityParent from 'src/api/shared/models/entity-parent.model';
+import EntityParent from 'src/shared/models/entity-parent.model';
 import { Setting } from 'src/api/setting/setting.entity';
 import { Favorite } from 'src/api/favorite/favorite.entity';
 import { ProductRating } from 'src/api/products/product-rating/product-rating.entity';

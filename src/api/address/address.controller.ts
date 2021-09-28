@@ -13,9 +13,9 @@ import {
 import { Address } from './address.entity';
 import { AddressService } from './address.service';
 import FindManyValidationPipe from 'src/api/shared/pipes/filters/find-many-validation.pipe';
-import FindManyOptionsDTO from 'src/api/shared/models/find-many-options.dto';
+import FindManyOptionsDTO from 'src/shared/models/find-many-options.dto';
 import FindOneValidationPipe from 'src/api/shared/pipes/filters/find-one-validation.pipe';
-import FindOneOptionsDTO from 'src/api/shared/models/find-one-options.dto';
+import FindOneOptionsDTO from 'src/shared/models/find-one-options.dto';
 
 @Controller({ path: '/addresses' })
 export class AddressController {

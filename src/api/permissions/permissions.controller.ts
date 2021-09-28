@@ -6,8 +6,8 @@ import {
   Query,
   UsePipes,
 } from '@nestjs/common';
-import FindManyOptionsDTO from 'src/api/shared/models/find-many-options.dto';
-import FindOneOptionsDTO from 'src/api/shared/models/find-one-options.dto';
+import FindManyOptionsDTO from 'src/shared/models/find-many-options.dto';
+import FindOneOptionsDTO from 'src/shared/models/find-one-options.dto';
 import FindManyValidationPipe from 'src/api/shared/pipes/filters/find-many-validation.pipe';
 import FindOneValidationPipe from 'src/api/shared/pipes/filters/find-one-validation.pipe';
 import { Permission } from './permissions.entity';

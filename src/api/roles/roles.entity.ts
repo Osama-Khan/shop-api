@@ -1,5 +1,5 @@
 import { Permission } from 'src/api/permissions/permissions.entity';
-import EntityParent from 'src/api/shared/models/entity-parent.model';
+import EntityParent from 'src/shared/models/entity-parent.model';
 import { User } from 'src/api/users/users.entity';
 import {
   Entity,

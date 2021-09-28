@@ -12,9 +12,9 @@ import {
 } from '@nestjs/common';
 import { User } from './users.entity';
 import { UsersService } from './users.service';
-import FindOneOptionsDTO from 'src/api/shared/models/find-one-options.dto';
+import FindOneOptionsDTO from 'src/shared/models/find-one-options.dto';
 import FindOneValidationPipe from 'src/api/shared/pipes/filters/find-one-validation.pipe';
-import FindManyOptionsDTO from 'src/api/shared/models/find-many-options.dto';
+import FindManyOptionsDTO from 'src/shared/models/find-many-options.dto';
 import FindManyValidationPipe from 'src/api/shared/pipes/filters/find-many-validation.pipe';
 
 @Controller({ path: '/users' })

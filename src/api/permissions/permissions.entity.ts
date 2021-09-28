@@ -1,5 +1,5 @@
 import { Role } from 'src/api/roles/roles.entity';
-import EntityParent from 'src/api/shared/models/entity-parent.model';
+import EntityParent from 'src/shared/models/entity-parent.model';
 import {
   Entity,
   Column,

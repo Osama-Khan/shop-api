@@ -10,7 +10,7 @@ import {
   Query,
   UsePipes,
 } from '@nestjs/common';
-import FindManyOptionsDTO from 'src/api/shared/models/find-many-options.dto';
+import FindManyOptionsDTO from 'src/shared/models/find-many-options.dto';
 import { ProductRating } from './product-rating.entity';
 import { ProductRatingService } from './product-rating.service';
 import FindManyValidationPipe from 'src/api/shared/pipes/filters/find-many-validation.pipe';

@@ -1,12 +1,12 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Address } from './address.entity';
-import { ApiService } from 'src/api/shared/services/api.service';
+import { ApiService } from 'src/shared/services/api.service';
 import { Injectable } from '@nestjs/common';
 import { State } from 'src/api/location/state/state.entity';
 import { City } from 'src/api/location/city/city.entity';
-import FindManyOptionsDTO from 'src/api/shared/models/find-many-options.dto';
-import FindOneOptionsDTO from 'src/api/shared/models/find-one-options.dto';
+import FindManyOptionsDTO from 'src/shared/models/find-many-options.dto';
+import FindOneOptionsDTO from 'src/shared/models/find-one-options.dto';
 
 @Injectable()
 export class AddressService extends ApiService<Address> {

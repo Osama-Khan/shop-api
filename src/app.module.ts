@@ -3,7 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Address } from './api/address/address.entity';
 import { ApiModule } from './api/api.module';
 import { Category } from './api/categories/categories.entity';
-import { db } from './api/dbconfig';
+import { db } from './dbconfig';
 import { Favorite } from './api/favorite/favorite.entity';
 import { Highlight } from './api/highlights/highlights.entity';
 import { City } from './api/location/city/city.entity';

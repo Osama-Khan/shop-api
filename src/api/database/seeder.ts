@@ -1,9 +1,9 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from 'src/api/app.module';
+import { ApiModule } from 'src/api/api.module';
 import seedLocations from './location/location-seeder';
 
 async function seed() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(ApiModule);
   await seedLocations(app);
   app.close();
 }

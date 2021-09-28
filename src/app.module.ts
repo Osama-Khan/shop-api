@@ -19,6 +19,31 @@ import { Product } from './api/products/products.entity';
 import { Role } from './api/roles/roles.entity';
 import { Setting } from './api/setting/setting.entity';
 import { User } from './api/users/users.entity';
+import { ChatModule } from './chat/chat.module';
+import { Connection } from './chat/repository/connection/connection.entity';
+import { Message } from './chat/repository/message/message.entity';
+
+const apiEntities = [
+  Product,
+  ProductRating,
+  ProductImage,
+  Category,
+  Highlight,
+  User,
+  Permission,
+  Role,
+  Order,
+  Address,
+  OrderProduct,
+  OrderState,
+  City,
+  State,
+  Country,
+  Setting,
+  Favorite,
+];
+
+const chatEntities = [Connection, Message];
 
 @Module({
   imports: [
@@ -29,28 +54,11 @@ import { User } from './api/users/users.entity';
       username: db.username,
       password: db.password,
       database: db.dbname,
-      entities: [
-        Product,
-        ProductRating,
-        ProductImage,
-        Category,
-        Highlight,
-        User,
-        Permission,
-        Role,
-        Order,
-        Address,
-        OrderProduct,
-        OrderState,
-        City,
-        State,
-        Country,
-        Setting,
-        Favorite,
-      ],
+      entities: [...apiEntities, ...chatEntities],
       synchronize: true,
     }),
     ApiModule,
+    ChatModule,
   ],
 })
 export class AppModule {}

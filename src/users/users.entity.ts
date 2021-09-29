@@ -92,8 +92,12 @@ export class User extends EntityParent {
 
   @BeforeInsert()
   setDefaultImage() {
-    if (!this.profileImage)
-      this.profileImage = `${process.env.DOMAIN}/images/profile/default-profile.png`;
+    if (!this.profileImage) {
+      const DOMAIN = process.env.DOMAIN;
+      const PORT = process.env.PORT;
+      const domain = DOMAIN + (PORT ? `:${PORT}` : '');
+      this.profileImage = `${domain}/images/profile/default-profile.png`;
+    }
   }
 
   static relations = [

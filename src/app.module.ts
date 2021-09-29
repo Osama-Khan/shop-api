@@ -21,6 +21,7 @@ import { Setting } from './api/setting/setting.entity';
 import { User } from './api/users/users.entity';
 import { ChatModule } from './chat/chat.module';
 import { Message } from './chat/repository/message/message.entity';
+import { Thread } from './chat/repository/thread/thread.entity';
 
 const apiEntities = [
   Product,
@@ -42,7 +43,7 @@ const apiEntities = [
   Favorite,
 ];
 
-const chatEntities = [Message];
+const chatEntities = [Thread, Message];
 
 @Module({
   imports: [

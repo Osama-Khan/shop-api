@@ -8,6 +8,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { Thread } from '../thread/thread.entity';
 
 @Entity()
 export class Message extends EntityParent {
@@ -18,6 +19,11 @@ export class Message extends EntityParent {
   /** Content of the message */
   @Column()
   message: string;
+
+  /** Thread the message belongs to */
+  @ManyToOne((type) => Thread, (thread) => thread.messages)
+  @JoinColumn({ name: 'thread_id' })
+  thread: Thread;
 
   /** User that sent the message */
   @ManyToOne((type) => User)
@@ -43,6 +49,9 @@ export class Message extends EntityParent {
     };
     if (this.sender) {
       obj['sender'] = this.sender.toResponseObject();
+    }
+    if (this.thread) {
+      obj['thread'] = this.thread.toResponseObject();
     }
     return obj;
   }

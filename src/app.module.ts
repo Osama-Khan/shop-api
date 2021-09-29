@@ -20,7 +20,6 @@ import { Role } from './api/roles/roles.entity';
 import { Setting } from './api/setting/setting.entity';
 import { User } from './api/users/users.entity';
 import { ChatModule } from './chat/chat.module';
-import { Connection } from './chat/repository/connection/connection.entity';
 import { Message } from './chat/repository/message/message.entity';
 
 const apiEntities = [
@@ -43,7 +42,7 @@ const apiEntities = [
   Favorite,
 ];
 
-const chatEntities = [Connection, Message];
+const chatEntities = [Message];
 
 @Module({
   imports: [

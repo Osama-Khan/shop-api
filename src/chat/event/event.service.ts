@@ -3,15 +3,21 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Server, Socket } from 'socket.io';
 import { Repository } from 'typeorm';
 import events from './events';
-import { Connection } from '../repository/connection/connection.entity';
 import { Message } from '../repository/message/message.entity';
 import MessageDTO from '../models/message.dto';
+
+type ConnectionType = {
+  /** ID of the connected user */
+  id: number;
+  /** Socket that the user is connected to */
+  socket: string;
+};
 
 /** Service that handles event emission and listening for socket.io */
 @Injectable()
 export class EventService {
+  connectedUsers: ConnectionType[] = [];
   constructor(
-    @InjectRepository(Connection) private connRepo: Repository<Connection>,
     @InjectRepository(Message) private messageRepo: Repository<Message>,
   ) {}
 
@@ -42,15 +48,17 @@ export class EventService {
    * @param userId ID of the user trying to login
    */
   onLoginEvent = async (socket: Socket, userId: number) => {
-    await this.connRepo.insert({ socket: socket.id, user: userId } as any);
+    const user = { socket: socket.id, id: userId };
+    this.connectedUsers.push(user);
   };
 
   /** Event triggered when client disconnects
    * @param socket The socket of the connection
    */
   onLogoutEvent = async (socket: Socket) => {
-    const conn = await this.connRepo.findOne({ where: { socket: socket.id } });
-    if (conn) this.connRepo.remove(conn);
+    this.connectedUsers = this.connectedUsers.filter(
+      (u) => u.socket !== socket.id,
+    );
   };
 
   /** Emits the login success event
@@ -75,15 +83,18 @@ export class EventService {
    * @param to ID of the user that the message was sent to
    */
   onSendMessageEvent = async (socket: Socket, message: string, to: number) => {
-    const from = (await this.connRepo.findOne({ where: { socket: socket.id } }))
-      .id;
+    const from = this.connectedUsers.find((u) => u.socket === socket.id)?.id;
+    if (!from) {
+      return;
+    }
     this.messageRepo.insert({ message, from, to, time: new Date() } as any);
     const dto = new MessageDTO({ message, sender: from, time: new Date() });
 
-    const toSocket = (await this.connRepo.findOne(to)).socket;
-    if (toSocket) {
-      this.emitReceiveMessageEvent(socket, dto, toSocket);
-    }
+    this.connectedUsers
+      .filter((u) => u.id === to)
+      .forEach(({ socket: toSocket }) =>
+        this.emitReceiveMessageEvent(socket, dto, toSocket),
+      );
   };
 
   /** Emits the receive message event

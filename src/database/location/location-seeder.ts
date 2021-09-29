@@ -3,7 +3,7 @@ import { INestApplication } from '@nestjs/common';
 import * as countries from './country/countries.json';
 import * as states from './state/states.json';
 import * as cities from './city/cities.json';
-import LogHelper from 'src/api/shared/helpers/log.helper';
+import LogHelper from 'src/shared/helpers/log.helper';
 import { StateService } from 'src/api/location/state/state.service';
 import { CityService } from 'src/api/location/city/city.service';
 

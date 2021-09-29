@@ -8,8 +8,8 @@ import {
 } from '@nestjs/common';
 import FindManyOptionsDTO from 'src/shared/models/find-many-options.dto';
 import FindOneOptionsDTO from 'src/shared/models/find-one-options.dto';
-import FindManyValidationPipe from 'src/api/shared/pipes/filters/find-many-validation.pipe';
-import FindOneValidationPipe from 'src/api/shared/pipes/filters/find-one-validation.pipe';
+import FindManyValidationPipe from 'src/shared/pipes/filters/find-many-validation.pipe';
+import FindOneValidationPipe from 'src/shared/pipes/filters/find-one-validation.pipe';
 import { Permission } from './permissions.entity';
 import { PermissionsService } from './permissions.service';
 

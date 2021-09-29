@@ -13,8 +13,8 @@ import {
 import FindManyOptionsDTO from 'src/shared/models/find-many-options.dto';
 import { Product } from './products.entity';
 import { ProductsService } from './products.service';
-import FindManyValidationPipe from 'src/api/shared/pipes/filters/find-many-validation.pipe';
-import FindOneValidationPipe from 'src/api/shared/pipes/filters/find-one-validation.pipe';
+import FindManyValidationPipe from 'src/shared/pipes/filters/find-many-validation.pipe';
+import FindOneValidationPipe from 'src/shared/pipes/filters/find-one-validation.pipe';
 
 @Controller({ path: '/products' })
 export class ProductsController {

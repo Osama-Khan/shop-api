@@ -1,4 +1,4 @@
-import EntityParent from '../../../shared/models/entity-parent.model';
+import EntityParent from 'src/shared/models/entity-parent.model';
 
 /**
  * Generates a response object from an entity using it's toResponseObject function

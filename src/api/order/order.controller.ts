@@ -12,10 +12,10 @@ import {
 } from '@nestjs/common';
 import { Order } from './order.entity';
 import { OrderService } from './order.service';
-import FindManyValidationPipe from 'src/api/shared/pipes/filters/find-many-validation.pipe';
+import FindManyValidationPipe from 'src/shared/pipes/filters/find-many-validation.pipe';
 import FindOneOptionsDTO from 'src/shared/models/find-one-options.dto';
 import FindManyOptionsDTO from 'src/shared/models/find-many-options.dto';
-import FindOneValidationPipe from 'src/api/shared/pipes/filters/find-one-validation.pipe';
+import FindOneValidationPipe from 'src/shared/pipes/filters/find-one-validation.pipe';
 
 @Controller({ path: '/orders' })
 export class OrderController {

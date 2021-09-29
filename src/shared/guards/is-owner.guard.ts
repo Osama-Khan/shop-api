@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import JwtHelper from '../helpers/jwt.helper';
 import { getBearerFromRequest } from '../helpers/request.helper';
-import { ApiService } from '../../../shared/services/api.service';
+import { ApiService } from 'src/shared/services/api.service';
 
 /**
  * Verifies that the currently logged in user is the owner of accessed item

@@ -1,5 +1,5 @@
-import FindManyOptionsDTO from '../../../shared/models/find-many-options.dto';
-import IMetaModel from '../../../shared/models/meta.model';
+import FindManyOptionsDTO from 'src/shared/models/find-many-options.dto';
+import IMetaModel from 'src/shared/models/meta.model';
 
 /**
  * Paginates data by attaching it to an object with data and meta parts

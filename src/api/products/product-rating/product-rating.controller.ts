@@ -13,8 +13,8 @@ import {
 import FindManyOptionsDTO from 'src/shared/models/find-many-options.dto';
 import { ProductRating } from './product-rating.entity';
 import { ProductRatingService } from './product-rating.service';
-import FindManyValidationPipe from 'src/api/shared/pipes/filters/find-many-validation.pipe';
-import FindOneValidationPipe from 'src/api/shared/pipes/filters/find-one-validation.pipe';
+import FindManyValidationPipe from 'src/shared/pipes/filters/find-many-validation.pipe';
+import FindOneValidationPipe from 'src/shared/pipes/filters/find-one-validation.pipe';
 
 @Controller({ path: '/ratings' })
 export class ProductRatingController {

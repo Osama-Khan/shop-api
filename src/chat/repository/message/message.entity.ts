@@ -38,7 +38,7 @@ export class Message extends EntityParent {
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
-  static relations = ['sender'];
+  static relations = ['sender', 'thread'];
 
   toResponseObject() {
     const obj = {

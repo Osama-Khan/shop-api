@@ -8,7 +8,14 @@ import { MessageService } from './message.service';
 export class MessageController {
   constructor(private readonly messageService: MessageService) {}
 
-  static validProperties = ['id', 'to', 'from', 'message', 'time'];
+  static validProperties = [
+    'id',
+    'message',
+    'thread',
+    'sender',
+    'seenAt',
+    'createdAt',
+  ];
 
   @Get()
   @UsePipes(

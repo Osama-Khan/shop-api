@@ -80,15 +80,25 @@ export class EventService {
   /** Event triggered when client sends a message
    * @param socket The socket of the connection
    * @param message The message sent by the client
-   * @param to ID of the user that the message was sent to
+   * @param to ID of the thread that the message was sent to
    */
   onSendMessageEvent = async (socket: Socket, message: string, to: number) => {
     const from = this.connectedUsers.find((u) => u.socket === socket.id)?.id;
     if (!from) {
       return;
     }
-    this.messageRepo.insert({ message, from, to, time: new Date() } as any);
-    const dto = new MessageDTO({ message, sender: from, time: new Date() });
+    this.messageRepo.insert({
+      message,
+      sender: from,
+      thread: to,
+      time: new Date(),
+    } as any);
+    const dto = new MessageDTO({
+      message,
+      sender: from,
+      time: new Date(),
+      threadId: to,
+    });
 
     this.connectedUsers
       .filter((u) => u.id === to)

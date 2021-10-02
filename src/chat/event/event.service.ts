@@ -105,6 +105,9 @@ export class EventService {
       .forEach(({ socket: toSocket }) =>
         this.emitReceiveMessageEvent(socket, dto, toSocket),
       );
+
+    // Duplicate the message for the sender, confirming the delivery
+    socket.emit(events.onReceiveMessage, dto);
   };
 
   /** Emits the receive message event

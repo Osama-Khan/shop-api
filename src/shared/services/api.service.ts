@@ -1,7 +1,7 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { Repository } from 'typeorm';
-import paginate from '../helpers/paginate.helper';
-import generateRO from '../helpers/ro.helper';
+import paginate from 'src/shared/helpers/paginate.helper';
+import generateRO from 'src/shared/helpers/ro.helper';
 import FindManyOptionsDTO from '../models/find-many-options.dto';
 import FindOneOptionsDTO from '../models/find-one-options.dto';
 

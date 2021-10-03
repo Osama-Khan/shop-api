@@ -1,11 +1,11 @@
-import { CountryService } from 'src/location/country/country.service';
+import { CountryService } from 'src/api/location/country/country.service';
 import { INestApplication } from '@nestjs/common';
 import * as countries from './country/countries.json';
 import * as states from './state/states.json';
 import * as cities from './city/cities.json';
 import LogHelper from 'src/shared/helpers/log.helper';
-import { StateService } from 'src/location/state/state.service';
-import { CityService } from 'src/location/city/city.service';
+import { StateService } from 'src/api/location/state/state.service';
+import { CityService } from 'src/api/location/city/city.service';
 
 async function seedCountries(app: INestApplication) {
   const svc = app.get(CountryService);

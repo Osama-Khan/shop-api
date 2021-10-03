@@ -1,41 +1,49 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ServeStaticModule } from '@nestjs/serve-static';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { Category } from './categories/categories.entity';
-import { CategoriesModule } from './categories/categories.module';
+import { Address } from './api/address/address.entity';
+import { ApiModule } from './api/api.module';
+import { Category } from './api/categories/categories.entity';
 import { db } from './dbconfig';
-import { Highlight } from './highlights/highlights.entity';
-import { Permission } from './permissions/permissions.entity';
-import { PermissionsModule } from './permissions/permissions.module';
-import { Product } from './products/products.entity';
-import { ProductsModule } from './products/products.module';
-import { Role } from './roles/roles.entity';
-import { RolesModule } from './roles/roles.module';
-import { User } from './users/users.entity';
-import { UsersModule } from './users/users.module';
-import { AuthenticationModule } from './authentication/authentication.module';
-import { Order } from './order/order.entity';
-import { OrderModule } from './order/order.module';
-import { Address } from './address/address.entity';
-import { OrderProduct } from './order/order-product/order-product.entity';
-import { OrderState } from './order/order-state/order-state.entity';
-import { City } from './location/city/city.entity';
-import { State } from './location/state/state.entity';
-import { Country } from './location/country/country.entity';
-import { CityModule } from './location/city/city.module';
-import { StateModule } from './location/state/state.module';
-import { CountryModule } from './location/country/country.module';
-import { join } from 'path';
-import { AddressModule } from './address/address.module';
-import { SettingModule } from './setting/setting.module';
-import { Setting } from './setting/setting.entity';
-import { FavoriteModule } from './favorite/favorite.module';
-import { Favorite } from './favorite/favorite.entity';
-import { ProductRating } from './products/product-rating/product-rating.entity';
-import { ProductRatingModule } from './products/product-rating/product-rating.module';
-import { ProductImage } from './products/product-image/product-image.entity';
+import { Favorite } from './api/favorite/favorite.entity';
+import { Highlight } from './api/highlights/highlights.entity';
+import { City } from './api/location/city/city.entity';
+import { Country } from './api/location/country/country.entity';
+import { State } from './api/location/state/state.entity';
+import { OrderProduct } from './api/order/order-product/order-product.entity';
+import { OrderState } from './api/order/order-state/order-state.entity';
+import { Order } from './api/order/order.entity';
+import { Permission } from './api/permissions/permissions.entity';
+import { ProductImage } from './api/products/product-image/product-image.entity';
+import { ProductRating } from './api/products/product-rating/product-rating.entity';
+import { Product } from './api/products/products.entity';
+import { Role } from './api/roles/roles.entity';
+import { Setting } from './api/setting/setting.entity';
+import { User } from './api/users/users.entity';
+import { ChatModule } from './chat/chat.module';
+import { Message } from './chat/repository/message/message.entity';
+import { Thread } from './chat/repository/thread/thread.entity';
+
+const apiEntities = [
+  Product,
+  ProductRating,
+  ProductImage,
+  Category,
+  Highlight,
+  User,
+  Permission,
+  Role,
+  Order,
+  Address,
+  OrderProduct,
+  OrderState,
+  City,
+  State,
+  Country,
+  Setting,
+  Favorite,
+];
+
+const chatEntities = [Thread, Message];
 
 @Module({
   imports: [
@@ -46,46 +54,11 @@ import { ProductImage } from './products/product-image/product-image.entity';
       username: db.username,
       password: db.password,
       database: db.dbname,
-      entities: [
-        Product,
-        ProductRating,
-        ProductImage,
-        Category,
-        Highlight,
-        User,
-        Permission,
-        Role,
-        Order,
-        Address,
-        OrderProduct,
-        OrderState,
-        City,
-        State,
-        Country,
-        Setting,
-        Favorite,
-      ],
+      entities: [...apiEntities, ...chatEntities],
       synchronize: true,
     }),
-    ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'public'),
-    }),
-    ProductsModule,
-    CategoriesModule,
-    UsersModule,
-    RolesModule,
-    PermissionsModule,
-    AuthenticationModule,
-    OrderModule,
-    CityModule,
-    StateModule,
-    CountryModule,
-    AddressModule,
-    SettingModule,
-    FavoriteModule,
-    ProductRatingModule,
+    ApiModule,
+    ChatModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}

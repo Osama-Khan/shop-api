@@ -1,4 +1,4 @@
-import { Favorite } from 'src/favorite/favorite.entity';
+import { Favorite } from 'src/api/favorite/favorite.entity';
 import { Repository } from 'typeorm';
 
 /**

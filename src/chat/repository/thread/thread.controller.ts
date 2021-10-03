@@ -1,8 +1,10 @@
 import {
+  Body,
   Controller,
   Get,
   Param,
   ParseIntPipe,
+  Put,
   Query,
   UsePipes,
 } from '@nestjs/common';
@@ -56,5 +58,10 @@ export class ThreadController {
     options: FindManyOptionsDTO<Thread>,
   ) {
     return this.threadService.getThreadsOf(id, options);
+  }
+
+  @Put()
+  startThread(@Body() data: { thread: Thread; message: string }) {
+    return this.threadService.startThread(data.thread, data.message);
   }
 }

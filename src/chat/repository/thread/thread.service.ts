@@ -38,4 +38,19 @@ export class ThreadService extends ApiService<Thread> {
     );
     return threads;
   }
+
+  /** Starts a thread with the given message */
+  async startThread(thread: Thread, message: string) {
+    const threadStarter = thread.from;
+    thread = await this.insert(thread);
+    await this.messageRepository.insert({
+      message,
+      sender: threadStarter,
+      thread,
+    });
+    const fullThread = await this.findOne(thread.id, {
+      relations: ['from', 'to'],
+    });
+    return fullThread;
+  }
 }

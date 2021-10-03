@@ -87,18 +87,18 @@ export class EventService {
     if (!from) {
       return;
     }
-    this.messageRepo.insert({
+    const inserted = await this.messageRepo.insert({
       message,
       sender: from,
       thread: to,
-      time: new Date(),
     } as any);
-    const dto = new MessageDTO({
-      message,
-      sender: from,
-      time: new Date(),
-      threadId: to,
+    const id = inserted.generatedMaps[0].id;
+    const m: MessageDTO = await this.messageRepo.findOne(id, {
+      relations: ['sender', 'thread'],
     });
+    m.thread = { id: m.thread.id };
+    m.sender = { id: m.sender.id };
+    const dto = new MessageDTO(m);
 
     this.connectedUsers
       .filter((u) => u.id === to)

@@ -1,25 +1,36 @@
+import { User } from 'src/api/users/users.entity';
+import { Thread } from '../repository/thread/thread.entity';
+
 interface IMessageDTO {
-  /** The content of the message */
+  /** ID of the message */
+  id: number;
+
+  /** Content of the message */
   message: string;
-  /** ID of the sender */
-  sender: number;
-  /** Time the message was received at the server on */
-  time: Date;
-  /** ID of the thread the message belongs to */
-  threadId: number;
+
+  /** Thread the message belongs to */
+  thread: Pick<Thread, 'id'>;
+
+  /** User that sent the message */
+  sender: Pick<User, 'id'>;
+
+  /** Time the message was sent at */
+  createdAt: Date;
 }
 
 /** DTO for the message object sent to the client */
 export default class MessageDTO implements IMessageDTO {
+  id: number;
   message: string;
-  sender: number;
-  time: Date;
-  threadId: number;
+  thread: Pick<Thread, 'id'>;
+  sender: Pick<User, 'id'>;
+  createdAt: Date;
 
   constructor(message: IMessageDTO) {
+    this.id = message.id;
     this.message = message.message;
+    this.thread = message.thread;
     this.sender = message.sender;
-    this.time = message.time;
-    this.threadId = message.threadId;
+    this.createdAt = message.createdAt;
   }
 }

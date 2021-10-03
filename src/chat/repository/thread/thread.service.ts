@@ -31,6 +31,7 @@ export class ThreadService extends ApiService<Thread> {
         t.latestMessage = await this.messageRepository.findOne({
           relations: ['sender'],
           where: { thread: t.id },
+          order: { createdAt: 'DESC' },
         });
         return t;
       }),

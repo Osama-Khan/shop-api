@@ -19,7 +19,7 @@ import { ThreadService } from './thread.service';
 export class ThreadController {
   constructor(private readonly threadService: ThreadService) {}
 
-  static validProperties = ['id', 'to', 'from', 'createdAt'];
+  static validProperties = ['id', 'to', 'from', 'createdAt', 'updatedAt'];
 
   @Get()
   @UsePipes(

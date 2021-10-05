@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import events from './events';
 import { Message } from '../repository/message/message.entity';
 import MessageDTO from '../models/message.dto';
+import { Thread } from '../repository/thread/thread.entity';
 
 type ConnectionType = {
   /** ID of the connected user */
@@ -19,6 +20,7 @@ export class EventService {
   connectedUsers: ConnectionType[] = [];
   constructor(
     @InjectRepository(Message) private messageRepo: Repository<Message>,
+    @InjectRepository(Thread) private threadRepo: Repository<Thread>,
   ) {}
 
   /** Initializes socket.io server and starts connection listener.
@@ -92,6 +94,10 @@ export class EventService {
       sender: from,
       thread: to,
     } as any);
+
+    // Updates thread's updatedAt column whenever message is inserted
+    await this.threadRepo.update(to, {});
+
     const id = inserted.generatedMaps[0].id;
     const m: MessageDTO = await this.messageRepo.findOne(id, {
       relations: ['sender', 'thread'],

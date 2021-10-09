@@ -108,7 +108,7 @@ export abstract class ApiService<Entity> {
    * @param options Options to filters rows
    * @returns A number representing count of rows
    */
-  async count(options: FindManyOptionsDTO<Entity>): Promise<number> {
+  async count(options?: FindManyOptionsDTO<Entity>): Promise<number> {
     return await this.repository.count(options);
   }
 }

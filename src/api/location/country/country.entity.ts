@@ -28,7 +28,7 @@ export class Country extends EntityParent {
   iso3: string;
 
   @Column({ name: 'phone_code' })
-  phoneCode: number;
+  phoneCode: string;
 
   @Column()
   capital: string;

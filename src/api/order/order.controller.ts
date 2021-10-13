@@ -8,6 +8,8 @@ import {
   Patch,
   Put,
   Query,
+  UseGuards,
+  UseInterceptors,
   UsePipes,
 } from '@nestjs/common';
 import { Order } from './order.entity';
@@ -16,6 +18,8 @@ import FindManyValidationPipe from 'src/shared/pipes/filters/find-many-validatio
 import FindOneOptionsDTO from 'src/shared/models/find-one-options.dto';
 import FindManyOptionsDTO from 'src/shared/models/find-many-options.dto';
 import FindOneValidationPipe from 'src/shared/pipes/filters/find-one-validation.pipe';
+import { AuthenticationGuard } from 'src/shared/guards/authentication.guard';
+import { TokenToUserInterceptor } from 'src/shared/interceptors';
 
 @Controller({ path: '/orders' })
 export class OrderController {
@@ -72,6 +76,8 @@ export class OrderController {
     return this.orderService.getUserProduct(uid, pid);
   }
 
+  @UseGuards(new AuthenticationGuard())
+  @UseInterceptors(new TokenToUserInterceptor())
   @Put()
   placeOrder(@Body() orderDetail) {
     return this.orderService.placeOrder(orderDetail);

@@ -26,8 +26,8 @@ export class OrderService extends ApiService<Order> {
   }
 
   async placeOrder(orderDetail) {
-    const { address, userId } = orderDetail;
-    const user = await this.userRepository.findOne(userId);
+    const { address, _requestSenderId: userId } = orderDetail;
+    const user = await this.userRepository.findOneOrFail(userId);
     if (!user) {
       throw new BadRequestException('The user placing order does not exist');
     }

@@ -1,0 +1,10 @@
+[
+  {
+    "username": "admin1",
+    "first_name": "Super",
+    "last_name": "Admin",
+    "email": "admin1@admin.com",
+    "password": "admin1",
+    "date_of_birth": "1970-01-01 00:00:00"
+  }
+]

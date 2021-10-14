@@ -1,0 +1,6 @@
+[
+  { "state": "Processing" },
+  { "state": "Shipped" },
+  { "state": "Delivered" },
+  { "state": "Canceled" }
+]

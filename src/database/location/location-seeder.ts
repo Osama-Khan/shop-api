@@ -9,7 +9,10 @@ import { CityService } from 'src/api/location/city/city.service';
 
 async function seedCountries(app: INestApplication) {
   const svc = app.get(CountryService);
-  if ((await svc.count()) === countries.length) return;
+  if ((await svc.count()) > 0) {
+    LogHelper.warn("Skipping country seed since the table is not empty!");
+    return;
+  }
   LogHelper.info('Seeding countries...');
   for (const d of countries) {
     const c: any = { ...d, phoneCode: d.phone_code, subRegion: d.subregion };
@@ -24,7 +27,10 @@ async function seedCountries(app: INestApplication) {
 
 async function seedStates(app: INestApplication) {
   const svc = app.get(StateService);
-  if ((await svc.count()) === states.length) return;
+  if ((await svc.count()) > 0) {
+    LogHelper.warn("Skipping state seed since the table is not empty!");
+    return;
+  }
   LogHelper.info('Seeding states...');
   for (const d of states) {
     const s: any = { ...d, stateCode: d.state_code, country: d.country_id };
@@ -39,7 +45,10 @@ async function seedStates(app: INestApplication) {
 
 async function seedCities(app: INestApplication) {
   const svc = app.get(CityService);
-  if ((await svc.count()) === cities.length) return;
+  if ((await svc.count()) > 0) {
+    LogHelper.warn("Skipping city seed since the table is not empty!");
+    return;
+  }
   LogHelper.info('Seeding cities...');
   for (const d of cities as any) {
     const c: any = { ...d, state: d.state_id };

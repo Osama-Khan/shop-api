@@ -22,6 +22,8 @@ import { User } from './api/users/users.entity';
 import { ChatModule } from './chat/chat.module';
 import { Message } from './chat/repository/message/message.entity';
 import { Thread } from './chat/repository/thread/thread.entity';
+import { join } from 'path';
+import { ServeStaticModule } from '@nestjs/serve-static';
 
 const apiEntities = [
   Product,
@@ -47,6 +49,9 @@ const chatEntities = [Thread, Message];
 
 @Module({
   imports: [
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'public'),
+    }),
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: db.servername,

@@ -8,6 +8,7 @@ import {
   Patch,
   Put,
   Query,
+  UseInterceptors,
   UsePipes,
 } from '@nestjs/common';
 import { User } from './users.entity';
@@ -16,6 +17,7 @@ import FindOneOptionsDTO from 'src/shared/models/find-one-options.dto';
 import FindOneValidationPipe from 'src/shared/pipes/filters/find-one-validation.pipe';
 import FindManyOptionsDTO from 'src/shared/models/find-many-options.dto';
 import FindManyValidationPipe from 'src/shared/pipes/filters/find-many-validation.pipe';
+import { SaveImageInterceptor } from 'src/shared/interceptors';
 
 @Controller({ path: '/users' })
 export class UsersController {
@@ -48,6 +50,7 @@ export class UsersController {
   }
 
   @Put()
+  @UseInterceptors(new SaveImageInterceptor('profileImage', 'user'))
   setUser(@Body() user: User) {
     return this.usersService.insert(user);
   }
@@ -58,6 +61,7 @@ export class UsersController {
   }
 
   @Patch(':id')
+  @UseInterceptors(new SaveImageInterceptor('profileImage', 'user'))
   updateUser(@Param('id', ParseIntPipe) id: number, @Body() user: User) {
     return this.usersService.update(id, user);
   }

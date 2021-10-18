@@ -8,6 +8,7 @@ import {
   Patch,
   Put,
   Query,
+  UseInterceptors,
   UsePipes,
 } from '@nestjs/common';
 import FindManyOptionsDTO from 'src/shared/models/find-many-options.dto';
@@ -15,6 +16,7 @@ import { Product } from './products.entity';
 import { ProductsService } from './products.service';
 import FindManyValidationPipe from 'src/shared/pipes/filters/find-many-validation.pipe';
 import FindOneValidationPipe from 'src/shared/pipes/filters/find-one-validation.pipe';
+import { SaveImageInterceptor } from 'src/shared/interceptors';
 
 @Controller({ path: '/products' })
 export class ProductsController {
@@ -64,6 +66,7 @@ export class ProductsController {
   }
 
   @Put()
+  @UseInterceptors(new SaveImageInterceptor('image', 'product'))
   setProduct(@Body() product: Product): Promise<Product> {
     return this.productsService.insert(product);
   }
@@ -74,6 +77,7 @@ export class ProductsController {
   }
 
   @Patch(':id')
+  @UseInterceptors(new SaveImageInterceptor('image', 'product'))
   updateProduct(
     @Param('id', ParseIntPipe) id: number,
     @Body() product: Product,

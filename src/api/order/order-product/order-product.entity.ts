@@ -12,7 +12,7 @@ import {
 @Entity()
 export class OrderProduct extends EntityParent {
   @PrimaryGeneratedColumn()
-  id: string;
+  id: number;
 
   @ManyToOne((type) => Product, (product) => product.orderProducts)
   @JoinColumn({ name: 'product_id' })

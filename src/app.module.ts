@@ -53,7 +53,7 @@ const chatEntities = [Thread, Message];
       rootPath: join(__dirname, '..', 'public'),
     }),
     TypeOrmModule.forRoot({
-      type: 'mysql',
+      type: db.type as any,
       host: db.servername,
       port: db.serverport,
       username: db.username,

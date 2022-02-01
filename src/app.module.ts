@@ -55,7 +55,7 @@ const chatEntities = [Thread, Message];
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: db.servername,
-      port: 3306,
+      port: db.serverport,
       username: db.username,
       password: db.password,
       database: db.dbname,
